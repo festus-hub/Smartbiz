@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - SmartBiz</title>
+
+    <link rel="stylesheet" href="https://bootswatch.com/5/zephyr/bootstrap.min.css">
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #1e293b, #3b82f6);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-card {
+            width: 380px;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .login-title {
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .btn-login {
+            width: 100%;
+        }
+
+        .error {
+            color: red;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="login-card">
+
+    <h3 class="login-title">SmartBiz Login</h3>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-warning text-center">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    {% if error %}
+        <div class="error">{{ error }}</div>
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+
+       <div class="mb-3">
+    <input type="text" name="username" class="form-control"
+           placeholder="Username" required>
+    </div>
+
+    <div class="mb-3">
+    <input type="password" name="password" id="password"
+           class="form-control" placeholder="Password" required>
+</div>
+
+        <div>
+    <input type="checkbox" id="show-password" onclick="togglePassword()">
+    <label for="show-password">Show Password</label>
+    </div>
+
+        <button type="submit" class="btn btn-primary btn-login">
+            Login
+        </button>
+    </form>
+
+</div>
+
+</body>
+</html>
+<script>
+function togglePassword() {
+    const passwordField = document.getElementById("password");
+
+    if (passwordField.type === "password") {
+        passwordField.type = "text";
+    } else {
+        passwordField.type = "password";
+    }
+}
+</script>

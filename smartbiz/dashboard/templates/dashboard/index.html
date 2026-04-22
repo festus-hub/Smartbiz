@@ -1,0 +1,143 @@
+{% extends 'dashboard/base.html' %}
+{% block content %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SmartBiz Dashboard</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+</head>
+
+<body class="bg-slate-50">
+
+<div class="flex h-screen">
+
+   
+
+    <main class="flex-1 p-8 overflow-y-auto">
+
+        <header class="flex justify-between mb-8">
+            <h1 class="text-3xl font-bold">SmartBiz Dashboard</h1>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+
+            <div class="bg-teal-600 text-white p-6 rounded-2xl shadow">
+                <p>Total Sales</p>
+                <h2 class="text-3xl font-bold"> {{ total_sales }}</h2>
+            </div>
+
+            <div class="bg-blue-600 text-white p-6 rounded-2xl shadow">
+                <p>Total Customers</p>
+                <h2 class="text-3xl font-bold">{{ total_customers }}</h2>
+            </div>
+
+            <div class="bg-amber-500 text-white p-6 rounded-2xl shadow">
+                <p>Total Products</p>
+                <h2 class="text-3xl font-bold">{{ total_products }}</h2>
+            </div>
+
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+
+            <div class="bg-white p-6 rounded-2xl shadow">
+                <h3 class="font-bold mb-4">Monthly Sales</h3>
+                <canvas id="salesChart"></canvas>
+            </div>
+
+            <div class="bg-white p-6 rounded-2xl shadow">
+                <h3 class="font-bold mb-4">Monthly Revenue</h3>
+                <canvas id="revenueChart"></canvas>
+            </div>
+
+        </div>
+
+        <div class="bg-white rounded-2xl shadow p-6">
+
+            <h3 class="text-xl font-bold mb-4">Recent Sales</h3>
+
+            <table class="w-full text-left">
+
+                <thead class="bg-slate-100">
+                    <tr>
+                        <th class="p-3">ID</th>
+                        <th class="p-3">Product</th>
+                        <th class="p-3">Qty</th>
+                        <th class="p-3">Amount</th>
+                        <th class="p-3">Date</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for sale in sales %}
+                    <tr class="border-b">
+                        <td class="p-3">{{ sale.id }}</td>
+                        <td class="p-3">{{ sale.product.name }}</td>
+                        <td class="p-3">{{ sale.quantity }}</td>
+                        <td class="p-3">KES {{ sale.price }}</td>
+                        <td class="p-3">{{ sale.created_at }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </main>
+
+</div>
+
+{{ sales_data|json_script:"sales-data" }}
+{{ revenue_data|json_script:"revenue-data" }}
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const salesData = JSON.parse(document.getElementById("sales-data").textContent);
+    const revenueData = JSON.parse(document.getElementById("revenue-data").textContent);
+
+    new Chart(document.getElementById('salesChart'), {
+        type: 'line',
+        data: {
+            labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+            datasets: [{
+                label: "Sales",
+                data: salesData,
+                borderColor: "#14b8a6",
+                backgroundColor: "rgba(20,184,166,0.2)",
+                fill: true
+            }]
+        }
+    });
+
+    new Chart(document.getElementById('revenueChart'), {
+        type: 'bar',
+        data: {
+            labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+            datasets: [{
+                label: "Revenue",
+                data: revenueData,
+                backgroundColor: "#f59e0b"
+            }]
+        }
+    });
+
+});
+</script>
+
+</body>
+</html>
+
+{% endblock %}

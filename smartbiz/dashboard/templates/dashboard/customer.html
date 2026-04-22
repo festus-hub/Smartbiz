@@ -1,0 +1,47 @@
+{% extends 'dashboard/base.html' %}
+
+{% block content %}
+
+<h2>Customers Management</h2>
+<div class="customer-cards">
+    <div class="card">
+        <h4>Total Customers</h4>
+        <p>{{ total_customers }}</p>
+    </div>
+
+    <div class="card">
+        <h4>New Today</h4>
+        <p>{{ new_customers }}</p>
+    </div>
+</div>
+<br>
+<div class="table-container">
+    <table border="2" cellpadding="10" cellspacing="0">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Phone</th>
+                <th>Email</th>
+                <th>created_at</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for customer in customers %}
+            <tr>
+                <td>{{ customer.id }}</td>
+                <td>{{ customer.name }}</td>
+                <td>{{ customer.phone }}</td>
+                <td>{{ customer.email }}</td>
+                <td>{{ customer.created_at|date:"M d, Y" }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5">No customers found</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

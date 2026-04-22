@@ -1,0 +1,39 @@
+{% extends 'dashboard/base.html' %}
+{% block content %}
+<h2>Add Sale</h2>
+<form method="POST" style="max-width: 500px;">
+    {% csrf_token %}
+
+    <div class="mb-3">
+        <label for="customer_name">Customer Name</label>
+        <input type="text" name="customer_name" id="customer_name" class="form-control" required>
+        <label for="phone_number" class="mt-2">Phone Number</label>
+        <input type="text" name="phone_number" id="phone_number" class="form-control mt-2" required>
+        <label for="email" class="mt-2">Email Address</label>
+        <input type="email" name="email" id="email" class="form-control mt-2" required>
+    </div>
+
+    <div class="mb-3">
+        <label for="product">Select Product</label>
+        <select name="product" id="product" class="form-control" required>
+            <option value="">-- Choose a product --</option>
+            {% for product in products %}
+            <option value="{{ product.id }}">{{ product.name }} - KES {{ product.price }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label for="quantity">Quantity</label>
+        <input type="number" name="quantity" id="quantity" class="form-control" min="1" required>
+    </div>
+
+    <div class="mb-3">
+        <label for="price">Price (KES)</label>
+        <input type="number" name="price" id="price" class="form-control" step="0.01" min="0" required>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save Sale</button>
+    <a href="{% url 'sales' %}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}

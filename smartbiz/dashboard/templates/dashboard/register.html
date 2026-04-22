@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Register - SmartBiz</title>
+
+    <link rel="stylesheet" href="https://bootswatch.com/5/morph/bootstrap.min.css">
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f172a, #3b82f6);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .card-box {
+            width: 420px;
+            background: white;
+            padding: 35px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .title {
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .form-control {
+            padding: 10px;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 10px;
+        }
+
+        .footer-text {
+            text-align: center;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="card-box">
+
+    <h3 class="text-center title"> Create SmartBiz Account</h3>
+
+    <!-- Messages -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-warning">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <div class="mb-3">
+            <input type="text" name="username" class="form-control" placeholder="Username" required>
+        </div>
+
+        <div class="mb-3">
+            <input type="email" name="email" class="form-control" placeholder="Email Address" required>
+        </div>
+
+        <div class="mb-3">
+            <input type="password" name="password" class="form-control" placeholder="Password" required>
+        </div>
+
+        <div class="mb-3">
+            <input type="password" name="confirm_password" class="form-control" placeholder="Confirm Password" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+            Create Account
+        </button>
+    </form>
+
+    <div class="footer-text">
+        Already have an account?
+        <br>
+        <button type="submit" class="btn btn-outline-primary" onclick="window.location.href ='{% url 'login' %}';">LOGIN</button>
+    </div>
+
+</div>
+
+</body>
+</html>     
