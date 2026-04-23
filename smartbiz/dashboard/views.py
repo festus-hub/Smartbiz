@@ -139,7 +139,8 @@ def add_sale(request):
             customer=customer,
             product=product,
             quantity=quantity,
-            price=price
+            price=price,
+            sales=sales
         )
 
         messages.success(request, "Sale added successfully.")
