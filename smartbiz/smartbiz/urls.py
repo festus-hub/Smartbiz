@@ -19,8 +19,9 @@ from django.urls import  path
 from dashboard import views
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.register_view, name='register'),
-    path('/login/', views.login_view, name='login'),
+    path('', views.landing_page, name='landing'),
+    path('register/', views.register_view, name='register'),
+    path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
     path('dashboard/', views.dashboard, name='dashboard'),
     path('payments/', views.payments_view, name='payments'),

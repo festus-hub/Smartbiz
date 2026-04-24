@@ -7,6 +7,9 @@ from django.db.models import Sum
 from .models import Sales, Payment, Customer, User ,Product
 from . import models
 
+def landing_page(request):
+    return render(request, 'dashboard/landing.html')
+
 def login_view(request):
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -19,13 +22,13 @@ def login_view(request):
             return redirect('dashboard') 
         else:
             messages.error(request, "Invalid username or password")
-            return redirect('login')
+            return redirect('register')
 
     return render(request, 'dashboard/login.html')
 
 def logout_view(request):
     logout(request)
-    return redirect('login')
+    return redirect('landing')
 
 
 def register_view(request):
@@ -34,6 +37,8 @@ def register_view(request):
         email = request.POST.get('email')
         password = request.POST.get('password')
         confirm_password = request.POST.get('confirm_password')
+
+        #Tomorrow make sure we have gone through this.
 
         if password != confirm_password:
             messages.error(request, "Passwords do not match")

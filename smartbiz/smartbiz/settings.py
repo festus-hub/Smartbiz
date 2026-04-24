@@ -125,6 +125,6 @@ STATIC_URL = 'static/'
 AUTH_USER_MODEL = 'dashboard.User'
 
 LOGIN_URL = 'login'
-LOGOUT_REDIRECT_URL = 'login'
+LOGOUT_REDIRECT_URL = 'landing'
 LOGIN_REDIRECT_URL = 'dashboard'
 
