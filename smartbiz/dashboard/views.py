@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.db.models import Sum
-from .models import Sales, Payment, Customer, User ,Product
+from .models import Sales, Payment, Customer, User, Product, Expense
 from . import models
 
 def landing_page(request):
@@ -66,19 +66,31 @@ def dashboard(request):
         total=Sum('amount')
     )['total'] or 0
 
+    total_expenses = Expense.objects.aggregate(
+        total=Sum('amount')
+    )['total'] or 0
+
+    profit = total_revenue - total_expenses
+
     monthly_sales = [0] * 12
     monthly_revenue = [0] * 12
+    monthly_expenses = [0] * 12
 
     sales = Sales.objects.all()
     payments = Payment.objects.all()
+    expenses = Expense.objects.all()
 
     for sale in sales:
         month = sale.created_at.month - 1
         monthly_sales[month] += 1
 
     for pay in payments:
-        month = pay.created_at.month - 1
+        month = pay.payment_date.month - 1
         monthly_revenue[month] += float(pay.amount)
+
+    for exp in expenses:
+        month = exp.date.month - 1
+        monthly_expenses[month] += float(exp.amount)
 
     recent_sales = Sales.objects.order_by('-created_at')[:5]
 
@@ -87,8 +99,11 @@ def dashboard(request):
         'total_customers': total_customers,
         'total_products': total_products,
         'total_revenue': total_revenue,
+        'total_expenses': total_expenses,
+        'profit': profit,
         'monthly_sales': monthly_sales,
         'monthly_revenue': monthly_revenue,
+        'monthly_expenses': monthly_expenses,
         'recent_sales': recent_sales
     }
 
@@ -144,8 +159,7 @@ def add_sale(request):
             customer=customer,
             product=product,
             quantity=quantity,
-            price=price,
-            sales=sales
+            price=price
         )
 
         messages.success(request, "Sale added successfully.")
