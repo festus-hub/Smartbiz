@@ -84,25 +84,25 @@
         <div class="col-md-3">
             <div class="card p-3">
                 <h6>Total Revenue</h6>
-                <h3>KES {{ total_revenue }}</h3>
+                <h3>KES {{ total_revenue|floatformat:2 }}</h3>
             </div>
         </div>
         <div class="col-md-3">
             <div class="card p-3">
                 <h6>Expenses</h6>
-                <h3>KES {{ total_expenses }}</h3>
+                <h3>KES {{ total_expenses|floatformat:2 }}</h3>
             </div>
         </div>
         <div class="col-md-3">
             <div class="card p-3">
                 <h6>Profit</h6>
-                <h3>KES {{ profit }}</h3>
+                <h3>KES {{ profit|floatformat:2 }}</h3>
             </div>
         </div>
         <div class="col-md-3">
             <div class="card p-3">
                 <h6>Pending Payments</h6>
-                <h3>{{ pending_payments }}</h3>
+                <td>{{ pending_payments }}</td>
             </div>
         </div>
     </div>
@@ -132,7 +132,8 @@
                     <thead>
                         <tr>
                             <th>Customer</th>
-                            <th>Amount</th>
+                            <th>Price</th>
+                            <th>Product</th>
                             <th>Date</th>
                         </tr>
                     </thead>
@@ -140,8 +141,9 @@
                         {% for sale in recent_sales %}
                         <tr>
                             <td>{{ sale.customer }}</td>
-                            <td>KES {{ sale.amount }}</td>
-                            <td>{{ sale.date }}</td>
+                            <td>KES {{ sale.price }}</td>
+                            <td>{{ sale.product }}</td>
+                            <td>{{ sale.created_at.date }}</td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -166,18 +168,15 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     // Revenue vs Expenses Line Chart
-    const ctx = document.getElementById('lineChart').getContext('2d');
-    const lineChart = new Chart(ctx, {
+    const ctx1 = document.getElementById('lineChart').getContext('2d');
+    const lineChart = new Chart(ctx1, {
         type: 'line',
         data: {
-            labels: [
-                'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-                'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
-            ],
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
             datasets: [
                 {
                     label: 'Revenue',
-                    data: {{ monthly_revenue|safe }},
+                    data: [12000, 15000, 18000, 15000, 22500, 25000, 27000, 3000, 32000, 35000, 45000, 5000],
                     borderColor: 'rgba(54, 162, 235, 1)',
                     backgroundColor: 'rgba(54, 162, 235, 0.2)',
                     fill: true,
@@ -185,7 +184,7 @@
                 },
                 {
                     label: 'Expenses',
-                    data: {{ monthly_expenses|safe }},
+                    data: [8000, 9000, 10000, 11000, 12000, 13000, 14000, 15000, 16000, 17000, 18000, 9000],
                     borderColor: 'rgba(255, 99, 132, 1)',
                     backgroundColor: 'rgba(255, 99, 132, 0.2)',
                     fill: true,
@@ -201,11 +200,55 @@
                 },
                 title: {
                     display: true,
-                    text: 'Revenue vs Expenses (Monthly)'
+                    text: 'Revenue vs Expenses'
                 }
             }
         }
     });
+    // Sales Distribution Pie Chart
+    const ctx2 = document.getElementById('pieChart').getContext('2d');
+    const pieChart = new Chart(ctx2, {
+        type: 'pie',
+        data: {
+            labels: [
+                'Product A',
+                'Product B',
+                'Product C'
+            ],
+            datasets: [
+                {
+                    label: 'Sales Distribution',
+                    data: [30, 40, 30],
+                    backgroundColor: [
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(255, 205, 86, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(255, 205, 86, 1)'
+                    ],
+                    borderWidth: 1
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                title: {
+                    display: true,
+                    text: 'Sales Distribution'
+                }
+            }
+        }
+    });
+
+    //summary cards animation
+  
 </script>
 
 </body>

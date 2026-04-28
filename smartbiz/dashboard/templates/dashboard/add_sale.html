@@ -3,14 +3,14 @@
 <h2>Add Sale</h2>
 <form method="POST" style="max-width: 500px;">
     {% csrf_token %}
-
+<table border="0" cellpadding="10" cellspacing="0">
     <div class="mb-3">
         <label for="customer_name">Customer Name</label>
-        <input type="text" name="customer_name" id="customer_name" class="form-control" required>
+        <input type="text" name="customer_name" id="customer_name" class="form-control" required><br>
         <label for="phone_number" class="mt-2">Phone Number</label>
-        <input type="text" name="phone_number" id="phone_number" class="form-control mt-2" required>
+        <input type="text" name="phone_number" id="phone_number" class="form-control mt-2" required><br>
         <label for="email" class="mt-2">Email Address</label>
-        <input type="email" name="email" id="email" class="form-control mt-2" required>
+        <input type="email" name="email" id="email" class="form-control mt-2" required><br>
     </div>
 
     <div class="mb-3">
@@ -34,6 +34,7 @@
     </div>
 
     <button type="submit" class="btn btn-primary">Save Sale</button>
-    <a href="{% url 'sales' %}" class="btn btn-secondary">Cancel</a>
+    <a href="{% url 'sales' %}" class="btn btn-secondary ">Cancel</a>
 </form>
+
 {% endblock %}

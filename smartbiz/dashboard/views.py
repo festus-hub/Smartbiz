@@ -62,9 +62,9 @@ def dashboard(request):
     total_customers = Customer.objects.count()
     total_products = Product.objects.count()
 
-    total_revenue = Payment.objects.aggregate(
-        total=Sum('amount')
-    )['total'] or 0
+    total_revenue = Payment.objects.filter(amount__isnull=False).aggregate(
+        total=Sum('amount') )['total'] or 0
+      
 
     total_expenses = Expense.objects.aggregate(
         total=Sum('amount')
@@ -94,6 +94,8 @@ def dashboard(request):
 
     recent_sales = Sales.objects.order_by('-created_at')[:5]
 
+    # Pending payments: sales with no associated payment
+    pending_payments = Sales.objects.filter(payments__isnull=True).count()
     context = {
         'total_sales': total_sales,
         'total_customers': total_customers,
@@ -104,7 +106,8 @@ def dashboard(request):
         'monthly_sales': monthly_sales,
         'monthly_revenue': monthly_revenue,
         'monthly_expenses': monthly_expenses,
-        'recent_sales': recent_sales
+        'recent_sales': recent_sales,
+        'pending_payments': pending_payments,
     }
 
     return render(request, 'dashboard/index.html', context)
