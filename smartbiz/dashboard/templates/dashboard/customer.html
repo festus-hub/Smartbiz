@@ -1,47 +1,318 @@
 {% extends 'dashboard/base.html' %}
-
+{% load static %}
 {% block content %}
 
-<h2>Customers Management</h2>
-<div class="customer-cards">
-    <div class="card">
-        <h4>Total Customers</h4>
-        <p>{{ total_customers }}</p>
-    </div>
+<style>
+.customers-page {
+    --surface: #ffffff;
+    --surface-soft: #f8fbff;
+    --border: rgba(148, 163, 184, 0.22);
+    --text: #162033;
+    --muted: #66758f;
+    --shadow: 0 24px 60px rgba(15, 23, 42, 0.08);
+}
 
-    <div class="card">
-        <h4>New Today</h4>
-        <p>{{ new_customers }}</p>
-    </div>
+.customers-page .hero {
+    padding: 28px;
+    border-radius: 28px;
+    color: #ffffff;
+    background:
+        radial-gradient(circle at top right, rgba(125, 211, 252, 0.26), transparent 34%),
+        linear-gradient(135deg, #0f172a 0%, #0f766e 52%, #2563eb 120%);
+    box-shadow: 0 26px 60px rgba(15, 23, 42, 0.18);
+}
+
+.customers-page .hero h1,
+.customers-page .panel-title {
+    font-weight: 800;
+    letter-spacing: -0.02em;
+}
+
+.customers-page .hero p {
+    margin: 0.75rem 0 0;
+    max-width: 56rem;
+    color: rgba(255, 255, 255, 0.82);
+}
+
+.customers-page .hero-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 0.9rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+.customers-page .summary-card,
+.customers-page .panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    box-shadow: var(--shadow);
+}
+
+.customers-page .summary-card {
+    height: 100%;
+    padding: 22px;
+}
+
+.customers-page .summary-card .eyebrow {
+    color: var(--muted);
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+.customers-page .summary-card .value {
+    margin-top: 0.8rem;
+    font-size: 2rem;
+    font-weight: 800;
+    line-height: 1.1;
+}
+
+.customers-page .summary-card .subtle {
+    margin-top: 0.45rem;
+    color: var(--muted);
+}
+
+.customers-page .blue-soft {
+    background: linear-gradient(180deg, #eef5ff 0%, #dbeafe 100%);
+}
+
+.customers-page .teal-soft {
+    background: linear-gradient(180deg, #ecfeff 0%, #c9f2ef 100%);
+}
+
+.customers-page .amber-soft {
+    background: linear-gradient(180deg, #fff7ed 0%, #fde7c7 100%);
+}
+
+.customers-page .panel {
+    padding: 24px;
+}
+
+.customers-page .toolbar {
+    display: flex;
+    gap: 1rem;
+    align-items: end;
+    flex-wrap: wrap;
+    margin-bottom: 1.25rem;
+}
+
+.customers-page .toolbar .form-control {
+    min-height: 48px;
+    border-radius: 14px;
+    border-color: #cbd5e1;
+}
+
+.customers-page .toolbar .form-control:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 0.25rem rgba(37, 99, 235, 0.12);
+}
+
+.customers-page .table thead th {
+    padding: 1rem;
+    color: var(--muted);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.customers-page .table tbody td {
+    padding: 1rem;
+    vertical-align: middle;
+    border-color: rgba(148, 163, 184, 0.14);
+}
+
+.customers-page .table tbody tr:hover {
+    background: #f8fbff;
+}
+
+.customers-page .customer-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+}
+
+.customers-page .avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 14px;
+    display: grid;
+    place-items: center;
+    background: linear-gradient(135deg, #dbeafe, #ecfeff);
+    color: #1d4ed8;
+    font-weight: 800;
+}
+
+.customers-page .meta {
+    color: var(--muted);
+    font-size: 0.88rem;
+}
+
+.customers-page .tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 0.8rem;
+    border-radius: 999px;
+    background: var(--surface-soft);
+    border: 1px solid var(--border);
+    color: #42526b;
+    font-weight: 600;
+}
+
+.customers-page .empty-state {
+    text-align: center;
+    color: var(--muted);
+    padding: 3rem 1rem;
+}
+
+@media (max-width: 768px) {
+    .customers-page .toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}
+</style>
+
+<div class="container-fluid px-4 customers-page">
+    <section class="hero mb-4">
+        <div class="d-flex flex-wrap justify-content-between gap-3 align-items-start">
+            <div>
+                <div class="hero-pill"><i class="bi bi-people-fill"></i> Customer workspace</div>
+                <h1 class="mt-3 mb-0">Manage customer records in a cleaner, faster layout.</h1>
+                <p>Search your contacts, review customer details quickly, and jump into updates or new customer entry with the same dashboard visual style.</p>
+            </div>
+            <a href="{% url 'add_customer' %}" class="btn btn-light d-inline-flex align-items-center gap-2 px-3 py-2 rounded-4 fw-bold">
+                <i class="bi bi-person-plus-fill"></i> Add customer
+            </a>
+        </div>
+    </section>
+
+    <section class="row g-4 mb-4">
+        <div class="col-md-4">
+            <div class="summary-card blue-soft">
+                <div class="eyebrow">Total Customers</div>
+                <div class="value">{{ total_customers }}</div>
+                <div class="subtle">All customer records saved in SmartBiz.</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="summary-card teal-soft">
+                <div class="eyebrow">Active Records</div>
+                <div class="value">{{ active_customers }}</div>
+                <div class="subtle">Current active count based on your backend metrics.</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="summary-card amber-soft">
+                <div class="eyebrow">Showing Now</div>
+                <div class="value">{{ customers|length }}</div>
+                <div class="subtle">Rows currently visible after search filtering.</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel">
+        <div class="d-flex flex-wrap justify-content-between gap-3 align-items-start mb-3">
+            <div>
+                <h2 class="panel-title h4 mb-0">Customer list</h2>
+                <p class="text-muted mt-2 mb-0">Browse saved customers, search by name, and move quickly to edit or delete actions.</p>
+            </div>
+            <a href="{% url 'add_customer' %}" class="btn btn-primary rounded-4 px-3 py-2 fw-bold">
+                <i class="bi bi-plus-lg"></i> New customer
+            </a>
+        </div>
+
+        <form method="get" class="toolbar">
+            <div class="flex-grow-1">
+                <label for="q" class="form-label fw-semibold">Search customers</label>
+                <input
+                    type="text"
+                    id="q"
+                    name="q"
+                    value="{{ query }}"
+                    class="form-control"
+                    placeholder="Search by customer name">
+            </div>
+            <div>
+                <button type="submit" class="btn btn-outline-dark rounded-4 px-4 py-2 fw-bold">Search</button>
+            </div>
+        </form>
+
+        <div class="table-responsive">
+            <table class="table align-middle mb-0" id="customerTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Customer</th>
+                        <th>Phone</th>
+                        <th>Email</th>
+                        <th>Added</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for customer in customers %}
+                    <tr>
+                        <td>#{{ customer.id }}</td>
+                        <td>
+                            <div class="customer-cell">
+                                <div class="avatar">{{ customer.name|slice:":2"|upper }}</div>
+                                <div>
+                                    <div class="fw-bold">{{ customer.name }}</div>
+                                    <div class="meta">Customer profile</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="tag">{{ customer.phone }}</span></td>
+                        <td>{{ customer.email }}</td>
+                        <td>{{ customer.created_at|date:"d M Y" }}</td>
+                        <td>
+                            <div class="d-flex gap-2 flex-wrap">
+                                <button type="button" class="btn btn-sm btn-outline-secondary view-btn">
+                                    View
+                                </button>
+                                <a href="{% url 'edit_customer' customer.id %}" class="btn btn-sm btn-primary">
+                                    Edit
+                                </a>
+                                <button type="button" class="btn btn-sm btn-outline-danger delete-btn" data-id="{{ customer.id }}">
+                                    Delete
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="empty-state">No customers found</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
 </div>
-<br>
-<div class="table-container">
-    <table border="2" cellpadding="10" cellspacing="0">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Phone</th>
-                <th>Email</th>
-                <th>created_at</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for customer in customers %}
-            <tr>
-                <td>{{ customer.id }}</td>
-                <td>{{ customer.name }}</td>
-                <td>{{ customer.phone }}</td>
-                <td>{{ customer.email }}</td>
-                <td>{{ customer.created_at|date:"M d, Y" }}</td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="5">No customers found</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
+
+<script>
+document.addEventListener("click", function(e) {
+    if (e.target.closest(".delete-btn")) {
+        const confirmDelete = confirm("Delete this customer?");
+        if (confirmDelete) {
+            const customerId = e.target.closest(".delete-btn").dataset.id;
+            window.location.href = `/customers/delete/${customerId}/`;
+        }
+    }
+});
+
+document.addEventListener("click", function(e) {
+    if (e.target.closest(".view-btn")) {
+        alert("Customer details page coming soon");
+    }
+});
+</script>
 
 {% endblock %}

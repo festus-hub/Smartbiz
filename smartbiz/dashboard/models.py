@@ -2,15 +2,53 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 
 class User(AbstractUser):
+    SUPER_ADMIN = 'super_admin'
+    BUSINESS_OWNER = 'business_owner'
+    MANAGER = 'manager'
+    CASHIER = 'cashier'
+    EMPLOYEE = 'employee'
+
     ROLE_CHOICES = (
-        ('admin', 'Admin'),
-        ('staff', 'Staff'),
+        (SUPER_ADMIN, 'Super Admin'),
+        (BUSINESS_OWNER, 'Business Owner'),
+        (MANAGER, 'Manager'),
+        (CASHIER, 'Cashier'),
+        (EMPLOYEE, 'Employee'),
     )
-    role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='staff')
+    ROLE_HIERARCHY = {
+        EMPLOYEE: 1,
+        CASHIER: 2,
+        MANAGER: 3,
+        BUSINESS_OWNER: 4,
+        SUPER_ADMIN: 5,
+    }
+    LEGACY_ROLE_MAP = {
+        'admin': BUSINESS_OWNER,
+        'staff': EMPLOYEE,
+    }
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default=EMPLOYEE)
+
+    @property
+    def effective_role(self):
+        if self.is_superuser:
+            return self.SUPER_ADMIN
+        return self.LEGACY_ROLE_MAP.get(self.role, self.role)
+
+    @property
+    def role_label(self):
+        return dict(self.ROLE_CHOICES).get(self.effective_role, 'Employee')
+
+    def role_level(self):
+        return self.ROLE_HIERARCHY.get(self.effective_role, 0)
+
+    def has_minimum_role(self, minimum_role):
+        if self.is_superuser:
+            return True
+        return self.role_level() >= self.ROLE_HIERARCHY.get(minimum_role, 0)
 
 
     def __str__(self):
-           return f"{self.username} ({self.role})"
+           return f"{self.username} ({self.effective_role})"
 class Expense(models.Model):
     CATEGORY_CHOICES = (
         ('operational', 'Operational'),
@@ -69,13 +107,14 @@ class Sales(models.Model):
         created_at = models.DateTimeField(auto_now_add=True)
 
         def __str__(self):
-              return f"sale #{self.id} - {self.price}"
+              return f"sale #{self.id} - {self.total_amount}"
+
+        @property
+        def total_amount(self):
+              return self.quantity * self.price
         
         def calculate_total(self):
-              total = sum(item.subtotal() for item in self.saleitem_set.all())
-              self.total_amount = total
-              self.save()
-              return total
+              return self.total_amount
 
 class SaleItem(models.Model):
         sale = models.ForeignKey(Sales, on_delete=models.CASCADE)
@@ -90,6 +129,14 @@ class SaleItem(models.Model):
               return f"{self.product.name} x {self.quantity}"
 
 class Payment(models.Model):
+        STATUS_PENDING = 'pending'
+        STATUS_SUCCESS = 'success'
+        STATUS_FAILED = 'failed'
+        STATUS_CHOICES = (
+            (STATUS_PENDING, 'Pending'),
+            (STATUS_SUCCESS, 'Success'),
+            (STATUS_FAILED, 'Failed'),
+        )
         PAYMENT_METHODS = (
             ('cash', 'Cash'),
             ('card', 'Card'),
@@ -100,11 +147,17 @@ class Payment(models.Model):
         amount = models.DecimalField(max_digits=10, decimal_places=2)
         payment_method = models.CharField(max_length=50)
         transaction_id = models.CharField(max_length=100, blank=True, null=True)
+        merchant_request_id = models.CharField(max_length=100, blank=True, null=True)
+        checkout_request_id = models.CharField(max_length=100, blank=True, null=True)
+        status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=STATUS_PENDING)
+        result_code = models.CharField(max_length=20, blank=True, null=True)
+        result_description = models.TextField(blank=True, null=True)
+        callback_payload = models.JSONField(blank=True, null=True)
         payment_date = models.DateTimeField(auto_now_add=True)
         phone_number = models.CharField(max_length=20, blank=True, null=True)
 
         def __str__(self):
-              return f"{self.payment_method} - {self.amount}"
+              return f"{self.payment_method} - {self.amount} ({self.status})"
         
 
 class Analytics(models.Model):

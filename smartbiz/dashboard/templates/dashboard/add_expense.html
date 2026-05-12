@@ -1,0 +1,106 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<style>
+.add-expense-page h2 {
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.add-expense-page .card {
+    border-radius: 12px;
+    border: none;
+}
+
+.add-expense-page .card-body {
+    padding: 30px;
+}
+
+.add-expense-page .card-title {
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.add-expense-page input,
+.add-expense-page select,
+.add-expense-page textarea {
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
+.add-expense-page input,
+.add-expense-page select {
+    height: 45px;
+}
+
+.add-expense-page textarea {
+    min-height: 110px;
+    resize: vertical;
+}
+
+.add-expense-page input:focus,
+.add-expense-page select:focus,
+.add-expense-page textarea:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 6px rgba(13, 110, 253, 0.2);
+}
+
+.add-expense-page .btn {
+    border-radius: 8px;
+    padding: 8px 18px;
+}
+
+.add-expense-page .btn-primary {
+    background-color: #0d6efd;
+    border: none;
+}
+
+.add-expense-page .btn-primary:hover {
+    background-color: #8c5ceb;
+}
+</style>
+
+<div class="container-fluid px-4 add-expense-page">
+    <h2 class="mt-4 mb-4">Add Expense</h2>
+
+    <div class="card shadow-sm" style="max-width: 640px;">
+        <div class="card-body">
+            <form method="POST">
+                {% csrf_token %}
+
+                <h5 class="card-title text-primary">Expense Details</h5>
+
+                <div class="mb-3">
+                    <label>Description</label>
+                    <textarea name="description" class="form-control" placeholder="What was this expense for?" required></textarea>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label>Amount</label>
+                        <input type="number" name="amount" class="form-control" step="0.01" min="0.01" required>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label>Category</label>
+                        <select name="category" class="form-select" required>
+                            {% for value, label in categories %}
+                            <option value="{{ value }}">{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end gap-2">
+                    <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">Cancel</a>
+                    <button type="reset" class="btn btn-outline-danger">Reset</button>
+                    <button type="submit" class="btn btn-primary">Save Expense</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

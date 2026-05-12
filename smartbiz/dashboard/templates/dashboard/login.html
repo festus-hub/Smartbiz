@@ -1,92 +1,178 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - SmartBiz</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login - SmartBiz</title>
 
-    <link rel="stylesheet" href="https://bootswatch.com/5/zephyr/bootstrap.min.css">
+<style>
 
-    <style>
-        body {
-            background: linear-gradient(135deg, #1e293b, #3b82f6);
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: #60778d;
+}
 
-        .login-card {
-            width: 380px;
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        }
+/* MAIN CONTAINER */
+.container {
+    display: flex;
+    height: 100vh;
+}
 
-        .login-title {
-            text-align: center;
-            margin-bottom: 20px;
-            font-weight: bold;
-        }
+/* LEFT SIDE */
+.left {
+    width: 40%;
+    background: linear-gradient(135deg, #ab7dca, #7C3AED);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
 
-        .btn-login {
-            width: 100%;
-        }
+.left h1 {
+    font-size: 36px;
+    margin-bottom: 10px;
+}
 
-        .error {
-            color: red;
-            text-align: center;
-            margin-bottom: 10px;
-        }
-    </style>
+/* RIGHT SIDE */
+.right {
+    width: 60%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* CARD */
+.card {
+    width: 400px;
+    background: white;
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.card h2 {
+    margin-bottom: 20px;
+}
+
+/* INPUTS */
+input[type="email"],
+input[type="password"],
+input[type="text"] {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    outline: none;
+}
+
+input:focus {
+    border-color: #3b0202;
+}
+
+/* BUTTON */
+button {
+    width: 100%;
+    padding: 12px;
+    background: #4F46E5;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+button:hover {
+    background: #220202;
+}
+
+/* LINK */
+.link {
+    margin-top: 15px;
+    font-size: 14px;
+}
+
+.link a {
+    color: #4F46E5;
+    text-decoration: none;
+}
+
+/* CHECKBOX */
+.checkbox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 15px;
+}
+.forgot-password{
+    display: inline-block;
+    margin-top: 10px;
+    font-size: 13px;
+    color: #4f46e5;
+    text-decoration: none;
+}
+
+.btn-forgot:hover {
+    text-decoration: underline;
+}
+</style>
+
 </head>
 
 <body>
 
-<div class="login-card">
+<div class="container">
 
-    <h3 class="login-title">SmartBiz Login</h3>
+    <!-- LEFT -->
+    <div class="left">
+                    <img src="{% static 'images/logo2.png' %}" alt="smartBiz Logo" class="logo">
 
-    {% if messages %}
-        {% for message in messages %}
-            <div class="alert alert-warning text-center">
-                {{ message }}
+        <h1>SmartBiz</h1>
+        <p>Manage your business smarter</p>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="right">
+        <div class="card">
+
+            <h2>Welcome Back</h2>
+
+            <form method="POST">
+                {% csrf_token %}
+                
+                <input type="text" name="username"class="form-control" placeholder="Username" required>
+
+                <input type="password" id="password" name="password" placeholder="Password" required>
+
+                
+
+                <div class="checkbox">
+                    <input type="checkbox" onclick="togglePassword()">
+                    <label>Show Password</label>
+                </div>
+
+                <button type="submit">Login</button><br>
+                <div class="forgot-password">
+                        <a href="{% url 'password_reset' %}">
+                             Forgot Password?
+                         </a>
+                </div>
+
+            </form>
+
+            <div class="link">
+                Don’t have an account?
+                <a href="{% url 'register' %}">Register</a>
             </div>
-        {% endfor %}
-    {% endif %}
 
-    {% if error %}
-        <div class="error">{{ error }}</div>
-    {% endif %}
-
-    <form method="post">
-        {% csrf_token %}
-
-       <div class="mb-3">
-    <input type="text" name="username" class="form-control"
-           placeholder="Username" required>
+        </div>
     </div>
-
-    <div class="mb-3">
-    <input type="password" name="password" id="password"
-           class="form-control" placeholder="Password" required>
-</div>
-
-        <div>
-    <input type="checkbox" id="show-password" onclick="togglePassword()">
-    <label for="show-password">Show Password</label>
-    </div>
-
-        <button type="submit" class="btn btn-primary btn-login">
-            Login
-        </button>
-    </form>
 
 </div>
 
-</body>
-</html>
 <script>
 function togglePassword() {
     const passwordField = document.getElementById("password");
@@ -98,3 +184,6 @@ function togglePassword() {
     }
 }
 </script>
+
+</body>
+</html>

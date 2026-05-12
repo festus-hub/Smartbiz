@@ -1,68 +1,157 @@
+{% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Register - SmartBiz</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Register - SmartBiz</title>
 
-    <link rel="stylesheet" href="https://bootswatch.com/5/morph/bootstrap.min.css">
+<style>
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, rgb(105, 139, 133),rgb(128, 128, 128));
 
-    <style>
-        body {
-            background: linear-gradient(135deg, #4e0c77, #3b82f6);
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+}
 
-        .card-box {
-            width: 420px;
-            background: white;
-            padding: 35px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        }
+/* LAYOUT */
+.container {
+    display: flex;
+    height: 100vh;
+}
 
-        .title {
-            font-weight: bold;
-            margin-bottom: 20px;
-        }
+/* LEFT SIDE */
+.left {
+    width: 40%;
+    background: linear-gradient(135deg, #efbc87, #7C3AED);
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
 
-        .form-control {
-            padding: 10px;
-        }
+/* RIGHT SIDE */
+.right {
+    width: 60%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
-        .btn-primary {
-            width: 100%;
-            padding: 10px;
-        }
+/* CARD */
+.card {
+    width: 420px;
+    background: white;
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
 
-        .footer-text {
-            text-align: center;
-            margin-top: 15px;
-        }
-    </style>
+/* INPUTS */
+input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 12px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    outline: none;
+}
+
+input:focus {
+    border-color: #4F46E5;
+}
+
+/* BUTTONS */
+.btn-primary {
+    width: 100%;
+    padding: 12px ;
+    background: #4F46E5;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+    margin-top: 10px;
+}
+
+.btn-primary:hover {
+    background: #0b1411;
+}
+
+.btn-secondary {
+    width: 100%;
+    padding: 10px ;
+    background: transparent;
+    color: #4F46E5;
+    border: 2px solid #4F46E5;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+    margin-top: 10px;
+}
+
+.btn-secondary:hover {
+    background: #170216;
+    color: rgb(128, 162, 220);
+}
+
+/* MESSAGES */
+.message {
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.error {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+.success {
+    background: #dcfce7;
+    color: #166534;
+}
+
+</style>
+
 </head>
 
 <body>
 
-<div class="card-box">
+<div class="container">
 
-    <h3 class="text-center title"> Create SmartBiz Account</h3>
+    <!-- LEFT -->
+    <div class="left">
+        <div>
+            <img src="{% static 'images/logo2.png' %}" alt="smartBiz Logo" class="logo">
+            <h1>SmartBiz</h1>
+            <p>Create your business account</p>
+        </div>
+    </div>
 
-    <!-- Messages -->
-    {% if messages %}
-        {% for message in messages %}
-            <div class="alert alert-warning">
-                {{ message }}
-            </div>
-        {% endfor %}
-    {% endif %}
+    <!-- RIGHT -->
+    <div class="right">
 
-    <form method="POST">
-        {% csrf_token %}
+        <div class="card">
+            
+            <h2>Create Account</h2>
 
-        <div class="mb-3">
-            <input type="text" name="username" class="form-control" placeholder="Username" required>
+            <!-- DJANGO MESSAGES -->
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="message {% if message.tags %}{{ message.tags }}{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <form method="POST">
+                {% csrf_token %}
+
+                  <div class="mb-3">
+            <input type="text" name="username" class="form-control" placeholder="Full Name" required>
         </div>
 
         <div class="mb-3">
@@ -77,18 +166,26 @@
             <input type="password" name="confirm_password" class="form-control" placeholder="Confirm Password" required>
         </div>
 
-        <button type="submit" class="btn btn-primary">
-            Create Account
-        </button>
-    </form>
+                
 
-    <div class="footer-text">
-        Already have an account?
-        <br>
-        <button type="submit" class="btn btn-outline-primary" onclick="window.location.href ='{% url 'login' %}';">LOGIN</button>
+                <!-- CREATE ACCOUNT -->
+                <button type="submit" class="btn-primary">
+                    Create Account
+                </button>
+            </form>
+
+            <!-- LOGIN BUTTON -->
+            <a href="{% url 'login' %}">
+                <button class="btn-secondary">
+                    Login Instead
+                </button>
+            </a>
+
+        </div>
+
     </div>
 
 </div>
 
 </body>
-</html>     
+</html>

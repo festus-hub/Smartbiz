@@ -11,10 +11,12 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 import os
+from importlib.util import find_spec
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+HAS_DRF_SPECTACULAR = find_spec('drf_spectacular') is not None
 
 
 # Quick-start development settings - unsuitable for production
@@ -41,8 +43,11 @@ INSTALLED_APPS = [
     'dashboard',
     "crispy_forms",
     "crispy_bootstrap5",
-    
+    'rest_framework',
 ]
+
+if HAS_DRF_SPECTACULAR:
+    INSTALLED_APPS.append('drf_spectacular')
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
@@ -62,7 +67,7 @@ ROOT_URLCONF = 'smartbiz.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR/'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -123,13 +128,57 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 20,
+}
+
+if HAS_DRF_SPECTACULAR:
+    REST_FRAMEWORK['DEFAULT_SCHEMA_CLASS'] = 'drf_spectacular.openapi.AutoSchema'
+
+
 AUTH_USER_MODEL = 'dashboard.User'
 
 LOGIN_URL = 'login'
 LOGOUT_REDIRECT_URL = 'landing'
 LOGIN_REDIRECT_URL = 'dashboard'
 
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static')]
+PROJECT_STATIC_DIR = BASE_DIR / 'static'
+
+STATICFILES_DIRS = [PROJECT_STATIC_DIR] if PROJECT_STATIC_DIR.exists() else []
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+EMAIL_HOST_USER = 'festuskipchirchir15@gmail.com'
+EMAIL_HOST_PASSWORD = 'oufljeuknfpfmwjr'
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+MPESA_ENV = os.environ.get('MPESA_ENV', 'sandbox')
+MPESA_CONSUMER_KEY = os.environ.get('MPESA_CONSUMER_KEY', 'zyf22CG0suhcx2z8mvruUauQ5EsAqTY7DGL91CRjWgrQzBRC')
+MPESA_CONSUMER_SECRET = os.environ.get('MPESA_CONSUMER_SECRET', '7SThoERwBcOYmIEnnA5iKBGL5yJ5OspDq2hbEOZaQgkLryX6R91yGPcVt1uLAr7v')
+MPESA_SHORTCODE = os.environ.get('MPESA_SHORTCODE', '174379')
+MPESA_PASSKEY = os.environ.get('MPESA_PASSKEY', 'bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919')
+MPESA_TRANSACTION_TYPE = os.environ.get('MPESA_TRANSACTION_TYPE', 'CustomerPayBillOnline')
+MPESA_CALLBACK_URL = os.environ.get('MPESA_CALLBACK_URL', 'https://16c6-196-207-175-179.ngrok-free.app')
+
+
+if HAS_DRF_SPECTACULAR:
+    SPECTACULAR_SETTINGS = {
+        'TITLE': 'SmartBiz API',
+        'DESCRIPTION': 'API documentation for your project',
+        'VERSION': '1.0.0',
+        'SERVE_INCLUDE_SCHEMA': False,
+    }

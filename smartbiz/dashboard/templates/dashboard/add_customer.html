@@ -1,0 +1,170 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% block content %}
+
+<style>
+.add-customer-page {
+    --surface: #ffffff;
+    --border: rgba(148, 163, 184, 0.22);
+    --muted: #66758f;
+    --shadow: 0 24px 60px rgba(15, 23, 42, 0.08);
+}
+
+.add-customer-page .hero {
+    padding: 28px;
+    border-radius: 28px;
+    color: #ffffff;
+    background:
+        radial-gradient(circle at top right, rgba(167, 243, 208, 0.22), transparent 34%),
+        linear-gradient(135deg, #0f172a 0%, #0f766e 52%, #2563eb 120%);
+    box-shadow: 0 26px 60px rgba(15, 23, 42, 0.18);
+}
+
+.add-customer-page .hero h1,
+.add-customer-page .section-title {
+    font-weight: 800;
+    letter-spacing: -0.02em;
+}
+
+.add-customer-page .hero p {
+    margin: 0.75rem 0 0;
+    max-width: 56rem;
+    color: rgba(255, 255, 255, 0.82);
+}
+
+.add-customer-page .hero-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 0.9rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+.add-customer-page .panel,
+.add-customer-page .summary-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    box-shadow: var(--shadow);
+}
+
+.add-customer-page .panel {
+    padding: 24px;
+}
+
+.add-customer-page .summary-card {
+    padding: 22px;
+    background: linear-gradient(180deg, #ecfeff 0%, #c9f2ef 100%);
+}
+
+.add-customer-page .summary-card h3 {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    font-weight: 700;
+}
+
+.add-customer-page .summary-card .value {
+    font-size: 2rem;
+    font-weight: 800;
+    line-height: 1.1;
+}
+
+.add-customer-page .summary-card .subtle,
+.add-customer-page .section-copy {
+    color: var(--muted);
+}
+
+.add-customer-page .form-label {
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.add-customer-page .form-control {
+    min-height: 50px;
+    border-radius: 14px;
+    border: 1px solid #cbd5e1;
+}
+
+.add-customer-page .form-control:focus {
+    border-color: #0f766e;
+    box-shadow: 0 0 0 0.25rem rgba(15, 118, 110, 0.12);
+}
+
+.add-customer-page .alert {
+    border-radius: 16px;
+}
+</style>
+
+<div class="container-fluid px-4 add-customer-page">
+    <section class="hero mb-4">
+        <div class="d-flex flex-wrap justify-content-between gap-3 align-items-start">
+            <div>
+                <div class="hero-pill"><i class="bi bi-person-plus-fill"></i> Customer creation</div>
+                <h1 class="mt-3 mb-0">Add a customer with the same cleaner experience.</h1>
+                <p>Save the customer details your backend actually uses today: name, phone number, and email address.</p>
+            </div>
+            <a href="{% url 'customers' %}" class="btn btn-light rounded-4 px-3 py-2 fw-bold d-inline-flex align-items-center gap-2">
+                <i class="bi bi-arrow-left"></i> Back to customers
+            </a>
+        </div>
+    </section>
+
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="panel">
+                <h2 class="section-title h4 mb-2">Create customer</h2>
+                <p class="section-copy mb-4">This form stores the core customer record used across sales and payments.</p>
+
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-success mb-4">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+
+                <form method="POST">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label class="form-label">Full name</label>
+                        <input type="text" name="name" class="form-control" placeholder="Enter customer name" required>
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Phone number</label>
+                            <input type="text" name="phone" class="form-control" placeholder="+254712345678" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Email address</label>
+                            <input type="email" name="email" class="form-control" placeholder="customer@example.com" required>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2 flex-wrap mt-4">
+                        <a href="{% url 'customers' %}" class="btn btn-outline-secondary rounded-4 px-3 py-2">Cancel</a>
+                        <button type="submit" class="btn btn-primary rounded-4 px-4 py-2 fw-bold">
+                            <i class="bi bi-check-circle"></i> Save customer
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="summary-card">
+                <h3>Record fields</h3>
+                <div class="value">3</div>
+                <div class="subtle mt-2">Customers are created from name, phone, and email so the page now matches the backend exactly.</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

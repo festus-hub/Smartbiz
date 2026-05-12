@@ -4,275 +4,1393 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SmartBiz Management</title>
+<title>SmartBiz | Run Your Business With Clarity</title>
+<meta name="description" content="SmartBiz helps growing businesses manage sales, customers, payments, and reports from one clean dashboard.">
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
 <style>
+:root {
+    --sb-bg: #f4efe8;
+    --sb-surface: rgba(255, 255, 255, 0.72);
+    --sb-surface-strong: #ffffff;
+    --sb-text: #1f2937;
+    --sb-text-soft: #5f6b7a;
+    --sb-navy: #17324d;
+    --sb-navy-deep: #0f2235;
+    --sb-gold: #f0b44c;
+    --sb-coral: #e47c63;
+    --sb-mint: #b6e1d2;
+    --sb-border: rgba(23, 50, 77, 0.12);
+    --sb-shadow: 0 24px 60px rgba(20, 33, 55, 0.12);
+}
 
-/* GLOBAL */
 html {
     scroll-behavior: smooth;
 }
 
 body {
     margin: 0;
-    font-family: 'Segoe UI', sans-serif;
+    font-family: "Manrope", Arial;
+    color: var(--sb-text);
+    background:
+        radial-gradient(circle at top left, rgba(240, 180, 76, 0.22), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(180, 225, 210, 0.28), transparent 32%),
+        linear-gradient(180deg, #fcfaf7 0%, #f4efe8 52%, #efe7dc 100%);
 }
 
-/* BACKGROUND WITH OVERLAY */
-.hero-bg {
-    background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.7)),
-                url("{% static 'images/smartbiz.jpg' %}");
-    background-size: cover;
-    background-position: center;
-    height: 100vh;
-    color: white;
+a {
+    text-decoration: none;
 }
 
-/* NAVBAR */
+img {
+    max-width: 100%;
+    display: block;
+}
+
+.section {
+    padding: 96px 0;
+}
+
+.section-heading {
+    max-width: 640px;
+    margin: 0 auto 52px;
+    text-align: center;
+}
+
+.eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: rgba(23, 50, 77, 0.08);
+    color: var(--sb-navy);
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.eyebrow::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--sb-coral);
+}
+
+.section-heading h2 {
+    margin: 18px 0 14px;
+    font-size: clamp(2rem, 4vw, 3.4rem);
+    font-weight: 800;
+    line-height: 1.06;
+}
+
+.section-heading p {
+    margin: 0;
+    color: var(--sb-text-soft);
+    font-size: 1.02rem;
+    line-height: 1.75;
+}
+
 .navbar {
-    padding: 15px 40px;
-    background: transparent;
-    
+    padding: 18px 0;
+    background: rgba(15, 34, 53, 0.76);
+    backdrop-filter: blur(18px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .navbar-brand {
-    font-weight: bold;
-    font-size: 24px;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #fff !important;
+    letter-spacing: 0.02em;
 }
+
+.navbar-brand img {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    object-fit: cover;
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.18);
+}
+
+.navbar-toggler {
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    padding: 8px 12px;
+}
+
+.navbar-toggler:focus {
+    box-shadow: none;
+}
+
 
 
 .nav-link {
-    color: rgb(28, 38, 230) !important;
-    margin-left: 20px;
-    font-size: 40px;
+    color: rgba(255, 255, 255, 0.78) !important;
+    font-weight: 600;
+    margin-left: 18px;
+    transition: color 0.25s ease, transform 0.25s ease;
 }
 
-.nav-link:hover {
-    color: #df1c1c !important;
+.nav-link:hover,
+.nav-link:focus {
+    color: #fff !important;
+    transform: translateY(-1px);
+}
+
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.btn-login,
+.btn-signup,
+.btn-primary-custom,
+.btn-ghost {
+    border-radius: 999px;
+    font-weight: 700;
+    padding: 13px 24px;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease, color 0.25s ease;
+}
+
+.btn-login {
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.26);
+    background: transparent;
+}
+
+.btn-login:hover,
+.btn-login:focus {
+    color: var(--sb-navy);
+    background: #fff;
+    transform: translateY(-2px);
+}
+
+.btn-signup,
+.btn-primary-custom {
+    color: var(--sb-navy);
+    background: linear-gradient(135deg, #ffd38b, var(--sb-gold));
+    border: none;
+    box-shadow: 0 18px 34px rgba(240, 180, 76, 0.28);
+}
+
+.btn-signup:hover,
+.btn-primary-custom:hover,
+.btn-signup:focus,
+.btn-primary-custom:focus {
+    color: var(--sb-navy);
+    transform: translateY(-3px);
+    box-shadow: 0 22px 40px rgba(228, 124, 99, 0.22);
+}
+
+.btn-ghost {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.btn-ghost:hover,
+.btn-ghost:focus {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.16);
+    transform: translateY(-3px);
+}
+
+.hero {
+    position: relative;
+    min-height: 100vh;
+    padding: 160px 0 110px;
+    overflow: hidden;
+    color: #fff;
+    background:
+        linear-gradient(130deg, rgba(10, 24, 38, 0.94), rgba(19, 50, 77, 0.84)),
+        url("{% static 'images/smartbiz.png' %}") center/cover no-repeat;
+}
+
+.hero::before,
+.hero::after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(8px);
+}
+
+.hero::before {
+    width: 340px;
+    height: 340px;
+    top: 80px;
+    right: -60px;
+    background: rgba(240, 180, 76, 0.18);
+}
+
+.hero::after {
+    width: 260px;
+    height: 260px;
+    bottom: 40px;
+    left: -80px;
+    background: rgba(182, 225, 210, 0.18);
+}
+
+.hero-copy {
+    position: relative;
+    z-index: 1;
     
 }
 
-/* HERO */
-.hero-content {
-    height: 100%;
+.hero-copy h1 {
+    margin: 22px 0 18px;
+    font-size: clamp(2.9rem, 6vw, 5rem);
+    font-weight: 800;
+    line-height: 0.98;
+    letter-spacing: -0.04em;
+}
+
+.hero-copy p {
+    max-width: 600px;
+    margin: 0 0 34px;
+    color: rgba(255, 255, 255, 0.82);
+    font-size: 1.1rem;
+    line-height: 1.8;
+}
+
+.hero-actions {
     display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 44px;
 }
 
-.hero-content h1 {
-    font-size: 55px;
-    font-weight: bold;
+.hero-metrics {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+    max-width: 640px;
 }
 
-.hero-content p {
-    font-size: 18px;
-    margin-top: 10px;
+.metric-card {
+    padding: 20px 18px;
+    border-radius: 22px;
+    background: rgba(255, 255, 255, 0.09);
+    backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 255, 255, 0.11);
+    box-shadow: 0 18px 45px rgba(7, 16, 28, 0.18);
 }
 
-/* BUTTON */
-.btn-custom {
-    background: #00d4ff;
-    border: none;
-    padding: 12px 25px;
+.metric-card strong {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 1.8rem;
+    font-weight: 800;
+}
+
+.metric-card span {
+    color: rgba(255, 255, 255, 0.74);
+    font-size: 0.95rem;
+}
+
+.hero-panel {
+    position: relative;
+    z-index: 1;
+    margin-top: 28px;
+}
+
+.dashboard-preview {
+    background: rgba(255, 255, 255, 0.96);
     border-radius: 30px;
-    margin-top: 20px;
-    color: white;
-    transition: 0.3s;
+    padding: 22px;
+    box-shadow: 0 32px 80px rgba(6, 16, 28, 0.28);
+    color: var(--sb-text);
 }
 
-.btn-custom:hover {
-    background: #009ec3;
+.preview-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 22px;
 }
 
-/* SECTIONS */
-.section {
-    padding: 80px 20px;
-    text-align: center;
+.preview-dots {
+    display: flex;
+    gap: 8px;
 }
 
-/* ABOUT */
-#about {
-    background: #f8f9fa;
+.preview-dots span {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #d0d8df;
 }
 
-/* FEATURES */
-.feature-box {
-    padding: 30px;
-    border-radius: 15px;
-    background: white;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-    transition: 0.3s;
+.preview-pill {
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: rgba(23, 50, 77, 0.08);
+    color: var(--sb-navy);
+    font-size: 0.82rem;
+    font-weight: 700;
 }
 
-.feature-box:hover {
-    transform: translateY(-10px);
+.preview-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 18px;
 }
 
-/* CTA */
-#cta {
-    background: linear-gradient(to right, #667eea, #764ba2);
-    color: white;
-}
-
-/* FOOTER */
-footer {
-    background: #111;
-    color: white;
+.preview-card,
+.preview-chart,
+.preview-list {
+    border-radius: 24px;
+    background: linear-gradient(180deg, #ffffff 0%, #f6f8fb 100%);
+    border: 1px solid rgba(23, 50, 77, 0.08);
     padding: 20px;
-    text-align: center;
-}
-#contact {
-    background: #f8f9fa;
-}
-#contact h2 {
-    font-weight: bold;
-}
-#contact.form-control {
-    padding: 12px;
-    border-radius: 10px;
-}
-#contact.btn-custom{
-    border-radius: 25px;
 }
 
+.preview-card h3,
+.preview-chart h3,
+.preview-list h3 {
+    margin: 0 0 14px;
+    font-size: 1rem;
+    font-weight: 800;
+}
 
+.preview-stats {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.mini-stat {
+    padding: 16px;
+    border-radius: 20px;
+    background: #fff;
+    border: 1px solid rgba(23, 50, 77, 0.08);
+}
+
+.mini-stat span {
+    display: block;
+    color: var(--sb-text-soft);
+    font-size: 0.84rem;
+}
+
+.mini-stat strong {
+    display: block;
+    margin-top: 10px;
+    font-size: 1.35rem;
+    color: var(--sb-navy);
+}
+
+.chart-bars {
+    display: flex;
+    align-items: end;
+    gap: 12px;
+    height: 180px;
+    padding-top: 18px;
+}
+
+.chart-bars span {
+    flex: 1;
+    border-radius: 16px 16px 6px 6px;
+    background: linear-gradient(180deg, var(--sb-coral), var(--sb-gold));
+}
+
+.chart-bars span:nth-child(2n) {
+    background: linear-gradient(180deg, var(--sb-navy), #32628d);
+}
+
+.preview-list ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.preview-list li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 0;
+    border-bottom: 1px solid rgba(23, 50, 77, 0.08);
+}
+
+.preview-list li:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.preview-list small {
+    display: block;
+    color: var(--sb-text-soft);
+}
+
+.preview-tag {
+    padding: 7px 12px;
+    border-radius: 999px;
+    background: rgba(182, 225, 210, 0.45);
+    color: var(--sb-navy);
+    font-size: 0.78rem;
+    font-weight: 700;
+}
+
+.trust-strip {
+    margin-top: -48px;
+    position: relative;
+    z-index: 2;
+}
+
+.trust-card {
+    padding: 26px 28px;
+    border-radius: 28px;
+    background: rgba(255, 255, 255, 0.84);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.48);
+    box-shadow: var(--sb-shadow);
+}
+
+.trust-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr 1fr 1fr;
+    gap: 18px;
+    align-items: center;
+}
+
+.trust-intro h3 {
+    margin: 0 0 8px;
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--sb-navy);
+}
+
+.trust-intro p,
+.trust-stat span {
+    margin: 0;
+    color: var(--sb-text-soft);
+}
+
+.trust-stat {
+    padding-left: 22px;
+    border-left: 1px solid rgba(23, 50, 77, 0.12);
+}
+
+.trust-stat strong {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 1.55rem;
+    color: var(--sb-navy);
+}
+
+.about-panel {
+    background: rgba(255, 255, 255, 0.72);
+    border: 1px solid var(--sb-border);
+    border-radius: 32px;
+    box-shadow: var(--sb-shadow);
+    overflow: hidden;
+}
+
+.about-copy {
+    padding: 42px;
+}
+
+.about-copy h3 {
+    margin: 0 0 20px;
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--sb-navy);
+}
+
+.about-copy p {
+    color: var(--sb-text-soft);
+    line-height: 1.85;
+    margin-bottom: 18px;
+}
+
+.about-points {
+    display: grid;
+    gap: 14px;
+    margin-top: 28px;
+}
+
+.about-point {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+}
+
+.about-point i {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 14px;
+    background: rgba(228, 124, 99, 0.14);
+    color: var(--sb-coral);
+    font-size: 1.1rem;
+}
+
+.about-visual {
+    min-height: 100%;
+    padding: 28px;
+    background: linear-gradient(180deg, rgba(23, 50, 77, 0.98), rgba(37, 77, 111, 0.95));
+    color: #fff;
+}
+
+.about-visual-card {
+    height: 100%;
+    border-radius: 26px;
+    padding: 28px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.about-visual-card h4 {
+    margin: 0 0 12px;
+    font-size: 1.35rem;
+    font-weight: 800;
+}
+
+.about-visual-card p {
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.8;
+}
+
+.insight-stack {
+    display: grid;
+    gap: 14px;
+    margin-top: 28px;
+}
+
+.insight-chip {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 18px;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.insight-chip strong {
+    font-size: 1rem;
+}
+
+.features-band {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.26));
+}
+
+.feature-card {
+    height: 100%;
+    padding: 30px;
+    border-radius: 28px;
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(23, 50, 77, 0.08);
+    box-shadow: 0 22px 44px rgba(21, 35, 57, 0.08);
+    transition: transform 0.28s ease, box-shadow 0.28s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 28px 52px rgba(21, 35, 57, 0.12);
+}
+
+.feature-icon {
+    width: 68px;
+    height: 68px;
+    border-radius: 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 24px;
+    background: linear-gradient(135deg, rgba(240, 180, 76, 0.24), rgba(228, 124, 99, 0.18));
+}
+
+.feature-icon img {
+    width: 86px;
+    height: 66px;
+    object-fit: contain;
+}
+
+.feature-card h3 {
+    margin: 0 0 12px;
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: var(--sb-navy);
+}
+
+.feature-card p {
+    margin: 0 0 18px;
+    color: var(--sb-text-soft);
+    line-height: 1.75;
+    
+}
+
+.feature-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--sb-coral);
+    font-weight: 700;
+}
+
+.feature-link i {
+    transition: transform 0.25s ease;
+}
+
+.feature-card:hover .feature-link i {
+    transform: translateX(4px);
+}
+
+.showcase-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 26px;
+}
+
+.showcase-card {
+    height: 100%;
+    padding: 30px;
+    border-radius: 30px;
+    border: 1px solid var(--sb-border);
+    box-shadow: var(--sb-shadow);
+}
+
+.showcase-card.primary {
+    background: linear-gradient(135deg, #17324d,red);
+    color: #fff;
+}
+
+.showcase-card.secondary {
+    background: rgba(255, 255, 255, 0.82);
+}
+
+.showcase-card h3 {
+    margin: 0 0 14px;
+    font-size: 1.55rem;
+    font-weight: 800;
+}
+
+.showcase-card p {
+    margin: 0;
+    line-height: 1.8;
+}
+
+.showcase-list {
+    list-style: none;
+    padding: 0;
+    margin: 26px 0 0;
+}
+
+.showcase-list li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.showcase-list i {
+    color: var(--sb-gold);
+}
+
+.timeline {
+    display: grid;
+    gap: 18px;
+    margin-top: 24px;
+}
+
+.timeline-step {
+    padding: 18px 20px;
+    border-radius: 20px;
+    background: rgba(23, 50, 77, 0.05);
+}
+
+.timeline-step strong {
+    display: block;
+    margin-bottom: 6px;
+    color: var(--sb-navy);
+}
+
+.cta-shell {
+    border-radius: 36px;
+    padding: 52px;
+    background:
+        radial-gradient(circle at top right, rgba(240, 180, 76, 0.26), transparent 24%),
+        linear-gradient(135deg, #16314c, #274f75);
+    color: #fff;
+    box-shadow: 0 30px 70px rgba(15, 34, 53, 0.26);
+}
+
+.cta-shell h2 {
+    margin: 0 0 14px;
+    font-size: clamp(2rem, 4vw, 3.1rem);
+    font-weight: 800;
+}
+
+.cta-shell p {
+    margin: 0;
+    max-width: 640px;
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.8;
+}
+
+.cta-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 28px;
+}
+
+.contact-section {
+    position: relative;
+}
+
+.contact-card {
+    height: 100%;
+    padding: 34px;
+    border-radius: 30px;
+    background: rgba(255, 255, 255, 0.82);
+    border: 1px solid var(--sb-border);
+    box-shadow: var(--sb-shadow);
+}
+
+.contact-card h3 {
+    margin: 0 0 12px;
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--sb-navy);
+}
+
+.contact-card > p {
+    margin-bottom: 28px;
+    color: var(--sb-text-soft);
+    line-height: 1.8;
+}
+
+.contact-item {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    padding: 18px 0;
+    border-bottom: 1px solid rgba(23, 50, 77, 0.08);
+}
+
+.contact-item:last-of-type {
+    border-bottom: none;
+}
+
+.contact-item i {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 46px;
+    border-radius: 16px;
+    background: rgba(240, 180, 76, 0.18);
+    color: var(--sb-coral);
+    font-size: 1.15rem;
+}
+
+.contact-item small {
+    display: block;
+    color: var(--sb-text-soft);
+    margin-bottom: 4px;
+}
+
+.contact-item p {
+    margin: 0;
+    font-weight: 700;
+}
+
+.response-note {
+    margin-top: 26px;
+    padding: 16px 18px;
+    border-radius: 18px;
+    background: rgba(23, 50, 77, 0.05);
+    color: var(--sb-text-soft);
+}
+
+.form-label {
+    font-weight: 700;
+    color: var(--sb-navy);
+}
+
+.form-control {
+    border-radius: 18px;
+    padding: 14px 16px;
+    border: 1px solid rgba(23, 50, 77, 0.12);
+    background: rgba(255, 255, 255, 0.92);
+    color: var(--sb-text);
+}
+
+.form-control:focus {
+    border-color: rgba(228, 124, 99, 0.55);
+    box-shadow: 0 0 0 0.18rem rgba(228, 124, 99, 0.12);
+}
+
+.btn-send {
+    width: 100%;
+    border: none;
+    color: #fff;
+    background: linear-gradient(135deg, var(--sb-coral), #d15b48);
+    box-shadow: 0 18px 32px rgba(228, 124, 99, 0.24);
+}
+
+.btn-send:hover,
+.btn-send:focus {
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 22px 38px rgba(228, 124, 99, 0.28);
+}
+
+footer {
+    padding: 28px 0 40px;
+    color: var(--sb-text-soft);
+}
+
+.footer-shell {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    padding-top: 28px;
+    border-top: 1px solid rgba(23, 50, 77, 0.1);
+}
+
+.footer-links {
+    display: flex;
+    gap: 18px;
+    flex-wrap: wrap;
+}
+
+.footer-links a {
+    color: var(--sb-text-soft);
+    font-weight: 600;
+}
+
+.footer-links a:hover,
+.footer-links a:focus {
+    color: var(--sb-navy);
+}
+
+@media (max-width: 991.98px) {
+    .navbar-collapse {
+        margin-top: 18px;
+        padding: 20px;
+        border-radius: 24px;
+        background: rgba(15, 34, 53, 0.96);
+    }
+
+    .nav-link {
+        margin: 0 0 10px;
+    }
+
+    .nav-actions {
+        margin-top: 16px;
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .hero {
+        padding-top: 140px;
+    }
+
+    .preview-grid,
+    .trust-grid,
+    .showcase-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .trust-stat {
+        padding-left: 0;
+        border-left: 0;
+        padding-top: 16px;
+        border-top: 1px solid rgba(23, 50, 77, 0.12);
+    }
+}
+
+@media (max-width: 767.98px) {
+    .section {
+        padding: 74px 0;
+    }
+
+    .hero {
+        min-height: auto;
+        padding: 132px 0 84px;
+    }
+
+    .hero-copy h1 {
+        line-height: 1.04;
+    }
+
+    .hero-metrics,
+    .preview-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-preview,
+    .about-copy,
+    .about-visual,
+    .feature-card,
+    .showcase-card,
+    .cta-shell,
+    .contact-card,
+    .trust-card {
+        padding: 24px;
+    }
+
+    .footer-shell {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
 </style>
 </head>
 
 <body>
 
-<!-- NAVBAR -->
 <nav class="navbar navbar-expand-lg fixed-top">
     <div class="container">
-        <a class="navbar-brand text-blue ">SmartBiz</a>
+        <a class="navbar-brand" href="#home">
+            <img src="{% static 'images/logo2.png' %}" alt="SmartBiz logo">
+            <span>SmartBiz</span>
+        </a>
 
-        <div class="collapse navbar-collapse" id="nav">
-            <ul class="navbar-nav ms-auto">
-                <li><a class="nav-link" href="#home">Home</a></li>
-                <li><a class="nav-link" href="#about">About</a></li>
-                <li><a class="nav-link" href="#features">Features</a></li>
-                <li><a class="nav-link" href="#contact">Contact</a></li>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu" aria-controls="navMenu" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navMenu">
+            <ul class="navbar-nav ms-auto align-items-lg-center">
+                <li class="nav-item"><a class="nav-link" href="#home">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+                <li class="nav-item"><a class="nav-link" href="#features">Features</a></li>
+                <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
             </ul>
+
+            <div class="nav-actions ms-lg-4">
+                <a href="{% url 'login' %}" class="btn btn-login">
+                    <i class="bi bi-box-arrow-in-right"></i> Login
+                </a>
+                <a href="{% url 'register' %}" class="btn btn-signup">
+                    <i class="bi bi-stars"></i> Get Started
+                </a>
+            </div>
         </div>
     </div>
 </nav>
-<!-- HERO -->
-<section id="home" class="hero-bg">
-    <div class="hero-content">
-        <h1>SmartBiz Management</h1>
-        <p>All-in-one solution to manage your business efficiently</p>
 
-        <a href="{% url 'register' %}">
-            <button class="btn-custom">Get Started</button>
-        </a>
+<section id="home" class="hero">
+    <div class="container">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6">
+                <div class="hero-copy">
+                    <span class="eyebrow">Business Growth Platform</span>
+                    <h1>Run sales, customers, and reporting from one smart workspace.</h1>
+                    <p>SmartBiz gives ambitious teams a faster way to track revenue, organize customer activity, follow payments, and make better decisions with live business insight.</p>
+
+                    <div class="hero-actions">
+                        <a href="{% url 'register' %}" class="btn btn-primary-custom">
+                            <i class="bi "></i> Create Account
+                        </a>
+                        <a href="#features" class="btn btn-ghost">
+                            <i class="bi bi-bar-chart-line-fill"></i> Explore Features
+                        </a>
+                    </div>
+
+                    <div class="hero-metrics">
+                        <div class="metric-card">
+                            <strong>24/7</strong>
+                            <span>Access your business data anytime</span>
+                        </div>
+                        <div class="metric-card">
+                            <strong>Real-Time</strong>
+                            <span>Stay current with live business activity</span>
+                        </div>
+                        <div class="metric-card">
+                            <strong>One View</strong>
+                            <span>Bring sales, customers, and reports together</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="hero-panel">
+                    <div class="dashboard-preview">
+                        <div class="preview-topbar">
+                            <div class="preview-dots">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                            <div class="preview-pill">SmartBiz Overview</div>
+                        </div>
+
+                        <div class="preview-grid">
+                            <div class="preview-card">
+                                <h3>Performance Snapshot</h3>
+                                <div class="preview-stats">
+                                    <div class="mini-stat">
+                                        <span>Sales logged</span>
+                                        <strong>1,284</strong>
+                                    </div>
+                                    <div class="mini-stat">
+                                        <span>Active customers</span>
+                                        <strong>342</strong>
+                                    </div>
+                                    <div class="mini-stat">
+                                        <span>Revenue trend</span>
+                                        <strong>+18.6%</strong>
+                                    </div>
+                                    <div class="mini-stat">
+                                        <span>Pending follow-up</span>
+                                        <strong>19</strong>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="preview-list">
+                                <h3>Recent Activity</h3>
+                                <ul>
+                                    <li>
+                                        <div>
+                                            <strong>Customer payment</strong>
+                                            <small>Westlands Retail Hub</small>
+                                        </div>
+                                        <span class="preview-tag">KES 24,000</span>
+                                    </li>
+                                    <li>
+                                        <div>
+                                            <strong>Sales report updated</strong>
+                                            <small>Weekly performance summary</small>
+                                        </div>
+                                        <span class="preview-tag">Today</span>
+                                    </li>
+                                    <li>
+                                        <div>
+                                            <strong>New customer added</strong>
+                                            <small>Electronic's Supplies</small>
+                                        </div>
+                                        <span class="preview-tag">New</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="preview-chart mt-3">
+                            <h3>Revenue Graph</h3>
+                            <div class="chart-bars" aria-hidden="true">
+                                <span style="height: 44%;"></span>
+                                <span style="height: 70%;"></span>
+                                <span style="height: 58%;"></span>
+                                <span style="height: 86%;"></span>
+                                <span style="height: 66%;"></span>
+                                <span style="height: 94%;"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </section>
 
-<!-- ABOUT -->
+<section class="trust-strip">
+    <div class="container">
+        <div class="trust-card">
+            <div class="trust-grid">
+                <div class="trust-intro">
+                    <h3>Built for growing businesses that need clarity fast.</h3>
+                    <p>Simple enough for everyday use, strong enough for smarter decisions.</p>
+                </div>
+                <div class="trust-stat">
+                    <strong>Sales</strong>
+                    <span>Track deals, totals, and product performance.</span>
+                </div>
+                <div class="trust-stat">
+                    <strong>Customers</strong>
+                    <span>Keep client information organized and searchable.</span>
+                </div>
+                <div class="trust-stat">
+                    <strong>Reports</strong>
+                    <span>Turn raw activity into decisions you can act on.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
 <section id="about" class="section">
     <div class="container">
-        <h2>About Us</h2>
-        <p>
-            SmartBiz helps you manage sales, customers, and analytics in one powerful platform.
-        </p>
-    </div>
-</section>
+        <div class="section-heading">
+            <span class="eyebrow">About SmartBiz</span>
+            <h2>One practical system for the work that keeps your business moving.</h2>
+        </div>
 
-<!-- FEATURES -->
-<section id="features" class="section">
-    <div class="container">
-        <h2>Our Features</h2>
+        <div class="about-panel">
+            <div class="row g-0">
+                <div class="col-lg-7">
+                    <div class="about-copy">
+                        <h3>Built to help you work with more control and less guesswork.</h3>
+                        <p>From sales logging to customer records and payment visibility, SmartBiz brings together the information you need to run your business more confidently every day.</p>
+                        <p>It is designed for teams that want a clearer picture of operations, faster reporting, and a better way to stay organized as the business grows.</p>
 
-        <div class="row mt-5">
+                        <div class="about-points">
+                            <div class="about-point">
+                                <i class="bi bi-lightning-charge-fill"></i>
+                                <div>
+                                    <strong>Faster daily operations</strong>
+                                    <p class="mb-0">Capture sales, customer details, and payments in one consistent workflow.</p>
+                                </div>
+                            </div>
+                            <div class="about-point">
+                                <i class="bi bi-graph-up-arrow"></i>
+                                <div>
+                                    <strong>Actionable business visibility</strong>
+                                    <p class="mb-0">Review patterns and performance without waiting for manual summaries.</p>
+                                </div>
+                            </div>
+                            <div class="about-point">
+                                <i class="bi bi-shield-check"></i>
+                                <div>
+                                    <strong>More reliable records</strong>
+                                    <p class="mb-0">Keep your team aligned with cleaner data and easier follow-up.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-            <div class="col-md-4">
-                <div class="feature-box">
-                    <h4>Sales Tracking</h4>
-                    <p>Track sales in real-time and grow your revenue.</p>
+                <div class="col-lg-5">
+                    <div class="about-visual">
+                        <div class="about-visual-card">
+                            <h4>What SmartBiz helps you improve</h4>
+                            <p>Replace scattered tracking with a system that supports visibility across sales, customers, and performance.</p>
+
+                            <div class="insight-stack">
+                                <div class="insight-chip">
+                                    <span>Sales visibility</span>
+                                    <strong>Live tracking</strong>
+                                </div>
+                                <div class="insight-chip">
+                                    <span>Customer records</span>
+                                    <strong>Better follow-up</strong>
+                                </div>
+                                <div class="insight-chip">
+                                    <span>Reports</span>
+                                    <strong>Cleaner decisions</strong>
+                                </div>
+                                <div class="insight-chip">
+                                    <span>Operations</span>
+                                    <strong>Less manual work</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-
-            <div class="col-md-4">
-                <div class="feature-box">
-                    <h4>Customer Management</h4>
-                    <p>Manage your customers and build relationships.</p>
-                </div>
-            </div>
-
-            <div class="col-md-4">
-                <div class="feature-box">
-                    <h4>Analytics</h4>
-                    <p>Get insights with powerful dashboards and reports.</p>
-                </div>
-            </div>
-
         </div>
     </div>
 </section>
 
-<!-- CTA -->
-<section id="cta" class="section">
-    <h2>Ready to grow your business?</h2>
-    <a href="{% url 'register' %}">
-        <button class="btn-custom">Sign Up Now</button>
-    </a>
-</section>
-
-<!-- CONTACT -->
-<section id="contact" class="section">
+<section id="features" class="section features-band">
     <div class="container">
-        <h2 class="mb-5">Contact Us</h2>
+        <div class="section-heading">
+            <span class="eyebrow">Features</span>
+            <h2>Everything your team needs to stay organized and informed.</h2>
+        </div>
 
-        <div class="row">
-
-            <!-- CONTACT INFO -->
-            <div class="col-md-5 text-start">
-                <h4>Get in Touch</h4>
-                <p>We love to hear from you. Reach out to us anytime.</p>
-
-                <p><strong>Email:</strong> support@smartbiz.com</p>
-                <p><strong>Phone:</strong> 010191393</p>
-                <p><strong>Location:</strong> Nairobi, Kenya</p>
-                <p><strong>Working Hours:</strong> Mon - Fri, 8:00 AM - 6:00 PM</p>
+        <div class="row g-4">
+            <div class="col-md-6 col-xl-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <img src="{% static 'images/sales.png' %}" alt="Sales tracking icon">
+                    </div>
+                    <h3>Sales Tracking</h3>
+                    <p>Monitor transactions, compare performance, and keep revenue activity visible in one place for faster decisions.</p>
+                    <a href="{% url 'register' %}" class="feature-link">Start tracking sales <i class="bi bi-arrow-right"></i></a>
+                </div>
             </div>
 
-            <!-- CONTACT FORM -->
-            <div class="col-md-7">
-                <form method="POST">
-                    {% csrf_token %}
-
-                    <div class="mb-3">
-                        <input type="text" name="name" class="form-control" placeholder="Your Name" required>
+            <div class="col-md-6 col-xl-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <img src="{% static 'images/customers.png' %}" alt="Customer management icon">
                     </div>
-
-                    <div class="mb-3">
-                        <input type="email" name="email" class="form-control" placeholder="Your Email" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <textarea name="message" class="form-control" rows="5" placeholder="Your Message" required></textarea>
-                    </div>
-
-                    <button type="submit" class="btn-custom w-100">Send Message</button>
-                </form>
+                    <h3>Customer Management</h3>
+                    <p>Store customer details neatly, follow activity over time, and build a stronger process for service and retention.</p>
+                    <a href="{% url 'register' %}" class="feature-link">Organize customer data <i class="bi bi-arrow-right"></i></a>
+                </div>
             </div>
 
+            <div class="col-md-6 col-xl-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <img src="{% static 'images/analytics.png' %}" alt="Analytics icon">
+                    </div>
+                    <h3>Business Analytics</h3>
+                    <p>See performance patterns clearly with data that helps you identify wins, gaps, and next steps more confidently.</p>
+                    <a href="{% url 'register' %}" class="feature-link">Review insights <i class="bi bi-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="showcase-grid mt-5">
+            <div class="showcase-card primary">
+                <h3>Why teams choose SmartBiz</h3>
+                <p>It keeps the essentials together so the business can move with more confidence, consistency, and speed.</p>
+                <ul class="showcase-list">
+                    <li><i class="bi bi-check-circle-fill"></i> One place for sales, customers, and reporting</li>
+                    <li><i class="bi bi-check-circle-fill"></i> Cleaner business records for day-to-day operations</li>
+                    <li><i class="bi bi-check-circle-fill"></i> Faster visibility into revenue and performance</li>
+                </ul>
+            </div>
+
+            <div class="showcase-card secondary">
+                <h3>How it supports your workflow</h3>
+                <div class="timeline">
+                    <div class="timeline-step">
+                        <strong>1. Capture activity</strong>
+                        Record sales, payments, and customer details as work happens.
+                    </div>
+                    <div class="timeline-step">
+                        <strong>2. Stay organized</strong>
+                        Keep business information structured and easier to review.
+                    </div>
+                    <div class="timeline-step">
+                        <strong>3. Make better decisions</strong>
+                        Use reports and trends to guide the next move with less guesswork.
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </section>
 
-<!-- FOOTER -->
+<section class="section">
+    <div class="container">
+        <div class="cta-shell text-center text-lg-start">
+            <h2>Ready to run your business with more focus?</h2>
+            <p>Join SmartBiz and start managing customers, sales, and business performance in one reliable workspace built for growth.</p>
+            <div class="cta-actions justify-content-center justify-content-lg-start">
+                <a href="{% url 'register' %}" class="btn btn-primary-custom">
+                    <i class="bi bi-person-plus-fill"></i> Start Now
+                </a>
+                <a href="{% url 'login' %}" class="btn btn-ghost">
+                    <i class="bi bi-box-arrow-in-right"></i> Login to Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="contact" class="section contact-section">
+    <div class="container">
+        <div class="section-heading">
+            <span class="eyebrow">Contact Us</span>
+            <h2>Let's talk about how SmartBiz can support your business.</h2>
+            <p>Have a question, need support, or want to share feedback? Reach out and we'll get back to you as soon as we can.</p>
+        </div>
+
+        <div class="row g-4 align-items-stretch">
+            <div class="col-lg-5">
+                <div class="contact-card">
+                    <h3>Get in touch</h3>
+                    <p>We are happy to help with product questions, onboarding guidance, or feedback about your experience.</p>
+
+                    <div class="contact-item">
+                        <i class="bi bi-envelope-fill"></i>
+                        <div>
+                            <small>Email</small>
+                            <p>support@smartbiz.com</p>
+                        </div>
+                    </div>
+
+                    <div class="contact-item">
+                        <i class="bi bi-telephone-fill"></i>
+                        <div>
+                            <small>Phone</small>
+                            <p>+254 101 913 093</p>
+                        </div>
+                    </div>
+
+                    <div class="contact-item">
+                        <i class="bi bi-geo-alt-fill"></i>
+                        <div>
+                            <small>Location</small>
+                            <p>Nairobi, Kenya</p>
+                        </div>
+                    </div>
+
+                    <div class="response-note">
+                        We usually respond within 24 hours on business days.
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-7">
+                <div class="contact-card">
+                    <h3>Send a message</h3>
+                    <p>This form is ready for Django handling and now includes proper field names, labels, and browser validation.</p>
+
+                    <form method="POST">
+                        {% csrf_token %}
+
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="name" class="form-label">Your Name</label>
+                                <input id="name" name="name" type="text" class="form-control" placeholder="Enter your name" required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="email" class="form-label">Your Email</label>
+                                <input id="email" name="email" type="email" class="form-control" placeholder="name@example.com" required>
+                            </div>
+
+                            <div class="col-12">
+                                <label for="subject" class="form-label">Subject</label>
+                                <input id="subject" name="subject" type="text" class="form-control" placeholder="How can we help?" required>
+                            </div>
+
+                            <div class="col-12">
+                                <label for="message" class="form-label">Message</label>
+                                <textarea id="message" name="message" class="form-control" rows="6" placeholder="Write your message here..." required></textarea>
+                            </div>
+
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-send">
+                                    <i class="bi bi-send-fill"></i> Send Message
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
 <footer>
-    <p>© 2026 SmartBiz Management</p>
+    <div class="container">
+        <div class="footer-shell">
+            <p class="mb-0">&copy; 2026 SmartBiz. Built for smarter business operations.</p>
+            <div class="footer-links">
+                <a href="#about">About</a>
+                <a href="#features">Features</a>
+                <a href="#contact">Contact</a>
+            </div>
+        </div>
+    </div>
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
 </body>
 </html>

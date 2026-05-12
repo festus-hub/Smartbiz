@@ -1,26 +1,68 @@
+{% load static %}
+<style>
+.sidebar img{
+    height: 38px;
+    margin-right: 10px;
+}
+
+</style>
+
 <div class="sidebar">
 
     <div class="flex items-center gap-3 mb-10">
-            <div class="bg-amber-400 p-2 rounded-lg text-slate-900 font-bold text-xl ">SB</div>
-            <span class="text-white text-2xl font-bold">SmartBiz</span>
+            <div class="bg-amber-400 p-2 rounded-lg text-slate-900 font-bold text-xl "></div>
+            <span class="text-white text-2xl font-bold">
+                <img src="{% static 'images/logo2.png' %}">
+                SmartBiz</span>
         </div>
 
     <ul class="menu">
-        <li><a href="{% url 'dashboard' %}" class="active"> Dashboard</a></li>
-        
-        <li class="section">Management</li>
-        <li><a href="{% url 'sales' %}">Sales</a></li>
-        <li><a href="{% url 'add_sale' %}">   +Add Sale</a></li>
-        <li><a href="{% url 'payments' %}">Payments</a></li>
-        <li><a href="{% url 'customers' %}">Customers</a></li>
+       <li>
+    <a href="{% url 'dashboard' %}" 
+       class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+       Dashboard
+    </a>
+</li>
+
+<li>
+    <a href="{% url 'sales' %}" 
+       class="{% if request.resolver_match.url_name == 'sales' %}active{% endif %}">
+       Sales
+    </a>
+</li>
+
+<li>
+    <a href="{% url 'add_sale' %}" 
+       class="{% if request.resolver_match.url_name == 'add_sale' %}active{% endif %}">
+       +Add Sale
+    </a>
+</li>
+
+<li>
+    <a href="{% url 'payments' %}" 
+       class="{% if request.resolver_match.url_name == 'payments' %}active{% endif %}">
+       Payments
+    </a>
+</li>
+
+<li>
+    <a href="{% url 'add_expense' %}" 
+       class="{% if request.resolver_match.url_name == 'add_expense' %}active{% endif %}">
+       +Add Expense
+    </a>
+</li>
+<li>
+    <a href="{% url 'customers' %}"
+        class="{% if request.resolver_match.url_name == 'customer' %} active {% endif %}">
+            customers</a>
+</li>
 
         
-
         <li class="section">Account</li>
         <li>
              <form action="{% url 'logout' %}" method="POST" style="margin:0;">
         {% csrf_token %}
-        <button type="submit"  class="mt-auto w-full py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-xl hover: bg-amber-500 hover:text-white 
+        <button type="submit"  class="mt-auto w-full py-2 bg-amber-500 hover:bg-amber-600 text-red rounded-xl hover: bg-amber-500 hover:text-red-600
         transition font-semibold" > Logout</button>
         </form>
 </li>   
