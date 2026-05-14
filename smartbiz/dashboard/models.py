@@ -182,3 +182,9 @@ class StockMovement(models.Model):
 
         def __str__(self):
               return f"{self.product.name} - {self.movement_type} - {self.quantity}"
+
+class StockAlert(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    message = models.TextField()
+    is_read = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)

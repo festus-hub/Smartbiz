@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
 
-from dashboard.models import Product, Sales, User
+from dashboard.models import Product, Sales, User, StockMovement
 
 # Register your models here.
 @admin.register(User)
@@ -14,3 +14,4 @@ class UserAdmin(DjangoUserAdmin):
 
 admin.site.register(Product)
 admin.site.register(Sales)
+admin.site.register(StockMovement)

@@ -3,6 +3,14 @@ from rest_framework import serializers
 
 from .models import Business, Customer, Expense, Payment, Product, Sales, User
 
+class DashboardSummarySerializer(serializers.Serializer):
+    sales = serializers.IntegerField()
+    customers = serializers.IntegerField()
+    products = serializers.IntegerField()
+    revenue = serializers.DecimalField(
+        max_digits=10,
+        decimal_places=2
+    )
 
 class UserSerializer(serializers.ModelSerializer):
     effective_role = serializers.CharField(read_only=True)
@@ -74,7 +82,7 @@ class LoginSerializer(serializers.Serializer):
 
 class LogoutResponseSerializer(serializers.Serializer):
     message = serializers.CharField()
-    
+
 class CustomerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Customer

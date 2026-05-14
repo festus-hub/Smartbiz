@@ -10,7 +10,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.generics import GenericAPIView
 
-from .models import Business, Customer, Expense, Payment, Product, Sales
+from .models import Business, Customer, Expense, Payment, Product, Sales, StockAlert
 from .mpesa import MpesaError, initiate_stk_push, parse_stk_callback
 from .serializers import (
     CustomerSerializer,
@@ -23,6 +23,7 @@ from .serializers import (
     UserSerializer,
     EmptySerializer,
     LogoutResponseSerializer,
+    DashboardSummarySerializer,
 )
 from .views import build_dashboard_metrics
 
@@ -199,8 +200,18 @@ class SalesViewSet(viewsets.ModelViewSet):
 )
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
-def dashboard_summary_api(request):
-    return Response(build_dashboard_metrics())
+def dashboard_summary_api(GenericAPIView):
+    serializer_class = DashboardSummarySerializer
+
+    def get(self, request):
+
+        data = {
+            "sales": 100,
+            "customers":50,
+            "products":20,
+            "revenue":5000
+        }
+        return Response(data)
 
 @extend_schema(
     request=None,
@@ -343,3 +354,18 @@ class MpesaCallbackAPIView(GenericAPIView):
             )
 
         return Response({"ResultCode": 0, "ResultDesc": "Accepted"})
+
+class LowStockAlertsAPI(GenericAPIView):
+    def get(self, request):
+        alerts = StockAlert.objects.filter(is_read=False).order_by('-created_at')
+
+        data = [
+            {
+                "product": a.product.name,
+                "message": a.message,
+                "date": a.created_at
+            }
+            for a in alerts
+        ]
+
+        return Response(data)
