@@ -85,6 +85,12 @@
     padding: 24px;
 }
 
+.report-page .filter-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
 .report-page .filter-form .form-control {
     min-height: 50px;
     border-radius: 14px;
@@ -118,11 +124,30 @@
     font-weight: 800;
     color: #1d4ed8;
 }
+
+.report-page .meta-strip {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+}
+
+.report-page .meta-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.6rem 0.9rem;
+    border-radius: 999px;
+    background: #f8fbff;
+    border: 1px solid var(--border);
+    color: #42526b;
+    font-weight: 600;
+}
 </style>
 
 <div class="container-fluid px-4 report-page">
     <section class="hero mb-4">
-        <div class="hero-pill"><i class="bi bi-bar-chart-line-fill"></i> Reporting hub</div>
+        <div class="hero-pill"><i class="bi bi-bar-chart-line-fill"></i> Reports</div>
         <h1 class="mt-3 mb-0">Review revenue, expenses, and sales history in one place.</h1>
         <p>Filter your reporting window, compare totals quickly, and scan historical sales from a page that now matches the rest of the SmartBiz interface.</p>
     </section>
@@ -133,15 +158,26 @@
 
         <form method="GET" class="row g-3 filter-form">
             <div class="col-md-4">
-                <input type="date" name="start_date" class="form-control" value="{{ request.GET.start_date }}">
+                <input type="date" name="start_date" class="form-control" value="{{ start_date }}">
             </div>
             <div class="col-md-4">
-                <input type="date" name="end_date" class="form-control" value="{{ request.GET.end_date }}">
+                <input type="date" name="end_date" class="form-control" value="{{ end_date }}">
             </div>
             <div class="col-md-4">
-                <button class="btn btn-primary w-100 rounded-4 py-3 fw-bold">Filter report</button>
+                <div class="filter-actions">
+                    <button class="btn btn-primary flex-fill rounded-4 py-3 fw-bold">Filter report</button>
+                    <button type="submit" name="export" value="csv" class="btn btn-outline-dark flex-fill rounded-4 py-3 fw-bold">
+                        Download CSV
+                    </button>
+                </div>
             </div>
         </form>
+
+        <div class="meta-strip">
+            <div class="meta-pill"><i class="bi bi-calendar-range"></i>Range: {{ start_date|default:"All" }} to {{ end_date|default:"All" }}</div>
+            <div class="meta-pill"><i class="bi bi-bag-check"></i>Sales: {{ total_sales_count }}</div>
+            <div class="meta-pill"><i class="bi bi-credit-card-2-front"></i>Payments: {{ total_payments_logged }}</div>
+        </div>
     </section>
 
     <section class="row g-4 mb-4">
@@ -149,28 +185,28 @@
             <div class="summary-card blue-soft">
                 <div class="eyebrow">Total Revenue</div>
                 <div class="value">KES {{ total_revenue }}</div>
-                <div class="subtle mt-2">All recorded payment revenue.</div>
+                <div class="subtle mt-2">Gross sales revenue inside the selected report range.</div>
             </div>
         </div>
         <div class="col-md-3">
             <div class="summary-card amber-soft">
                 <div class="eyebrow">Total Expenses</div>
                 <div class="value">KES {{ total_expenses }}</div>
-                <div class="subtle mt-2">All tracked business expenses.</div>
+                <div class="subtle mt-2">Tracked expenses inside the selected report range.</div>
             </div>
         </div>
         <div class="col-md-3">
             <div class="summary-card teal-soft">
                 <div class="eyebrow">Profit</div>
                 <div class="value">KES {{ profit }}</div>
-                <div class="subtle mt-2">Revenue after subtracting expenses.</div>
+                <div class="subtle mt-2">Shown only when revenue is higher than expenses.</div>
             </div>
         </div>
         <div class="col-md-3">
             <div class="summary-card red-soft">
                 <div class="eyebrow">Loss</div>
                 <div class="value">KES {{ loss }}</div>
-                <div class="subtle mt-2">The gap when expenses exceed revenue.</div>
+                <div class="subtle mt-2">Shown only when expenses are higher than revenue.</div>
             </div>
         </div>
     </section>

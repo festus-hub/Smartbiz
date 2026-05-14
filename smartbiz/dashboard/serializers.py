@@ -72,7 +72,9 @@ class LoginSerializer(serializers.Serializer):
         attrs["user"] = user
         return attrs
 
-
+class LogoutResponseSerializer(serializers.Serializer):
+    message = serializers.CharField()
+    
 class CustomerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Customer
@@ -175,3 +177,7 @@ class SaleSerializer(serializers.ModelSerializer):
         if value <= 0:
             raise serializers.ValidationError("Price must be greater than zero.")
         return value
+
+class EmptySerializer(serializers.Serializer):
+
+    pass

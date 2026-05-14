@@ -1,3 +1,4 @@
+from drf_spectacular.utils import extend_schema
 from decimal import Decimal
 from django.conf import settings
 from django.contrib.auth import login, logout
@@ -5,9 +6,9 @@ from django.db.models import Sum
 from django.urls import reverse
 from rest_framework import filters, status, viewsets
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.views import APIView
+from rest_framework.generics import GenericAPIView
 
 from .models import Business, Customer, Expense, Payment, Product, Sales
 from .mpesa import MpesaError, initiate_stk_push, parse_stk_callback
@@ -20,6 +21,8 @@ from .serializers import (
     RegisterSerializer,
     SaleSerializer,
     UserSerializer,
+    EmptySerializer,
+    LogoutResponseSerializer,
 )
 from .views import build_dashboard_metrics
 
@@ -38,9 +41,8 @@ def get_or_create_default_business_for_user(user):
     )
 
 
-class RegisterAPIView(APIView):
-    permission_classes = [AllowAny]
-
+class RegisterAPIView(GenericAPIView):
+    serializer_class = RegisterSerializer
     def post(self, request):
         serializer = RegisterSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -48,9 +50,8 @@ class RegisterAPIView(APIView):
         return Response(UserSerializer(user).data, status=status.HTTP_201_CREATED)
 
 
-class LoginAPIView(APIView):
-    permission_classes = [AllowAny]
-
+class LoginAPIView(GenericAPIView):
+    serializer_class = LoginSerializer
     def post(self, request):
         serializer = LoginSerializer(data=request.data, context={"request": request})
         serializer.is_valid(raise_exception=True)
@@ -58,18 +59,19 @@ class LoginAPIView(APIView):
         login(request, user)
         return Response({"message": "Login successful.", "user": UserSerializer(user).data})
 
-
-class LogoutAPIView(APIView):
-    permission_classes = [IsAuthenticated]
-
+@extend_schema(
+    request=EmptySerializer,
+    responses=LogoutResponseSerializer
+)
+class LogoutAPIView(GenericAPIView):
+    serializer_class = EmptySerializer
     def post(self, request):
         logout(request)
         return Response({"message": "Logout successful."})
 
 
-class CurrentUserAPIView(APIView):
-    permission_classes = [IsAuthenticated]
-
+class CurrentUserAPIView(GenericAPIView):
+    serializer_class = UserSerializer
     def get(self, request):
         return Response(UserSerializer(request.user).data)
 
@@ -191,13 +193,19 @@ class SalesViewSet(viewsets.ModelViewSet):
     search_fields = ["customer__name", "customer__email", "product__name"]
     ordering_fields = ["created_at", "quantity", "price"]
 
-
+@extend_schema(
+    request=None,
+    responses=EmptySerializer
+)
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def dashboard_summary_api(request):
     return Response(build_dashboard_metrics())
 
-
+@extend_schema(
+    request=None,
+    responses=EmptySerializer
+)
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def report_summary_api(request):
@@ -229,7 +237,10 @@ def report_summary_api(request):
         }
     )
 
-
+@extend_schema(
+    request=None,
+    responses=EmptySerializer
+)
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def report_sales_api(request):
@@ -253,7 +264,10 @@ def report_sales_api(request):
         }
     )
 
-
+@extend_schema(
+    request=None,
+    responses=EmptySerializer
+)
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def report_profit_api(request):
@@ -283,8 +297,8 @@ def report_profit_api(request):
     )
 
 
-class MpesaCallbackAPIView(APIView):
-    permission_classes = [AllowAny]
+class MpesaCallbackAPIView(GenericAPIView):
+    serializer_class = EmptySerializer
     authentication_classes = []
 
     def post(self, request):

@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "crispy_forms",
     "crispy_bootstrap5",
     'rest_framework',
+    'axes',
 ]
 
 if HAS_DRF_SPECTACULAR:
@@ -60,6 +61,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'axes.middleware.AxesMiddleware',
 ]
 
 ROOT_URLCONF = 'smartbiz.urls'
@@ -148,7 +150,7 @@ if HAS_DRF_SPECTACULAR:
 AUTH_USER_MODEL = 'dashboard.User'
 
 LOGIN_URL = 'login'
-LOGOUT_REDIRECT_URL = 'landing'
+LOGOUT_REDIRECT_URL = 'login'
 LOGIN_REDIRECT_URL = 'dashboard'
 
 PROJECT_STATIC_DIR = BASE_DIR / 'static'
@@ -182,3 +184,19 @@ if HAS_DRF_SPECTACULAR:
         'VERSION': '1.0.0',
         'SERVE_INCLUDE_SCHEMA': False,
     }
+
+AUTHENTICATION_BACKENDS = [
+    'axes.backends.AxesStandaloneBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
+# Lock account after failed attempts
+AXES_FAILURE_LIMIT = 5
+
+# Lockout duration 
+AXES_COOLOFF_TIME = 1
+
+# Reset attempts after successful login
+AXES_RESET_ON_SUCCESS = True
+
+# Track by IP address
+AXES_LOCKOUT_PARAMETERS = ["ip_address"]

@@ -1,11 +1,14 @@
+import csv
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import authenticate, login, logout
 from decimal import Decimal
 from django.db.models import Sum
 from django.urls import reverse
+from django.utils.dateparse import parse_date
 from functools import wraps
 from .models import Sales, Payment, Customer, User, Product, Expense
 from . import models
@@ -32,7 +35,7 @@ except ImportError:
         return serializers.DictField()
 
 
-# HELPERS
+# LANDING PAGE
 
 def landing_page(request):
     return render(request, 'dashboard/landing.html')
@@ -427,6 +430,8 @@ def customers_view(request):
     }
 
     return render(request, 'dashboard/customer.html', context)
+
+@role_required(User.EMPLOYEE)
 def add_customer(request):
     return render(request, 'dashboard/add_customer.html')   
 
@@ -463,6 +468,7 @@ def upsert_customer(customer_name, phone, email, current_customer=None):
 
     return customer
 
+@role_required(User.EMPLOYEE)
 def edit_customer(request, id):
 
     customer = get_object_or_404(
@@ -489,6 +495,8 @@ def edit_customer(request, id):
     }
 
     return render(request, 'dashboard/edit_customer.html', context)
+
+@role_required(User.EMPLOYEE)
 def delete_customer(request, customer_id):
     customer = get_object_or_404(Customer, id=customer_id)
 
@@ -521,7 +529,7 @@ def add_sale(request):
             return redirect('add_sale')
 
         customer = upsert_customer(customer_name, phone, email)
-        product = get_object_or_404(Product, id=product_id)
+        product = get_object_or_404(Product, id=product_id )
 
         Sales.objects.create(
             customer=customer,
@@ -592,18 +600,68 @@ def delete_sale(request, sale_id):
 
 @role_required(User.MANAGER)
 def reports(request):
-    start_date = request.GET.get('start_date')
-    end_date = request.GET.get('end_date')
+    start_date_raw = (request.GET.get('start_date') or '').strip()
+    end_date_raw = (request.GET.get('end_date') or '').strip()
+    export_format = (request.GET.get('export') or '').strip().lower()
 
-    sales = Sales.objects.order_by('-created_at')
+    start_date = parse_date(start_date_raw) if start_date_raw else None
+    end_date = parse_date(end_date_raw) if end_date_raw else None
 
-    if start_date and end_date:
-        sales = sales.filter(created_at__range=[start_date, end_date])
+    sales = Sales.objects.select_related('customer', 'product').order_by('-created_at')
+    payments = Payment.objects.select_related('sale', 'business').order_by('-payment_date')
+    expenses = Expense.objects.order_by('-date')
 
-    total_revenue = Payment.objects.aggregate(total=Sum('amount'))['total'] or 0
-    total_expenses = Expense.objects.aggregate(total=Sum('amount'))['total'] or 0
-    profit = total_revenue - total_expenses
-    loss = total_expenses - total_revenue
+    if start_date:
+        sales = sales.filter(created_at__date__gte=start_date)
+        payments = payments.filter(payment_date__date__gte=start_date)
+        expenses = expenses.filter(date__gte=start_date)
+
+    if end_date:
+        sales = sales.filter(created_at__date__lte=end_date)
+        payments = payments.filter(payment_date__date__lte=end_date)
+        expenses = expenses.filter(date__lte=end_date)
+
+    total_revenue = payments.aggregate(total=Sum('amount'))['total'] or Decimal('0.00')
+    total_expenses = expenses.aggregate(total=Sum('amount'))['total'] or Decimal('0.00')
+    net_result = total_revenue - total_expenses
+    profit = net_result if net_result > 0 else Decimal('0.00')
+    loss = abs(net_result) if net_result < 0 else Decimal('0.00')
+    total_sales_count = sales.count()
+    total_payments_logged = payments.count()
+
+    if export_format == 'csv':
+        response = HttpResponse(content_type='text/csv')
+        filename_bits = ['smartbiz-report']
+        if start_date_raw:
+            filename_bits.append(start_date_raw)
+        if end_date_raw:
+            filename_bits.append(end_date_raw)
+        response['Content-Disposition'] = f'attachment; filename="{"-".join(filename_bits)}.csv"'
+
+        writer = csv.writer(response)
+        writer.writerow(['SmartBiz Report'])
+        writer.writerow(['Start Date', start_date_raw or 'All'])
+        writer.writerow(['End Date', end_date_raw or 'All'])
+        writer.writerow(['Total Revenue', total_revenue])
+        writer.writerow(['Total Expenses', total_expenses])
+        writer.writerow(['Profit', profit])
+        writer.writerow(['Loss', loss])
+        writer.writerow(['Sales Count', total_sales_count])
+        writer.writerow(['Payments Logged', total_payments_logged])
+        writer.writerow([])
+        writer.writerow(['Customer', 'Product', 'Quantity', 'Unit Price', 'Amount', 'Date'])
+
+        for sale in sales:
+            writer.writerow([
+                sale.customer.name,
+                sale.product.name,
+                sale.quantity,
+                sale.price,
+                sale.total_amount,
+                sale.created_at.strftime('%Y-%m-%d %H:%M'),
+            ])
+
+        return response
 
     context = {
         'sales': sales,
@@ -611,6 +669,10 @@ def reports(request):
         'total_expenses': total_expenses,
         'profit': profit,
         'loss': loss,
+        'total_sales_count': total_sales_count,
+        'total_payments_logged': total_payments_logged,
+        'start_date': start_date_raw,
+        'end_date': end_date_raw,
     }
 
     return render(request, 'dashboard/report.html', context)
@@ -636,11 +698,12 @@ def custom_password_reset(request):
     return render(request, 'dashboard/password_reset.html', {'form': form})
 
 # PRODUCT VIEW
+role_required(User.EMPLOYEE)
 def product_list(request):
     products = Product.objects.all().order_by('-created_at')
     return render(request, 'dashboard/product_list.html', {'products': products})
 
-
+@role_required(User.MANAGER)
 def add_product(request):
     if request.method == 'POST':
         form = ProductForm(request.POST)
@@ -651,7 +714,7 @@ def add_product(request):
         form = ProductForm()
     return render(request, 'dashboard/add_product.html', {'form': form})
 
-
+@role_required(User.MANAGER)
 def edit_product(request, pk):
     product = get_object_or_404(Product, pk=pk)
     form = ProductForm(request.POST or None, instance=product)
@@ -660,7 +723,10 @@ def edit_product(request, pk):
         return redirect('product_list')
     return render(request, 'dashboard/edit_product.html', {'form': form})
 
+@role_required(User.MANAGER)
 def delete_product(request, pk):
     product = get_object_or_404(Product, pk=pk)
     product.delete()
     return redirect('product_list')
+
+
