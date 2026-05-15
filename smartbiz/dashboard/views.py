@@ -10,7 +10,7 @@ from django.db.models import Sum
 from django.urls import reverse
 from django.utils.dateparse import parse_date
 from functools import wraps
-from .models import Sales, Payment, Customer, User, Product, Expense
+from .models import Sales, Payment, Customer, User, Product, Expense, StockMovement
 from . import models
 from django.contrib.auth.forms import PasswordResetForm
 from .forms import ProductForm
@@ -404,6 +404,7 @@ def sales_live_api(request):
     })
 
 
+
 # CUSTOMERS VIEWS
 
 @role_required(User.EMPLOYEE)
@@ -729,4 +730,12 @@ def delete_product(request, pk):
     product.delete()
     return redirect('product_list')
 
+# stock movement
+def stock_view(request):
+    movements = StockMovement.objects.select_related('product').order_by('-date')
+    context = {
+         'movements': movements
+     }
+ 
+    return render(request,'dashboard/stock_movement.html',context)
 

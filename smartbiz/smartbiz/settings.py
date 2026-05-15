@@ -193,7 +193,7 @@ AUTHENTICATION_BACKENDS = [
 AXES_FAILURE_LIMIT = 5
 
 # Lockout duration 
-AXES_COOLOFF_TIME = 1
+AXES_COOLOFF_TIME = 2
 
 # Reset attempts after successful login
 AXES_RESET_ON_SUCCESS = True

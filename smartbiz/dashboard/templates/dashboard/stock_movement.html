@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Movement System</title>
+    <style>
+        :root {
+            --primary: #4a90e2;
+            --success: #28a745;
+            --danger: #dc3545;
+            --dark: #333;
+            --light: #f8f9fa;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #4b627e;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 800px;
+        }
+
+        h2 { color: var(--dark); margin-top: 0; }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        input, select {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            outline: none;
+        }
+
+        input:focus { border-color: var(--primary); }
+
+        button {
+            padding: 10px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: opacity 0.2s;
+        }
+
+        button:hover { opacity: 0.9; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th {
+            background-color: var(--light);
+            text-align: left;
+            padding: 12px;
+            border-bottom: 2px solid #eee;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .badge-in { background: #d4edda; color: var(--success); }
+        .badge-out { background: #f8d7da; color: var(--danger); }
+
+        .empty-state {
+            text-align: center;
+            color: #999;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Stock Movements</h2>
+    
+    <div class="form-row">
+        <input type="text" id="itemName" placeholder="Item Description">
+        <input type="number" id="itemQty" placeholder="Qty">
+        <select id="moveType">
+            <option value="IN">Stock In</option>
+            <option value="OUT">Stock Out</option>
+        </select>
+        <button onclick="addEntry()">Add Entry</button>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Item</th>
+                <th>Type</th>
+                <th>Quantity</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody">
+        </tbody>
+    </table>
+    <div id="emptyMsg" class="empty-state">No movements recorded yet.</div>
+</div>
+
+<script>
+    let movements = JSON.parse(localStorage.getItem('stockData')) || [];
+    renderTable();
+
+    function addEntry() {
+        const name = document.getElementById('itemName').value;
+        const qty = document.getElementById('itemQty').value;
+        const type = document.getElementById('moveType').value;
+        
+        if (!name || !qty) {
+            alert("Please fill in all fields");
+            return;
+        }
+
+        const entry = {
+            id: Date.now(),
+            date: new Date().toLocaleString(),
+            name: name,
+            qty: qty,
+            type: type
+        };
+
+        movements.unshift(entry); 
+        saveAndRender();
+
+        
+        document.getElementById('itemName').value = '';
+        document.getElementById('itemQty').value = '';
+    }
+
+    function deleteEntry(id) {
+        movements = movements.filter(item => item.id !== id);
+        saveAndRender();
+    }
+
+    function saveAndRender() {
+        localStorage.setItem('stockData', JSON.stringify(movements));
+        renderTable();
+    }
+
+    function renderTable() {
+        const tableBody = document.getElementById('tableBody');
+        const emptyMsg = document.getElementById('emptyMsg');
+        
+        tableBody.innerHTML = '';
+        
+        if (movements.length === 0) {
+            emptyMsg.style.display = 'block';
+            return;
+        } else {
+            emptyMsg.style.display = 'none';
+        }
+
+        movements.forEach(item => {
+            const row = document.createElement('tr');
+            const typeClass = item.type === 'IN' ? 'badge-in' : 'badge-out';
+            
+            row.innerHTML = `
+                <td>${item.date}</td>
+                <td><strong>${item.name}</strong></td>
+                <td><span class="badge ${typeClass}">${item.type}</span></td>
+                <td>${item.qty}</td>
+                <td><button style="background:none; color:#dc3545; padding:0; font-size:12px;" onclick="deleteEntry(${item.id})">Remove</button></td>
+            `;
+            tableBody.appendChild(row);
+        });
+    }
+</script>
+
+</body>
+</html> 

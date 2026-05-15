@@ -38,6 +38,7 @@ urlpatterns = [
     path('add-expense/', views.add_expense, name='add_expense'),
     path('sales/', views.sales_view, name='sales'),
     path('api/sales/live/', views.sales_live_api, name='sales-live'),
+    path('stock/',views.stock_view, name='Stock_movement'),
 
     path('customers/', views.customers_view, name='customers'),
     path('customers/add/',views.add_customer,name='add_customer'),

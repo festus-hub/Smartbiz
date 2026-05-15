@@ -56,8 +56,12 @@
         class="{% if request.resolver_match.url_name == 'customer' %} active {% endif %}">
             customers</a>
 </li>
+<li>
+    
 
-        
+
+
+    
         <li class="section">Account</li>
         <li>
              <form action="{% url 'logout' %}" method="POST" style="margin:0;">
@@ -68,3 +72,4 @@
 </li>   
  </ul>
 </div>
+

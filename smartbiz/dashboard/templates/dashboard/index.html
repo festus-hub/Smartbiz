@@ -395,7 +395,7 @@ textarea {
   max-width: 12ch;
   font-family: var(--font-display);
   font-size: clamp(2rem, 1.4rem + 1.8vw, 3rem);
-  line-height: 1.05;
+  line-height: 1.0;
 }
 
 .hero-card p {
@@ -668,7 +668,7 @@ textarea {
 }
 
 .chart-container.compact {
-  min-height: 290px;
+  min-height: 300px;
 }
 
 .table-panel {
@@ -859,6 +859,7 @@ tbody td {
         <a href="{% url 'dashboard' %}" class="active"><i class="bi bi-grid-1x2-fill"></i> Dashboard</a>
         <a href="{% url 'sales' %}"><i class="bi bi-bag-check"></i> Sales</a>
         <a href="{% url 'customers' %}"><i class="bi bi-people-fill"></i> Customers</a>
+        <a href="{% url 'product_list' %}"><i class="bi bi-box-seam"></i> Products</a>
       </div>
 
       <div>
@@ -872,7 +873,7 @@ tbody td {
       <div class="avatar">{{ request.user.username|slice:":2"|upper }}</div>
       <div>
         <div class="user-name">{{ request.user.username }}</div>
-        <div class="user-role">{{ request.user.role_label }}</div>
+        <div class="user-role">{{ request.user.role_label|default:"User" }}</div>
       </div>
       <a href="{% url 'logout' %}" class="logout-btn" title="Logout">
         <i class="bi bi-box-arrow-right"></i>
@@ -884,7 +885,7 @@ tbody td {
     <div class="page-frame">
       <section class="topbar">
         <div>
-          <h1>Business dashboard</h1>
+          <h1>BUSINESS DASHBOARD</h1>
           <p id="topbar-date">Loading date...</p>
         </div>
         <div class="topbar-right">
@@ -896,7 +897,6 @@ tbody td {
         <article class="hero-card">
           <div class="eyebrow"><i class="bi bi-stars"></i> Executive overview</div>
           <h2>Track revenue, cost, and sales momentum in one place.</h2>
-          <p>Your dashboard has been refreshed into a cleaner, product-style layout so the most important business signals are easy to scan at a glance.</p>
 
           <div class="hero-metrics">
             <div class="hero-metric">
@@ -917,7 +917,6 @@ tbody td {
         <aside class="insight-card">
           <div class="section-label"><i class="bi bi-lightning-charge-fill"></i> Quick insights</div>
           <h3>Today's operating pulse</h3>
-          <p>Use these quick counts to understand whether growth is coming from sales volume, customer activity, or payment follow-up.</p>
 
           <div class="insight-list">
             <div class="insight-item">
@@ -930,7 +929,7 @@ tbody td {
 
             <div class="insight-item">
               <div>
-                <small>Best lens</small>
+                <small>Trend</small>
                 <strong>Revenue vs expense trend</strong>
               </div>
               <div class="insight-icon icon-blue"><i class="bi bi-graph-up-arrow"></i></div>
@@ -955,7 +954,7 @@ tbody td {
           </div>
           <p>Total Revenue</p>
           <h3 id="totalRevenue" class="metric-value">KES {{ total_revenue }}</h3>
-          <div class="metric-note">Across all recorded sales channels.</div>
+          <div class="metric-note">Across all recorded sales .</div>
         </article>
 
         <article class="metric-card amber">
@@ -996,10 +995,10 @@ tbody td {
               <h3 class="panel-title">Revenue vs expenses</h3>
               <p class="panel-subtitle">Monthly business movement across the year.</p>
             </div>
-            <div class="panel-badge"><i class="bi bi-calendar3"></i> Monthly 2026</div>
+            <div class="panel-badge"> Monthly 2026</div>
           </div>
           <div class="chart-container">
-            <canvas id="lineChart"></canvas>
+            <canvas id="lineChart" role="img" aria-label="Monthly revenue vs expenses line chart"></canvas>
           </div>
         </article>
 
@@ -1012,7 +1011,7 @@ tbody td {
             <div class="panel-badge"><i class="bi bi-pie-chart-fill"></i> Category mix</div>
           </div>
           <div class="chart-container compact">
-            <canvas id="pieChart"></canvas>
+            <canvas id="pieChart" role="img" aria-label="Sales distribution by product category"></canvas>
           </div>
         </article>
       </section>
@@ -1053,13 +1052,27 @@ tbody td {
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 const dashboardLiveUrl = "{% url 'dashboard-live' %}";
-const monthLabels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-const formatter = new Intl.NumberFormat("en-KE", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const monthLabels = [ "Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const formatter = new Intl.NumberFormat("en-KE", {minimumFractionDigits: 2, maximumFractionDigits: 2});
+function safeParseJSON(id, fallback) {
+  try {
+    const el = document.getElementById(id);
+    if (!el) return fallback;
+    return JSON.parse(el.textContent) ?? fallback;
+  } catch (e) {
+    console.warn(`Failed to parse JSON for #${id}:`, e);
+    return fallback;
+  }
+}
 
-const initialMonthlyRevenue = JSON.parse(document.getElementById("monthly-revenue-data").textContent);
-const initialMonthlyExpenses = JSON.parse(document.getElementById("monthly-expenses-data").textContent);
-const initialSalesDistribution = JSON.parse(document.getElementById("sales-distribution-data").textContent);
-const initialRecentSales = JSON.parse(document.getElementById("recent-sales-data").textContent);
+const initialRevenue = [1000000, 120000, 30000, 400000];
+const initialExpenses = safeParseJSON("initial-expenses-data", [1000000,240000,20050000,20000000]);
+
+const MonthlyRevenue = safeParseJSON("monthly-revenue-data", []).map(Number);
+const MonthlyExpenses = safeParseJSON("monthly-expenses-data", []).map(Number);
+
+const initialSalesDistribution = safeParseJSON("sales-distribution-data", { labels: [], values: [] });
+const initialRecentSales = safeParseJSON("recent-sales-data", []);
 
 function formatKES(value) {
   return "KES " + formatter.format(value || 0);
@@ -1067,31 +1080,50 @@ function formatKES(value) {
 
 function setMetric(id, value) {
   const node = document.getElementById(id);
-  if (node) {
-    node.textContent = formatKES(value);
-  }
+  if (node) node.textContent = formatKES(value);
+}
+
+function escapeHTML(str) {
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
 }
 
 function initials(name) {
   return (name || "NA")
     .split(" ")
     .filter(Boolean)
-    .map((word) => word[0])
+    .map(w => w[0])
     .join("")
-    .slice(0, 2)
+    .slice(0, 3)
     .toUpperCase();
 }
 
 (function setDate() {
   const today = new Date();
   const opts = { weekday: "long", year: "numeric", month: "long", day: "numeric" };
-  document.getElementById("topbar-date").textContent = today.toLocaleDateString("en-KE", opts);
+  document.getElementById("topbar-date").textContent =
+    today.toLocaleDateString("en-KE", opts);
 })();
 
 Chart.defaults.color = "#66758f";
 Chart.defaults.font.family = "'Manrope', sans-serif";
 Chart.defaults.font.size = 12;
-
+const revenueData = monthLabels.map((_, index) => {
+  if (index < 4) {
+    return initialRevenue[index] ?? 0;
+  }
+  return MonthlyRevenue[index - 4] ?? 0;
+});
+const expenseData = monthLabels.map((_, index) => {
+  if (index < 4) {
+    return initialExpenses[index] ?? 0;
+  }
+  return MonthlyExpenses[index - 4] ?? 0;
+});
 const lineChart = new Chart(document.getElementById("lineChart"), {
   type: "line",
   data: {
@@ -1099,9 +1131,9 @@ const lineChart = new Chart(document.getElementById("lineChart"), {
     datasets: [
       {
         label: "Revenue",
-        data: initialMonthlyRevenue,
+        data: revenueData,
         borderColor: "#2563eb",
-        backgroundColor: "rgba(37, 99, 235, 0.12)",
+        backgroundColor: "rgba(37,99,235,0.12)",
         fill: true,
         tension: 0.42,
         borderWidth: 3,
@@ -1109,13 +1141,14 @@ const lineChart = new Chart(document.getElementById("lineChart"), {
         pointHoverRadius: 5,
         pointBackgroundColor: "#2563eb",
         pointBorderColor: "#ffffff",
-        pointBorderWidth: 2
+        pointBorderWidth: 2,
+        yAxisID: "yRevenue"
       },
       {
         label: "Expenses",
-        data: initialMonthlyExpenses,
+        data: expenseData,
         borderColor: "#d97706",
-        backgroundColor: "rgba(217, 119, 6, 0.1)",
+        backgroundColor: "rgba(217,119,6,0.1)",
         fill: true,
         tension: 0.42,
         borderWidth: 3,
@@ -1123,14 +1156,17 @@ const lineChart = new Chart(document.getElementById("lineChart"), {
         pointHoverRadius: 5,
         pointBackgroundColor: "#d97706",
         pointBorderColor: "#ffffff",
-        pointBorderWidth: 2
+        pointBorderWidth: 2,
+        yAxisID: "yExpenses"
       }
     ]
   },
+
   options: {
     responsive: true,
     maintainAspectRatio: false,
     interaction: { mode: "index", intersect: false },
+
     plugins: {
       legend: {
         labels: {
@@ -1139,11 +1175,12 @@ const lineChart = new Chart(document.getElementById("lineChart"), {
           padding: 18
         }
       },
+
       tooltip: {
         backgroundColor: "#ffffff",
         titleColor: "#162033",
         bodyColor: "#42526b",
-        borderColor: "rgba(148, 163, 184, 0.24)",
+        borderColor: "rgba(148,163,184,0.24)",
         borderWidth: 1,
         padding: 12,
         callbacks: {
@@ -1151,33 +1188,57 @@ const lineChart = new Chart(document.getElementById("lineChart"), {
         }
       }
     },
+
     scales: {
       x: {
         grid: {
-          color: "rgba(148, 163, 184, 0.14)",
+          color: "rgba(148,163,184,0.14)",
           drawBorder: false
         }
       },
-      y: {
-        grid: {
-          color: "rgba(148, 163, 184, 0.14)",
-          drawBorder: false
-        },
+      yRevenue: {
+        type: "linear",
+        position: "left",
+        beginAtZero: true,
+        grid: { drawOnChartArea: true },
         ticks: {
-          callback: (value) => "KES " + (value >= 1000 ? (value / 1000).toFixed(0) + "K" : value)
+          callback: (value) => {
+            if (value >= 1_000_000)
+              return "KES " + (value / 1_000_000).toFixed(1) + "M";
+            if (value >= 1_000)
+              return "KES " + (value / 1_000).toFixed(0) + "K";
+            return "KES " + value;
+          }
+        }
+      },
+      yExpenses: {
+        type: "linear",
+        position: "right",
+        beginAtZero: true,
+        grid: { drawOnChartArea: false },
+        ticks: {
+          callback: (value) => {
+            if (value >= 1_000_000)
+              return "KES " + (value / 1_000_000).toFixed(1) + "M";
+            if (value >= 1_000)
+              return "KES " + (value / 1_000).toFixed(0) + "K";
+            return "KES " + value;
+          }
         }
       }
     }
   }
 });
-
 const pieChart = new Chart(document.getElementById("pieChart"), {
   type: "doughnut",
   data: {
     labels: initialSalesDistribution.labels,
     datasets: [{
       data: initialSalesDistribution.values,
-      backgroundColor: ["#2563eb", "#0f766e", "#f59e0b", "#dc2626", "#14b8a6", "#8b5cf6"],
+      backgroundColor: [
+        "#2563eb","#0f766e","#f59e0b",
+        "#dc2626","#14b8a6","#8b5cf6"
+      ],
       borderColor: "#ffffff",
       borderWidth: 4,
       hoverOffset: 10
@@ -1200,7 +1261,7 @@ const pieChart = new Chart(document.getElementById("pieChart"), {
         backgroundColor: "#ffffff",
         titleColor: "#162033",
         bodyColor: "#42526b",
-        borderColor: "rgba(148, 163, 184, 0.24)",
+        borderColor: "rgba(148,163,184,0.24)",
         borderWidth: 1,
         padding: 12,
         callbacks: {
@@ -1224,23 +1285,23 @@ function renderSales(sales) {
           <i class="bi bi-inbox" style="display:block;font-size:28px;margin-bottom:10px;color:#94a3b8"></i>
           No sales recorded yet.
         </td>
-      </tr>
-    `;
+      </tr>`;
     return;
   }
 
   tbody.innerHTML = sales.map((sale) => {
-    const name = sale.customer__name || "Walk-in customer";
-    const product = sale.product__name || "Unassigned product";
-    const status = (sale.status || "paid").toLowerCase();
+    const name    = escapeHTML(sale.customer__name || "Walk-in customer");
+    const product = escapeHTML(sale.product__name  || "Unassigned product");
+    const status  = escapeHTML((sale.status || "paid").toLowerCase());
 
-    let statusClass = "status-paid";
-    let statusIcon = "bi-check-circle-fill";
+    let statusClass = "status-paid", statusIcon = "bi-check-circle-fill";
 
     if (status === "pending") {
       statusClass = "status-pending";
       statusIcon = "bi-hourglass-split";
-    } else if (status === "cancelled") {
+    }
+
+    if (status === "cancelled") {
       statusClass = "status-cancelled";
       statusIcon = "bi-x-circle-fill";
     }
@@ -1249,37 +1310,31 @@ function renderSales(sales) {
       <tr>
         <td>
           <div class="td-customer">
-            <div class="cust-dot">${initials(name)}</div>
+            <div class="cust-dot">${escapeHTML(initials(name))}</div>
             <div class="customer-meta">
               <strong>${name}</strong>
               <small>Customer record</small>
             </div>
           </div>
         </td>
-        <td class="td-product">
-          <span><i class="bi bi-box-seam"></i>${product}</span>
-        </td>
+        <td class="td-product"><span><i class="bi bi-box-seam"></i>${product}</span></td>
         <td class="td-price">${formatKES(sale.price)}</td>
-        <td class="td-date">${sale.created_at || "-"}</td>
+        <td class="td-date">${escapeHTML(sale.created_at || "-")}</td>
         <td>
           <span class="status-badge ${statusClass}">
             <i class="bi ${statusIcon}"></i>${status}
           </span>
         </td>
-      </tr>
-    `;
+      </tr>`;
   }).join("");
 }
-
 async function refreshDashboard() {
   try {
     const response = await fetch(dashboardLiveUrl, {
       headers: { "X-Requested-With": "XMLHttpRequest" }
     });
 
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}`);
-    }
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
     const data = await response.json();
 
@@ -1287,10 +1342,11 @@ async function refreshDashboard() {
     setMetric("totalExpenses", data.total_expenses);
     setMetric("netProfit", data.profit);
     setMetric("totalLoss", data.loss);
-    setMetric("sidebarRevenue", data.total_revenue);
 
-    lineChart.data.datasets[0].data = data.monthly_revenue;
-    lineChart.data.datasets[1].data = data.monthly_expenses;
+    lineChart.data.datasets[0].data = [...initialRevenue,...(data.monthly_revenue || []).slice(0, 8) ];
+
+    lineChart.data.datasets[1].data = [...initialExpenses,...(data.monthly_expenses || []).slice(0, 8)];
+
     lineChart.update("none");
 
     pieChart.data.labels = data.sales_distribution.labels;
@@ -1298,20 +1354,22 @@ async function refreshDashboard() {
     pieChart.update("none");
 
     renderSales(data.recent_sales);
+
   } catch (error) {
     console.warn("Dashboard refresh error:", error);
   }
 }
-
 renderSales(initialRecentSales);
 refreshDashboard();
 
-let refreshTimer = setInterval(refreshDashboard, 5000);
+let refreshTimer = setInterval(refreshDashboard, 30000);
+
 document.addEventListener("visibilitychange", () => {
   clearInterval(refreshTimer);
+
   if (!document.hidden) {
     refreshDashboard();
-    refreshTimer = setInterval(refreshDashboard, 5000);
+    refreshTimer = setInterval(refreshDashboard, 30000);
   }
 });
 </script>
