@@ -2,7 +2,6 @@ services:
   - type: web
     name: smartbiz-web
     runtime: python
-    rootDir: smartbiz
     buildCommand: bash build.sh
     startCommand: python -m gunicorn smartbiz.wsgi:application
     envVars:
