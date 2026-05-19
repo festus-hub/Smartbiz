@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Delete Customer - SmartBiz</title>
+<title>Delete Record - SmartBiz</title>
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
@@ -105,11 +105,11 @@ p {
         <i class="bi bi-exclamation-triangle-fill"></i>
     </div>
 
-    <h2>Delete Customer</h2>
+    <h2>Delete Record</h2>
 
     <p>
         Are you sure you want to delete  
-        <span class="customer-name">{{ customer.name }}</span>?
+        <span class="customer-name">{{ customer.name|default:product.name|default:"this record" }}</span>?
     </p>
 
     <p style="font-size:12px; color:#999;">
@@ -124,7 +124,7 @@ p {
                 Yes, Delete
             </button>
 
-            <a href="{% url 'customers' %}" class="btn btn-secondary">
+            <a href="javascript:history.back()" class="btn btn-secondary">
                 Cancel
             </a>
         </div>

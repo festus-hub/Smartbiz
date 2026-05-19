@@ -93,6 +93,7 @@ class Product(models.Model):
         category = models.CharField(max_length=100)
         price = models.DecimalField(max_digits=10, decimal_places=2)
         stock_quantity = models.IntegerField()
+        low_stock_threshold = models.PositiveIntegerField(default=5)
         created_at = models.DateTimeField(auto_now_add=True)
 
         def __str__(self):
@@ -171,13 +172,16 @@ class Analytics(models.Model):
 
 
 class StockMovement(models.Model):
+        MOVEMENT_IN = 'in'
+        MOVEMENT_OUT = 'out'
         MOVEMENT_TYPES = (
-            ('in', 'Stock In'),
-            ('out', 'Stock Out'),
+            (MOVEMENT_IN, 'Stock In'),
+            (MOVEMENT_OUT, 'Stock Out'),
         )
         product = models.ForeignKey(Product, on_delete=models.CASCADE)
         quantity = models.IntegerField()
-        movement_type = models.CharField(max_length=10)  # 'in' or 'out'
+        movement_type = models.CharField(max_length=10, choices=MOVEMENT_TYPES)
+        note = models.CharField(max_length=255, blank=True)
         date = models.DateTimeField(auto_now_add=True)
 
         def __str__(self):

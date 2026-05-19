@@ -858,14 +858,29 @@ tbody td {
         <div class="nav-group-label">Overview</div>
         <a href="{% url 'dashboard' %}" class="active"><i class="bi bi-grid-1x2-fill"></i> Dashboard</a>
         <a href="{% url 'sales' %}"><i class="bi bi-bag-check"></i> Sales</a>
+        <a href="{% url 'add_sale' %}"><i class="bi bi-plus-circle"></i> Add Sale</a>
         <a href="{% url 'customers' %}"><i class="bi bi-people-fill"></i> Customers</a>
         <a href="{% url 'product_list' %}"><i class="bi bi-box-seam"></i> Products</a>
+        <a href="{% url 'Stock_movement' %}"><i class="bi bi-arrow-left-right"></i> Stock Movement</a>
       </div>
 
       <div>
         <div class="nav-group-label">Finance</div>
         <a href="{% url 'payments' %}"><i class="bi bi-credit-card-2-front"></i> Payments</a>
+        <a href="{% url 'add_expense' %}"><i class="bi bi-wallet2"></i> Add Expense</a>
         <a href="{% url 'reports' %}"><i class="bi bi-bar-chart-line-fill"></i> Reports</a>
+      </div>
+
+      <div>
+        <div class="nav-group-label">Account</div>
+        <form action="{% url 'logout' %}" method="POST" style="margin: 0 4px;">
+          {% csrf_token %}
+          <button
+            type="submit"
+            style="width:100%; display:flex; align-items:center; gap:12px; padding:12px 14px; border-radius:14px; border:1px solid rgba(255,255,255,0.12); background:rgba(255,255,255,0.04); color:rgba(255,255,255,0.82);">
+            <i class="bi bi-box-arrow-right"></i> Logout
+          </button>
+        </form>
       </div>
     </nav>
 
@@ -875,9 +890,6 @@ tbody td {
         <div class="user-name">{{ request.user.username }}</div>
         <div class="user-role">{{ request.user.role_label|default:"User" }}</div>
       </div>
-      <a href="{% url 'logout' %}" class="logout-btn" title="Logout">
-        <i class="bi bi-box-arrow-right"></i>
-      </a>
     </div>
   </aside>
 
@@ -1066,10 +1078,10 @@ function safeParseJSON(id, fallback) {
 }
 
 const initialRevenue = [1000000, 120000, 30000, 400000];
-const initialExpenses = safeParseJSON("initial-expenses-data", [1000000,240000,20050000,20000000]);
+const initialExpenses = [650000, 180000, 90000, 260000];
 
-const MonthlyRevenue = safeParseJSON("monthly-revenue-data", []).map(Number);
-const MonthlyExpenses = safeParseJSON("monthly-expenses-data", []).map(Number);
+const monthlyRevenue = safeParseJSON("monthly-revenue-data", []).map(Number);
+const monthlyExpenses = safeParseJSON("monthly-expenses-data", []).map(Number);
 
 const initialSalesDistribution = safeParseJSON("sales-distribution-data", { labels: [], values: [] });
 const initialRecentSales = safeParseJSON("recent-sales-data", []);
@@ -1112,18 +1124,17 @@ function initials(name) {
 Chart.defaults.color = "#66758f";
 Chart.defaults.font.family = "'Manrope', sans-serif";
 Chart.defaults.font.size = 12;
-const revenueData = monthLabels.map((_, index) => {
-  if (index < 4) {
-    return initialRevenue[index] ?? 0;
-  }
-  return MonthlyRevenue[index - 4] ?? 0;
-});
-const expenseData = monthLabels.map((_, index) => {
-  if (index < 4) {
-    return initialExpenses[index] ?? 0;
-  }
-  return MonthlyExpenses[index - 4] ?? 0;
-});
+function buildChartData(dummyData, liveData) {
+  return monthLabels.map((_, index) => {
+    if (index < 4) {
+      return dummyData[index] ?? 0;
+    }
+    return liveData[index] ?? 0;
+  });
+}
+
+const revenueData = buildChartData(initialRevenue, monthlyRevenue);
+const expenseData = buildChartData(initialExpenses, monthlyExpenses);
 const lineChart = new Chart(document.getElementById("lineChart"), {
   type: "line",
   data: {
@@ -1343,9 +1354,9 @@ async function refreshDashboard() {
     setMetric("netProfit", data.profit);
     setMetric("totalLoss", data.loss);
 
-    lineChart.data.datasets[0].data = [...initialRevenue,...(data.monthly_revenue || []).slice(0, 8) ];
+    lineChart.data.datasets[0].data =buildChartData( initialRevenue,data.monthly_revenue || [] );
 
-    lineChart.data.datasets[1].data = [...initialExpenses,...(data.monthly_expenses || []).slice(0, 8)];
+    lineChart.data.datasets[1].data = buildChartData(initialExpenses,data.monthly_expenses || []);
 
     lineChart.update("none");
 

@@ -123,7 +123,7 @@
         <div class="d-flex flex-wrap justify-content-between gap-3 align-items-start">
             <div>
                 <div class="hero-pill"><i class="bi bi-box-seam-fill"></i> Product catalog</div>
-                <h1 class="mt-3 mb-0">Manage products and services in one cleaner inventory view.</h1>
+                <h1 class="mt-3 mb-0">Manage products and services .</h1>
                 <p>See pricing, stock levels, and categories at a glance, then jump straight into editing or adding new catalog items.</p>
             </div>
             <a href="{% url 'add_product' %}" class="btn btn-light rounded-4 px-3 py-2 fw-bold d-inline-flex align-items-center gap-2">
@@ -142,16 +142,16 @@
         </div>
         <div class="col-md-4">
             <div class="summary-card amber-soft">
-                <div class="eyebrow">Categories</div>
-                <div class="value">Live</div>
-                <div class="subtle mt-2">Each row shows the saved category attached to the product record.</div>
+                <div class="eyebrow">Low Stock</div>
+                <div class="value">{{ low_stock_count }}</div>
+                <div class="subtle mt-2">Products already at or below the alert threshold.</div>
             </div>
         </div>
         <div class="col-md-4">
             <div class="summary-card teal-soft">
-                <div class="eyebrow">Stock Tracking</div>
-                <div class="value">Ready</div>
-                <div class="subtle mt-2">Keep stock values current for smoother sales entry and reporting.</div>
+                <div class="eyebrow">Out of Stock</div>
+                <div class="value">{{ out_of_stock_count }}</div>
+                <div class="subtle mt-2">Products that need a stock-in confirmation before the next sale.</div>
             </div>
         </div>
     </section>
@@ -164,6 +164,9 @@
             </div>
             <a href="{% url 'add_product' %}" class="btn btn-primary rounded-4 px-3 py-2 fw-bold">
                 <i class="bi bi-plus-lg"></i> New product
+            </a>
+            <a href="{% url 'Stock_movement' %}" class="btn btn-outline-primary rounded-4 px-3 py-2 fw-bold">
+                <i class="bi bi-arrow-left-right"></i> Stock movement
             </a>
         </div>
 

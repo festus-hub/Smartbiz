@@ -2,7 +2,7 @@ from django.test import TestCase
 from django.urls import reverse
 from unittest.mock import patch
 
-from .models import Business, Customer, Payment, Product, Sales, User
+from .models import Business, Customer, Payment, Product, Sales, StockAlert, StockMovement, User
 
 
 class RoleAccessTests(TestCase):
@@ -221,3 +221,96 @@ class ApiTests(TestCase):
         response = self.client.get(reverse('api-dashboard-summary'))
 
         self.assertEqual(response.status_code, 403)
+
+    def test_low_stock_alerts_endpoint_returns_authenticated_results(self):
+        self.client.force_login(self.user)
+        StockAlert.objects.create(product=self.product, message='Phone is low on stock.')
+
+        response = self.client.get(reverse('api-low-stock-alerts'))
+
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertEqual(len(payload), 1)
+        self.assertEqual(payload[0]['product_name'], 'Phone')
+
+
+class InventoryWorkflowTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username='cashier@example.com',
+            email='cashier@example.com',
+            password='testpass123',
+            role=User.CASHIER,
+        )
+        self.customer = Customer.objects.create(
+            name='Jane Customer',
+            email='jane2@example.com',
+            phone='0712345678',
+        )
+        self.product = Product.objects.create(
+            name='Router',
+            category='electronics',
+            price='2500.00',
+            stock_quantity=6,
+            low_stock_threshold=3,
+        )
+
+    def test_add_sale_creates_stock_out_movement_and_updates_inventory(self):
+        self.client.force_login(self.user)
+
+        response = self.client.post(
+            reverse('add_sale'),
+            {
+                'customer_name': self.customer.name,
+                'phone_number': self.customer.phone,
+                'email': self.customer.email,
+                'product': self.product.id,
+                'quantity': 2,
+                'price': '2500.00',
+            },
+        )
+
+        self.assertRedirects(response, reverse('sales'))
+        self.product.refresh_from_db()
+        self.assertEqual(self.product.stock_quantity, 4)
+        movement = StockMovement.objects.get()
+        self.assertEqual(movement.movement_type, StockMovement.MOVEMENT_OUT)
+
+    def test_stock_movement_page_records_stock_in_and_creates_restock_alert(self):
+        self.product.stock_quantity = 2
+        self.product.save(update_fields=['stock_quantity'])
+        self.client.force_login(self.user)
+
+        response = self.client.post(
+            reverse('Stock_movement'),
+            {
+                'product': self.product.id,
+                'movement_type': StockMovement.MOVEMENT_IN,
+                'quantity': 3,
+                'note': 'Supplier delivery',
+            },
+        )
+
+        self.assertRedirects(response, reverse('Stock_movement'))
+        self.product.refresh_from_db()
+        self.assertEqual(self.product.stock_quantity, 5)
+        self.assertTrue(StockAlert.objects.filter(product=self.product, message__icontains='restocked').exists())
+
+    def test_stock_movement_page_rejects_stock_out_above_available_quantity(self):
+        self.client.force_login(self.user)
+
+        response = self.client.post(
+            reverse('Stock_movement'),
+            {
+                'product': self.product.id,
+                'movement_type': StockMovement.MOVEMENT_OUT,
+                'quantity': 20,
+                'note': 'Bad request',
+            },
+            follow=True,
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.product.refresh_from_db()
+        self.assertEqual(self.product.stock_quantity, 6)
+        self.assertEqual(StockMovement.objects.count(), 0)

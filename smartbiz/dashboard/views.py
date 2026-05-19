@@ -2,18 +2,19 @@ import csv
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
+from django.db import transaction
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import authenticate, login, logout
 from decimal import Decimal
-from django.db.models import Sum
+from django.db.models import F, Sum
 from django.urls import reverse
 from django.utils.dateparse import parse_date
 from functools import wraps
 from .models import Sales, Payment, Customer, User, Product, Expense, StockMovement
 from . import models
 from django.contrib.auth.forms import PasswordResetForm
-from .forms import ProductForm
+from .forms import ProductForm, StockMovementForm
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -142,6 +143,27 @@ def build_sales_metrics():
         'transactions': total_sales,
         'total_revenue': total_revenue,
     }
+
+
+def validate_stock_movement(product, quantity, movement_type):
+    if quantity <= 0:
+        return "Quantity must be greater than zero."
+    if movement_type == StockMovement.MOVEMENT_OUT and quantity > product.stock_quantity:
+        return f"Cannot remove {quantity} units from {product.name}. Only {product.stock_quantity} available."
+    return None
+
+
+def create_stock_movement(*, product, quantity, movement_type, note=''):
+    error = validate_stock_movement(product, quantity, movement_type)
+    if error:
+        raise ValueError(error)
+
+    return StockMovement.objects.create(
+        product=product,
+        quantity=quantity,
+        movement_type=movement_type,
+        note=note,
+    )
 
 
 # AUTH VIEWS
@@ -274,7 +296,7 @@ def payments_view(request):
 
     if query:
         payments = payments.filter(
-            models.Q(transaction_id__icontains=query)
+              models.Q(transaction_id__icontains=query)
             | models.Q(checkout_request_id__icontains=query)
             | models.Q(phone_number__icontains=query)
             | models.Q(sale__customer__name__icontains=query)
@@ -532,12 +554,24 @@ def add_sale(request):
         customer = upsert_customer(customer_name, phone, email)
         product = get_object_or_404(Product, id=product_id )
 
-        Sales.objects.create(
-            customer=customer,
-            product=product,
-            quantity=quantity,
-            price=price,
-        )
+        stock_error = validate_stock_movement(product, quantity, StockMovement.MOVEMENT_OUT)
+        if stock_error:
+            messages.error(request, stock_error)
+            return redirect('add_sale')
+
+        with transaction.atomic():
+            sale = Sales.objects.create(
+                customer=customer,
+                product=product,
+                quantity=quantity,
+                price=price,
+            )
+            create_stock_movement(
+                product=product,
+                quantity=quantity,
+                movement_type=StockMovement.MOVEMENT_OUT,
+                note=f"Sale #{sale.id} recorded.",
+            )
 
         messages.success(request, "Sale added successfully.")
         return redirect('sales')
@@ -567,11 +601,32 @@ def edit_sale(request, sale_id):
             messages.error(request, "Customer, email, and product are required.")
             return redirect('edit_sale', sale_id=sale.id)
 
-        sale.customer = upsert_customer(customer_name, phone, email, current_customer=sale.customer)
-        sale.product = get_object_or_404(Product, id=product_id)
-        sale.quantity = quantity
-        sale.price = price
-        sale.save(update_fields=['customer', 'product', 'quantity', 'price'])
+        updated_product = get_object_or_404(Product, id=product_id)
+        customer = upsert_customer(customer_name, phone, email, current_customer=sale.customer)
+
+        try:
+            with transaction.atomic():
+                create_stock_movement(
+                    product=sale.product,
+                    quantity=sale.quantity,
+                    movement_type=StockMovement.MOVEMENT_IN,
+                    note=f"Sale #{sale.id} update reversal.",
+                )
+                create_stock_movement(
+                    product=updated_product,
+                    quantity=quantity,
+                    movement_type=StockMovement.MOVEMENT_OUT,
+                    note=f"Sale #{sale.id} updated.",
+                )
+
+                sale.customer = customer
+                sale.product = updated_product
+                sale.quantity = quantity
+                sale.price = price
+                sale.save(update_fields=['customer', 'product', 'quantity', 'price'])
+        except ValueError as exc:
+            messages.error(request, str(exc))
+            return redirect('edit_sale', sale_id=sale.id)
 
         messages.success(request, "Sale updated successfully.")
         return redirect('sales')
@@ -589,7 +644,14 @@ def delete_sale(request, sale_id):
     sale = get_object_or_404(Sales, id=sale_id)
 
     if request.method == 'POST':
-        sale.delete()
+        with transaction.atomic():
+            create_stock_movement(
+                product=sale.product,
+                quantity=sale.quantity,
+                movement_type=StockMovement.MOVEMENT_IN,
+                note=f"Sale #{sale.id} deleted.",
+            )
+            sale.delete()
         messages.success(request, "Sale deleted successfully.")
         return redirect('sales')
 
@@ -699,10 +761,16 @@ def custom_password_reset(request):
     return render(request, 'dashboard/password_reset.html', {'form': form})
 
 # PRODUCT VIEW
-role_required(User.EMPLOYEE)
+@role_required(User.EMPLOYEE)
 def product_list(request):
     products = Product.objects.all().order_by('-created_at')
-    return render(request, 'dashboard/product_list.html', {'products': products})
+    low_stock_count = Product.objects.filter(stock_quantity__lte=F('low_stock_threshold')).count()
+    out_of_stock_count = Product.objects.filter(stock_quantity__lte=0).count()
+    return render(request, 'dashboard/product_list.html', {
+        'products': products,
+        'low_stock_count': low_stock_count,
+        'out_of_stock_count': out_of_stock_count,
+    })
 
 @role_required(User.MANAGER)
 def add_product(request):
@@ -727,15 +795,47 @@ def edit_product(request, pk):
 @role_required(User.MANAGER)
 def delete_product(request, pk):
     product = get_object_or_404(Product, pk=pk)
-    product.delete()
-    return redirect('product_list')
+    if request.method == 'POST':
+        product.delete()
+        messages.success(request, "Product deleted successfully.")
+        return redirect('product_list')
+
+    return render(request, 'dashboard/confirm_delete.html', {'product': product})
 
 # stock movement
+@role_required(User.EMPLOYEE)
 def stock_view(request):
+    if request.method == 'POST':
+        form = StockMovementForm(request.POST)
+        if form.is_valid():
+            movement = form.save(commit=False)
+            try:
+                create_stock_movement(
+                    product=movement.product,
+                    quantity=movement.quantity,
+                    movement_type=movement.movement_type,
+                    note=movement.note,
+                )
+            except ValueError as exc:
+                messages.error(request, str(exc))
+            else:
+                action = 'added to' if movement.movement_type == StockMovement.MOVEMENT_IN else 'removed from'
+                messages.success(
+                    request,
+                    f"{movement.quantity} units {action} {movement.product.name}. Current stock: {movement.product.stock_quantity}."
+                )
+                return redirect('Stock_movement')
+    else:
+        form = StockMovementForm()
+
     movements = StockMovement.objects.select_related('product').order_by('-date')
+    low_stock_products = Product.objects.filter(stock_quantity__lte=F('low_stock_threshold')).order_by('stock_quantity', 'name')
+    unread_alerts = models.StockAlert.objects.select_related('product').filter(is_read=False).order_by('-created_at')[:10]
     context = {
-         'movements': movements
+         'movements': movements,
+         'form': form,
+         'low_stock_products': low_stock_products,
+         'unread_alerts': unread_alerts,
      }
  
     return render(request,'dashboard/stock_movement.html',context)
-

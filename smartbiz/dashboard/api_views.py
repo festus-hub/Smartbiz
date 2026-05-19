@@ -2,30 +2,34 @@ from drf_spectacular.utils import extend_schema
 from decimal import Decimal
 from django.conf import settings
 from django.contrib.auth import login, logout
+from django.db import transaction
 from django.db.models import Sum
 from django.urls import reverse
 from rest_framework import filters, status, viewsets
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.exceptions import ValidationError
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.generics import GenericAPIView
 
-from .models import Business, Customer, Expense, Payment, Product, Sales, StockAlert
+from .models import Business, Customer, Expense, Payment, Product, Sales, StockAlert, StockMovement
 from .mpesa import MpesaError, initiate_stk_push, parse_stk_callback
 from .serializers import (
     CustomerSerializer,
+    DashboardSummarySerializer,
     ExpenseSerializer,
     LoginSerializer,
-    PaymentSerializer,
     ProductSerializer,
+    PaymentSerializer,
     RegisterSerializer,
     SaleSerializer,
+    StockAlertSerializer,
+    StockMovementSerializer,
     UserSerializer,
     EmptySerializer,
     LogoutResponseSerializer,
-    DashboardSummarySerializer,
 )
-from .views import build_dashboard_metrics
+from .views import build_dashboard_metrics, create_stock_movement, validate_stock_movement
 
 
 def get_or_create_default_business_for_user(user):
@@ -44,6 +48,8 @@ def get_or_create_default_business_for_user(user):
 
 class RegisterAPIView(GenericAPIView):
     serializer_class = RegisterSerializer
+    permission_classes = [AllowAny]
+
     def post(self, request):
         serializer = RegisterSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -53,6 +59,8 @@ class RegisterAPIView(GenericAPIView):
 
 class LoginAPIView(GenericAPIView):
     serializer_class = LoginSerializer
+    permission_classes = [AllowAny]
+
     def post(self, request):
         serializer = LoginSerializer(data=request.data, context={"request": request})
         serializer.is_valid(raise_exception=True)
@@ -66,6 +74,8 @@ class LoginAPIView(GenericAPIView):
 )
 class LogoutAPIView(GenericAPIView):
     serializer_class = EmptySerializer
+    permission_classes = [IsAuthenticated]
+
     def post(self, request):
         logout(request)
         return Response({"message": "Logout successful."})
@@ -73,6 +83,8 @@ class LogoutAPIView(GenericAPIView):
 
 class CurrentUserAPIView(GenericAPIView):
     serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated]
+
     def get(self, request):
         return Response(UserSerializer(request.user).data)
 
@@ -194,24 +206,94 @@ class SalesViewSet(viewsets.ModelViewSet):
     search_fields = ["customer__name", "customer__email", "product__name"]
     ordering_fields = ["created_at", "quantity", "price"]
 
+    def perform_create(self, serializer):
+        product = serializer.validated_data["product"]
+        quantity = serializer.validated_data["quantity"]
+        error = validate_stock_movement(product, quantity, StockMovement.MOVEMENT_OUT)
+        if error:
+            raise ValidationError({"quantity": [error]})
+
+        with transaction.atomic():
+            sale = serializer.save()
+            create_stock_movement(
+                product=product,
+                quantity=quantity,
+                movement_type=StockMovement.MOVEMENT_OUT,
+                note=f"Sale #{sale.id} recorded via API.",
+            )
+
+    def perform_update(self, serializer):
+        sale = self.get_object()
+        updated_product = serializer.validated_data.get("product", sale.product)
+        updated_quantity = serializer.validated_data.get("quantity", sale.quantity)
+
+        with transaction.atomic():
+            create_stock_movement(
+                product=sale.product,
+                quantity=sale.quantity,
+                movement_type=StockMovement.MOVEMENT_IN,
+                note=f"Sale #{sale.id} API update reversal.",
+            )
+
+            try:
+                create_stock_movement(
+                    product=updated_product,
+                    quantity=updated_quantity,
+                    movement_type=StockMovement.MOVEMENT_OUT,
+                    note=f"Sale #{sale.id} updated via API.",
+                )
+            except ValueError as exc:
+                raise ValidationError({"quantity": [str(exc)]}) from exc
+
+            serializer.save()
+
+    def perform_destroy(self, instance):
+        with transaction.atomic():
+            create_stock_movement(
+                product=instance.product,
+                quantity=instance.quantity,
+                movement_type=StockMovement.MOVEMENT_IN,
+                note=f"Sale #{instance.id} deleted via API.",
+            )
+            instance.delete()
+
+
+class StockMovementViewSet(viewsets.ModelViewSet):
+    queryset = StockMovement.objects.select_related("product").all().order_by("-date")
+    serializer_class = StockMovementSerializer
+    permission_classes = [IsAuthenticated]
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ["product__name", "note", "movement_type"]
+    ordering_fields = ["date", "quantity", "movement_type"]
+
+    def perform_create(self, serializer):
+        data = serializer.validated_data
+        try:
+            movement = create_stock_movement(
+                product=data["product"],
+                quantity=data["quantity"],
+                movement_type=data["movement_type"],
+                note=data.get("note", ""),
+            )
+        except ValueError as exc:
+            raise ValidationError({"quantity": [str(exc)]}) from exc
+        serializer.instance = movement
+
 @extend_schema(
     request=None,
-    responses=EmptySerializer
+    responses=DashboardSummarySerializer
 )
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
-def dashboard_summary_api(GenericAPIView):
-    serializer_class = DashboardSummarySerializer
-
-    def get(self, request):
-
-        data = {
-            "sales": 100,
-            "customers":50,
-            "products":20,
-            "revenue":5000
-        }
-        return Response(data)
+def dashboard_summary_api(request):
+    metrics = build_dashboard_metrics()
+    data = {
+        "sales": metrics["total_sales"],
+        "customers": metrics["total_customers"],
+        "products": metrics["total_products"],
+        "revenue": metrics["total_revenue"],
+    }
+    return Response(data)
 
 @extend_schema(
     request=None,
@@ -311,6 +393,7 @@ def report_profit_api(request):
 class MpesaCallbackAPIView(GenericAPIView):
     serializer_class = EmptySerializer
     authentication_classes = []
+    permission_classes = [AllowAny]
 
     def post(self, request):
         callback_data = parse_stk_callback(request.data)
@@ -356,16 +439,10 @@ class MpesaCallbackAPIView(GenericAPIView):
         return Response({"ResultCode": 0, "ResultDesc": "Accepted"})
 
 class LowStockAlertsAPI(GenericAPIView):
+    serializer_class = StockAlertSerializer
+    permission_classes = [IsAuthenticated]
+
     def get(self, request):
         alerts = StockAlert.objects.filter(is_read=False).order_by('-created_at')
-
-        data = [
-            {
-                "product": a.product.name,
-                "message": a.message,
-                "date": a.created_at
-            }
-            for a in alerts
-        ]
-
-        return Response(data)
+        serializer = self.serializer_class(alerts, many=True)
+        return Response(serializer.data)

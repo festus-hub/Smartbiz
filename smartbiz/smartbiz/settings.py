@@ -19,21 +19,29 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 HAS_DRF_SPECTACULAR = find_spec('drf_spectacular') is not None
 
 
+def env_bool(name, default=False):
+    value = os.environ.get(name)
+    if value is None:
+        return default
+    return value.strip().lower() in {'1', 'true', 'yes', 'on'}
+
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-1cmu*!yv7i%v!p)j!au+1#x#atsr6uq@!d2(#yolp2mn_nyfj5'
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-change-me')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env_bool('DJANGO_DEBUG', default=True)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [host.strip() for host in os.environ.get('DJANGO_ALLOWED_HOSTS', '127.0.0.1,localhost').split(',') if host.strip()]
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -164,17 +172,17 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
-EMAIL_HOST_USER = 'festuskipchirchir15@gmail.com'
-EMAIL_HOST_PASSWORD = 'oufljeuknfpfmwjr'
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 MPESA_ENV = os.environ.get('MPESA_ENV', 'sandbox')
-MPESA_CONSUMER_KEY = os.environ.get('MPESA_CONSUMER_KEY', 'zyf22CG0suhcx2z8mvruUauQ5EsAqTY7DGL91CRjWgrQzBRC')
-MPESA_CONSUMER_SECRET = os.environ.get('MPESA_CONSUMER_SECRET', '7SThoERwBcOYmIEnnA5iKBGL5yJ5OspDq2hbEOZaQgkLryX6R91yGPcVt1uLAr7v')
+MPESA_CONSUMER_KEY = os.environ.get('MPESA_CONSUMER_KEY', '')
+MPESA_CONSUMER_SECRET = os.environ.get('MPESA_CONSUMER_SECRET', '')
 MPESA_SHORTCODE = os.environ.get('MPESA_SHORTCODE', '174379')
-MPESA_PASSKEY = os.environ.get('MPESA_PASSKEY', 'bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919')
+MPESA_PASSKEY = os.environ.get('MPESA_PASSKEY', '')
 MPESA_TRANSACTION_TYPE = os.environ.get('MPESA_TRANSACTION_TYPE', 'CustomerPayBillOnline')
-MPESA_CALLBACK_URL = os.environ.get('MPESA_CALLBACK_URL', 'https://16c6-196-207-175-179.ngrok-free.app')
+MPESA_CALLBACK_URL = os.environ.get('MPESA_CALLBACK_URL', '')
 
 
 if HAS_DRF_SPECTACULAR:
@@ -200,3 +208,12 @@ AXES_RESET_ON_SUCCESS = True
 
 # Track by IP address
 AXES_LOCKOUT_PARAMETERS = ["ip_address"]
+
+JAZZMIN_SETTINGS = {
+    "site_title": " Admin",
+
+    "copyright": "smartbiz",
+
+
+
+}

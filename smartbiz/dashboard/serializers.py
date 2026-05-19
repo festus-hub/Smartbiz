@@ -1,7 +1,7 @@
 from django.contrib.auth import authenticate
 from rest_framework import serializers
 
-from .models import Business, Customer, Expense, Payment, Product, Sales, User
+from .models import Business, Customer, Expense, Payment, Product, Sales, StockAlert, StockMovement, User
 
 class DashboardSummarySerializer(serializers.Serializer):
     sales = serializers.IntegerField()
@@ -93,7 +93,7 @@ class CustomerSerializer(serializers.ModelSerializer):
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
-        fields = ["id", "name", "category", "price", "stock_quantity", "created_at"]
+        fields = ["id", "name", "category", "price", "stock_quantity", "low_stock_threshold", "created_at"]
         read_only_fields = ["id", "created_at"]
 
 
@@ -189,3 +189,21 @@ class SaleSerializer(serializers.ModelSerializer):
 class EmptySerializer(serializers.Serializer):
 
     pass
+
+
+class StockMovementSerializer(serializers.ModelSerializer):
+    product_name = serializers.CharField(source='product.name', read_only=True)
+
+    class Meta:
+        model = StockMovement
+        fields = ['id', 'product', 'product_name', 'movement_type', 'quantity', 'note', 'date']
+        read_only_fields = ['id', 'date', 'product_name']
+
+
+class StockAlertSerializer(serializers.ModelSerializer):
+    product_name = serializers.CharField(source='product.name', read_only=True)
+
+    class Meta:
+        model = StockAlert
+        fields = ['id', 'product', 'product_name', 'message', 'is_read', 'created_at']
+        read_only_fields = ['id', 'product_name', 'created_at']

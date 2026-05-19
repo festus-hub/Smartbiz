@@ -1,201 +1,312 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stock Movement System</title>
-    <style>
-        :root {
-            --primary: #4a90e2;
-            --success: #28a745;
-            --danger: #dc3545;
-            --dark: #333;
-            --light: #f8f9fa;
-        }
+{% extends 'dashboard/base.html' %}
+{% block content %}
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #4b627e;
-            display: flex;
-            justify-content: center;
-            padding: 20px;
-        }
+<style>
+.stock-page {
+    --surface: #ffffff;
+    --border: rgba(148, 163, 184, 0.22);
+    --muted: #66758f;
+    --shadow: 0 24px 60px rgba(15, 23, 42, 0.08);
+}
 
-        .container {
-            background: white;
-            padding: 2rem;
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            width: 100%;
-            max-width: 800px;
-        }
+.stock-page .hero {
+    padding: 28px;
+    border-radius: 28px;
+    color: #ffffff;
+    background:
+        radial-gradient(circle at top right, rgba(251, 191, 36, 0.18), transparent 32%),
+        linear-gradient(135deg, #0f172a 0%, #0f766e 45%, #1d4ed8 120%);
+    box-shadow: 0 26px 60px rgba(15, 23, 42, 0.18);
+}
 
-        h2 { color: var(--dark); margin-top: 0; }
+.stock-page .hero h1,
+.stock-page .panel-title {
+    font-weight: 800;
+    letter-spacing: -0.02em;
+}
 
-        .form-row {
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
+.stock-page .hero p {
+    margin: 0.75rem 0 0;
+    max-width: 56rem;
+    color: rgba(255, 255, 255, 0.82);
+}
 
-        input, select {
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            outline: none;
-        }
+.stock-page .hero-pill,
+.stock-page .badge-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 0.9rem;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 700;
+}
 
-        input:focus { border-color: var(--primary); }
+.stock-page .hero-pill {
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+}
 
-        button {
-            padding: 10px;
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: opacity 0.2s;
-        }
+.stock-page .panel,
+.stock-page .summary-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    box-shadow: var(--shadow);
+}
 
-        button:hover { opacity: 0.9; }
+.stock-page .panel {
+    padding: 24px;
+}
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
+.stock-page .summary-card {
+    padding: 22px;
+    height: 100%;
+}
 
-        th {
-            background-color: var(--light);
-            text-align: left;
-            padding: 12px;
-            border-bottom: 2px solid #eee;
-        }
+.stock-page .eyebrow {
+    color: var(--muted);
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 700;
+}
 
-        td {
-            padding: 12px;
-            border-bottom: 1px solid #eee;
-        }
+.stock-page .value {
+    margin-top: 0.8rem;
+    font-size: 2rem;
+    font-weight: 800;
+}
 
-        .badge {
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 0.85em;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
+.stock-page .subtle {
+    color: var(--muted);
+}
 
-        .badge-in { background: #d4edda; color: var(--success); }
-        .badge-out { background: #f8d7da; color: var(--danger); }
+.stock-page .blue-soft { background: linear-gradient(180deg, #eef5ff 0%, #dbeafe 100%); }
+.stock-page .amber-soft { background: linear-gradient(180deg, #fff7ed 0%, #fde7c7 100%); }
+.stock-page .teal-soft { background: linear-gradient(180deg, #ecfeff 0%, #c9f2ef 100%); }
 
-        .empty-state {
-            text-align: center;
-            color: #999;
-            padding: 20px;
-        }
-    </style>
-</head>
-<body>
+.stock-page .panel form p label {
+    display: block;
+    margin-bottom: 0.45rem;
+    font-weight: 700;
+    color: #1e293b;
+}
 
-<div class="container">
-    <h2>Stock Movements</h2>
-    
-    <div class="form-row">
-        <input type="text" id="itemName" placeholder="Item Description">
-        <input type="number" id="itemQty" placeholder="Qty">
-        <select id="moveType">
-            <option value="IN">Stock In</option>
-            <option value="OUT">Stock Out</option>
-        </select>
-        <button onclick="addEntry()">Add Entry</button>
-    </div>
+.stock-page .panel form p {
+    margin-bottom: 1rem;
+}
 
-    <table>
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Item</th>
-                <th>Type</th>
-                <th>Quantity</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody id="tableBody">
-        </tbody>
-    </table>
-    <div id="emptyMsg" class="empty-state">No movements recorded yet.</div>
+.stock-page .panel form input,
+.stock-page .panel form select,
+.stock-page .panel form textarea {
+    width: 100%;
+    min-height: 48px;
+    border-radius: 14px;
+    border: 1px solid #cbd5e1;
+    padding: 0.75rem 0.95rem;
+}
+
+.stock-page .table thead th {
+    padding: 1rem;
+    color: var(--muted);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.stock-page .table tbody td {
+    padding: 1rem;
+    vertical-align: middle;
+    border-color: rgba(148, 163, 184, 0.14);
+}
+
+.stock-page .tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem 0.8rem;
+    border-radius: 999px;
+    font-weight: 700;
+}
+
+.stock-page .tag-in {
+    color: #166534;
+    background: #dcfce7;
+}
+
+.stock-page .tag-out {
+    color: #b91c1c;
+    background: #fee2e2;
+}
+
+.stock-page .alert-item {
+    padding: 14px 16px;
+    border-radius: 18px;
+    border: 1px solid rgba(148, 163, 184, 0.16);
+    background: #fff7ed;
+}
+
+.stock-page .alert-item + .alert-item {
+    margin-top: 0.75rem;
+}
+</style>
+
+<div class="container-fluid px-4 stock-page">
+    <section class="hero mb-4">
+        <div class="d-flex flex-wrap justify-content-between gap-3 align-items-start">
+            <div>
+                <div class="hero-pill"><i class="bi bi-boxes"></i> Inventory control</div>
+                <h1 class="mt-3 mb-0">Confirm stock in and stock out.</h1>
+                <p>Use this page to post real inventory movements, keep product quantities accurate, and surface low-stock or out-of-stock alerts before sales are blocked.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="row g-4 mb-4">
+        <div class="col-md-4">
+            <div class="summary-card blue-soft">
+                <div class="eyebrow">Recorded Movements</div>
+                <div class="value">{{ movements|length }}</div>
+                <div class="subtle mt-2">Full stock movement history stored in the database.</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="summary-card amber-soft">
+                <div class="eyebrow">Low Stock Products</div>
+                <div class="value">{{ low_stock_products|length }}</div>
+                <div class="subtle mt-2">Products at or below their alert threshold.</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="summary-card teal-soft">
+                <div class="eyebrow">Unread Alerts</div>
+                <div class="value">{{ unread_alerts|length }}</div>
+                <div class="subtle mt-2">Latest stock alerts waiting for attention.</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="row g-4">
+        <div class="col-lg-5">
+            <div class="panel">
+                <h2 class="panel-title h4 mb-2">Confirm a stock movement</h2>
+                <p class="text-muted mb-4">Choose the product, whether stock is coming in or going out, the quantity, and an optional note for why the adjustment happened.</p>
+                <form method="POST">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn btn-primary rounded-4 px-4 py-2 fw-bold">Save movement</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="panel mt-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <h2 class="panel-title h5 mb-1">Alerts</h2>
+                        <p class="text-muted mb-0">Low stock, out of stock, and restock notifications.</p>
+                    </div>
+                    <span class="badge-pill text-bg-warning">{{ unread_alerts|length }} active</span>
+                </div>
+                {% for alert in unread_alerts %}
+                    <div class="alert-item">
+                        <strong>{{ alert.product.name }}</strong>
+                        <div class="text-muted small mt-1">{{ alert.message }}</div>
+                        <div class="small mt-2">{{ alert.created_at|date:"M d, Y H:i" }}</div>
+                    </div>
+                {% empty %}
+                    <div class="text-muted">No unread stock alerts right now.</div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="col-lg-7">
+            <div class="panel mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <h2 class="panel-title h4 mb-1">Products needing attention</h2>
+                        <p class="text-muted mb-0">These products are low or out of stock based on their threshold.</p>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Current Stock</th>
+                                <th>Threshold</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for product in low_stock_products %}
+                                <tr>
+                                    <td>{{ product.name }}</td>
+                                    <td>{{ product.stock_quantity }}</td>
+                                    <td>{{ product.low_stock_threshold }}</td>
+                                    <td>
+                                        {% if product.stock_quantity <= 0 %}
+                                            <span class="tag tag-out">Out of stock</span>
+                                        {% else %}
+                                            <span class="tag tag-in">Low stock</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted py-4">All tracked products are above their stock alert threshold.</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <h2 class="panel-title h4 mb-1">Movement history</h2>
+                        <p class="text-muted mb-0">Every stock adjustment stored on the server, newest first.</p>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Product</th>
+                                <th>Type</th>
+                                <th>Quantity</th>
+                                <th>Note</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for movement in movements %}
+                                <tr>
+                                    <td>{{ movement.date|date:"M d, Y H:i" }}</td>
+                                    <td>{{ movement.product.name }}</td>
+                                    <td>
+                                        {% if movement.movement_type == 'in' %}
+                                            <span class="tag tag-in">Stock In</span>
+                                        {% else %}
+                                            <span class="tag tag-out">Stock Out</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ movement.quantity }}</td>
+                                    <td>{{ movement.note|default:"-" }}</td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted py-4">No stock movements recorded yet.</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
 </div>
 
-<script>
-    let movements = JSON.parse(localStorage.getItem('stockData')) || [];
-    renderTable();
-
-    function addEntry() {
-        const name = document.getElementById('itemName').value;
-        const qty = document.getElementById('itemQty').value;
-        const type = document.getElementById('moveType').value;
-        
-        if (!name || !qty) {
-            alert("Please fill in all fields");
-            return;
-        }
-
-        const entry = {
-            id: Date.now(),
-            date: new Date().toLocaleString(),
-            name: name,
-            qty: qty,
-            type: type
-        };
-
-        movements.unshift(entry); 
-        saveAndRender();
-
-        
-        document.getElementById('itemName').value = '';
-        document.getElementById('itemQty').value = '';
-    }
-
-    function deleteEntry(id) {
-        movements = movements.filter(item => item.id !== id);
-        saveAndRender();
-    }
-
-    function saveAndRender() {
-        localStorage.setItem('stockData', JSON.stringify(movements));
-        renderTable();
-    }
-
-    function renderTable() {
-        const tableBody = document.getElementById('tableBody');
-        const emptyMsg = document.getElementById('emptyMsg');
-        
-        tableBody.innerHTML = '';
-        
-        if (movements.length === 0) {
-            emptyMsg.style.display = 'block';
-            return;
-        } else {
-            emptyMsg.style.display = 'none';
-        }
-
-        movements.forEach(item => {
-            const row = document.createElement('tr');
-            const typeClass = item.type === 'IN' ? 'badge-in' : 'badge-out';
-            
-            row.innerHTML = `
-                <td>${item.date}</td>
-                <td><strong>${item.name}</strong></td>
-                <td><span class="badge ${typeClass}">${item.type}</span></td>
-                <td>${item.qty}</td>
-                <td><button style="background:none; color:#dc3545; padding:0; font-size:12px;" onclick="deleteEntry(${item.id})">Remove</button></td>
-            `;
-            tableBody.appendChild(row);
-        });
-    }
-</script>
-
-</body>
-</html> 
+{% endblock %}
