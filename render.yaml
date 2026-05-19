@@ -3,8 +3,7 @@ services:
     name: smartbiz-web
     runtime: python
     rootDir: smartbiz
-    buildCommand: ./build.sh
-    preDeployCommand: python manage.py migrate --noinput
+    buildCommand: bash build.sh
     startCommand: python -m gunicorn smartbiz.wsgi:application
     envVars:
       - key: PYTHON_VERSION

@@ -181,6 +181,7 @@ python manage.py createsuperuser
 ### Important notes for Render
 
 - Render provides an ephemeral filesystem, so SQLite is not suitable for live deployment there. Use the managed PostgreSQL database created by the blueprint.
+- The blueprint uses `bash build.sh` and runs migrations inside the build step so it works on free Render web services without requiring a paid pre-deploy command.
 - Your `.onrender.com` hostname is automatically allowed by the Django settings.
 - When you later add a custom domain, update `DJANGO_ALLOWED_HOSTS` and `DJANGO_CSRF_TRUSTED_ORIGINS` in the Render dashboard to include it.
 - If you use Gmail SMTP or M-Pesa in production, add those environment variables in the Render dashboard after the first deploy.
