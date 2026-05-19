@@ -241,24 +241,6 @@ textarea {
   color: rgba(255, 255, 255, 0.56);
 }
 
-.logout-btn {
-  margin-left: auto;
-  width: 34px;
-  height: 34px;
-  border-radius: 10px;
-  display: grid;
-  place-items: center;
-  text-decoration: none;
-  color: rgba(255, 255, 255, 0.76);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  transition: all 0.2s ease;
-}
-
-.logout-btn:hover {
-  color: #ffffff;
-  border-color: rgba(255, 255, 255, 0.28);
-  background: rgba(255, 255, 255, 0.08);
-}
 
 .main {
   flex: 1;
@@ -873,14 +855,17 @@ tbody td {
 
       <div>
         <div class="nav-group-label">Account</div>
-        <form action="{% url 'logout' %}" method="POST" style="margin: 0 4px;">
-          {% csrf_token %}
-          <button
-            type="submit"
-            style="width:100%; display:flex; align-items:center; gap:12px; padding:12px 14px; border-radius:14px; border:1px solid rgba(255,255,255,0.12); background:rgba(255,255,255,0.04); color:rgba(255,255,255,0.82);">
-            <i class="bi bi-box-arrow-right"></i> Logout
-          </button>
-        </form>
+      <form action="{% url 'logout' %}" method="POST" style="margin: 0 4px;">
+    {% csrf_token %}
+    <button 
+        type="submit" 
+        onmouseenter="this.style.backgroundColor='rgba(239, 68, 68, 0.15)'; this.style.color='#ff5252'; this.style.borderColor='rgba(239, 68, 68, 0.4)';"
+        onmouseleave="this.style.backgroundColor='rgba(224, 208, 208, 0.04)'; this.style.color='rgba(234, 225, 225, 0.82)'; this.style.borderColor='rgba(255,255,255,0.12)';"
+        style="width:100%; display:flex; align-items:center; gap:12px; padding:12px 14px; border-radius:14px; border:1px solid rgba(255,255,255,0.12); background:rgba(224, 208, 208, 0.04); color:rgba(234, 225, 225, 0.82); font-weight:700; cursor:pointer; transition:all 0.2s ease;">
+        <i class="bi bi-box-arrow-right"></i> Logout
+    </button>
+  </form>
+
       </div>
     </nav>
 
@@ -1077,7 +1062,7 @@ function safeParseJSON(id, fallback) {
   }
 }
 
-const initialRevenue = [1000000, 120000, 30000, 400000];
+const initialRevenue = [10004000, 1200000, 30000, 400000];
 const initialExpenses = [650000, 180000, 90000, 260000];
 
 const monthlyRevenue = safeParseJSON("monthly-revenue-data", []).map(Number);

@@ -170,7 +170,7 @@ def create_stock_movement(*, product, quantity, movement_type, note=''):
 
 def login_view(request):
     if request.method == 'POST':
-        username = request.POST.get('username')
+        username = (request.POST.get('username') or '').strip()
         password = request.POST.get('password')
 
         user = authenticate(request, username=username, password=password)
@@ -179,8 +179,8 @@ def login_view(request):
             login(request, user)
             return redirect('dashboard')
         else:
-            messages.error(request, "Invalid username or password")
-            return redirect('register')
+            messages.error(request, "Invalid email or password")
+            return redirect('login')
 
     return render(request, 'dashboard/login.html')
 
@@ -193,7 +193,7 @@ def logout_view(request):
 def register_view(request):
     if request.method == "POST":
         name = (request.POST.get("username") or '').strip()
-        email = request.POST.get("email")
+        email = (request.POST.get("email") or '').strip().lower()
         password = request.POST.get("password")
         confirm_password = request.POST.get("confirm_password")
 
@@ -222,8 +222,9 @@ def register_view(request):
         )
         user.save()
 
+        login(request, user, backend='django.contrib.auth.backends.ModelBackend')
         messages.success(request, "Account created successfully")
-        return redirect("login")
+        return redirect("dashboard")
 
     return render(request, 'dashboard/register.html')
 

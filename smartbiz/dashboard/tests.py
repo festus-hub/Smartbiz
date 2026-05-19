@@ -17,10 +17,29 @@ class RoleAccessTests(TestCase):
             },
         )
 
-        self.assertRedirects(response, reverse('login'))
+        self.assertRedirects(response, reverse('dashboard'))
         user = User.objects.get(username='owner@example.com')
         self.assertEqual(user.first_name, 'Alice Owner')
         self.assertEqual(user.role, User.BUSINESS_OWNER)
+        self.assertEqual(int(self.client.session['_auth_user_id']), user.id)
+
+    def test_invalid_login_redirects_back_to_login(self):
+        User.objects.create_user(
+            username='owner@example.com',
+            email='owner@example.com',
+            password='testpass123',
+            role=User.BUSINESS_OWNER,
+        )
+
+        response = self.client.post(
+            reverse('login'),
+            {
+                'username': 'owner@example.com',
+                'password': 'wrong-password',
+            },
+        )
+
+        self.assertRedirects(response, reverse('login'))
 
     def test_employee_cannot_access_manager_only_report_page(self):
         user = User.objects.create_user(

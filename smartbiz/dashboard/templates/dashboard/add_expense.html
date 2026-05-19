@@ -4,99 +4,259 @@
 {% block content %}
 
 <style>
-.add-expense-page h2 {
-    font-weight: 600;
-    color: #2c3e50;
+.add-expense-page {
+    padding-bottom: 32px;
 }
 
-.add-expense-page .card {
-    border-radius: 12px;
+.add-expense-page .page-heading {
+    margin: 24px 0 18px;
+}
+
+.add-expense-page .page-heading h2 {
+    margin-bottom: 6px;
+    font-weight: 700;
+    color: #1f2d3d;
+}
+
+.add-expense-page .page-heading p {
+    margin-bottom: 0;
+    color: #6b7280;
+    font-size: 15px;
+}
+
+.add-expense-page .expense-card {
+    max-width: 880px;
     border: none;
+    border-radius: 24px;
+    overflow: hidden;
+    background: #ffffff;
+    box-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
 }
 
-.add-expense-page .card-body {
-    padding: 30px;
+.add-expense-page .expense-card-header {
+    padding: 24px 28px;
+    background: linear-gradient(135deg, #0d6efd 0%, #1d4ed8 55%, #0f766e 100%);
+    color: #ffffff;
 }
 
-.add-expense-page .card-title {
-    font-size: 20px;
+.add-expense-page .expense-card-header h4 {
+    margin: 0 0 8px;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.add-expense-page .expense-card-header p {
+    margin: 0;
+    max-width: 580px;
+    color: rgba(255, 255, 255, 0.88);
+}
+
+.add-expense-page .expense-card-body {
+    padding: 28px;
+}
+
+.add-expense-page .expense-section {
+    height: 100%;
+    padding: 24px;
+    border-radius: 20px;
+    background: #f8fbff;
+    border: 1px solid #e5eefb;
+}
+
+.add-expense-page .section-title {
+    margin-bottom: 8px;
+    font-size: 18px;
+    font-weight: 700;
+    color: #1f2d3d;
+}
+
+.add-expense-page .section-text {
+    margin-bottom: 22px;
+    color: #64748b;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.add-expense-page .form-label {
+    margin-bottom: 8px;
     font-weight: 600;
+    color: #334155;
 }
 
 .add-expense-page input,
 .add-expense-page select,
 .add-expense-page textarea {
-    border-radius: 8px;
-    border: 1px solid #ddd;
+    border-radius: 14px;
+    border: 1px solid #d6e2f0;
+    background: #ffffff;
 }
 
 .add-expense-page input,
 .add-expense-page select {
-    height: 45px;
+    height: 50px;
 }
 
 .add-expense-page textarea {
-    min-height: 110px;
+    min-height: 140px;
     resize: vertical;
+    padding-top: 12px;
 }
 
 .add-expense-page input:focus,
 .add-expense-page select:focus,
 .add-expense-page textarea:focus {
     border-color: #0d6efd;
-    box-shadow: 0 0 6px rgba(13, 110, 253, 0.2);
+    box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.12);
+}
+
+.add-expense-page .quick-view-card {
+    height: 100%;
+    padding: 24px;
+    border-radius: 20px;
+    background: #0f172a;
+    color: #e2e8f0;
+}
+
+.add-expense-page .quick-view-card h5 {
+    margin-bottom: 12px;
+    font-size: 18px;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.add-expense-page .quick-view-card p {
+    margin-bottom: 18px;
+    color: #cbd5e1;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.add-expense-page .quick-view-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.add-expense-page .quick-view-list li {
+    margin-bottom: 12px;
+    padding: 12px 14px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.08);
+    color: #e2e8f0;
+    font-size: 14px;
+}
+
+.add-expense-page .quick-view-list li:last-child {
+    margin-bottom: 0;
+}
+
+.add-expense-page .quick-view-list strong {
+    display: block;
+    margin-bottom: 4px;
+    color: #ffffff;
+}
+
+.add-expense-page .action-row {
+    margin-top: 24px;
 }
 
 .add-expense-page .btn {
-    border-radius: 8px;
-    padding: 8px 18px;
+    border-radius: 12px;
+    padding: 10px 18px;
+    font-weight: 600;
 }
 
 .add-expense-page .btn-primary {
-    background-color: #0d6efd;
+    background: linear-gradient(135deg, #0d6efd 0%, #2563eb 100%);
     border: none;
 }
 
 .add-expense-page .btn-primary:hover {
-    background-color: #8c5ceb;
+    background: linear-gradient(135deg, #0b5ed7 0%, #1d4ed8 100%);
+}
+
+@media (max-width: 767.98px) {
+    .add-expense-page .expense-card-header,
+    .add-expense-page .expense-card-body,
+    .add-expense-page .expense-section,
+    .add-expense-page .quick-view-card {
+        padding: 20px;
+    }
 }
 </style>
 
 <div class="container-fluid px-4 add-expense-page">
-    <h2 class="mt-4 mb-4">Add Expense</h2>
+    <div class="page-heading">
+        <h2>Add Expense</h2>
+        <p>Capture business spending in a cleaner, easier-to-review layout.</p>
+    </div>
 
-    <div class="card shadow-sm" style="max-width: 640px;">
-        <div class="card-body">
+    <div class="card expense-card">
+        <div class="expense-card-header">
+            <h4>Expense Entry Card</h4>
+            <p>Use this form to record a new expense with the amount, category, and a short description for future tracking.</p>
+        </div>
+
+        <div class="expense-card-body">
             <form method="POST">
                 {% csrf_token %}
 
-                <h5 class="card-title text-primary">Expense Details</h5>
-
-                <div class="mb-3">
-                    <label>Description</label>
-                    <textarea name="description" class="form-control" placeholder="What was this expense for?" required></textarea>
-                </div>
-
                 <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label>Amount</label>
-                        <input type="number" name="amount" class="form-control" step="0.01" min="0.01" required>
+                    <div class="col-lg-8 mb-4 mb-lg-0">
+                        <div class="expense-section">
+                            <h5 class="section-title">Expense Details</h5>
+                            <p class="section-text">Fill in the form below so each expense stays clear, categorized, and easy to check later on.</p>
+
+                            <div class="mb-3">
+                                <label class="form-label">Description</label>
+                                <textarea name="description" class="form-control" placeholder="What was this expense for?" required></textarea>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Amount</label>
+                                    <input type="number" name="amount" class="form-control" step="0.01" min="0.01" placeholder="0.00" required>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Category</label>
+                                    <select name="category" class="form-select" required>
+                                        {% for value, label in categories %}
+                                        <option value="{{ value }}">{{ label }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="d-flex flex-wrap justify-content-end gap-2 action-row">
+                                <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">Cancel</a>
+                                <button type="reset" class="btn btn-outline-danger">Reset</button>
+                                <button type="submit" class="btn btn-primary">Save Expense</button>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="col-md-6 mb-3">
-                        <label>Category</label>
-                        <select name="category" class="form-select" required>
-                            {% for value, label in categories %}
-                            <option value="{{ value }}">{{ label }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                </div>
+                    <div class="col-lg-4">
+                        <div class="quick-view-card">
+                            <h5>Quick View</h5>
+                            <p>This custom card keeps the form simple while giving the user a clearer view of what information is needed.</p>
 
-                <div class="d-flex justify-content-end gap-2">
-                    <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">Cancel</a>
-                    <button type="reset" class="btn btn-outline-danger">Reset</button>
-                    <button type="submit" class="btn btn-primary">Save Expense</button>
+                            <ul class="quick-view-list">
+                                <li>
+                                    <strong>Clear Description</strong>
+                                    Explain what the money was spent on.
+                                </li>
+                                <li>
+                                    <strong>Correct Amount</strong>
+                                    Enter the exact value using decimals when needed.
+                                </li>
+                                <li>
+                                    <strong>Right Category</strong>
+                                    Choose the best matching expense group.
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </form>
         </div>
