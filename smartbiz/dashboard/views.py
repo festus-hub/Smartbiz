@@ -457,6 +457,31 @@ def customers_view(request):
 
 @role_required(User.EMPLOYEE)
 def add_customer(request):
+    if request.method == 'POST':
+        name = (request.POST.get('name') or '').strip()
+        phone = (request.POST.get('phone') or '').strip()
+        email = (request.POST.get('email') or '').strip().lower()
+
+        if not name:
+            messages.error(request, "Customer name is required.")
+            return redirect('add_customer')
+
+        if not email:
+            messages.error(request, "Customer email is required.")
+            return redirect('add_customer')
+
+        if Customer.objects.filter(email=email).exists():
+            messages.error(request, "A customer with this email already exists.")
+            return redirect('add_customer')
+
+        Customer.objects.create(
+            name=name,
+            phone=phone,
+            email=email,
+        )
+
+        messages.success(request, "Customer added successfully.")
+        return redirect('customers')
     return render(request, 'dashboard/add_customer.html')   
 
 def upsert_customer(customer_name, phone, email, current_customer=None):
