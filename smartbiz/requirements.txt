@@ -3,7 +3,6 @@ attrs==26.1.0
 crispy-bootstrap5==2025.6
 dj-database-url==2.2.0
 Django==6.0.4
-django-axes==8.0.0
 django-bootstrap5==26.2
 django-crispy-forms==2.4
 django-jazzmin==3.0.1

@@ -41,6 +41,8 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY') or os.environ.get('SECRET_KEY',
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env_bool('DJANGO_DEBUG', default=True)
+DATABASE_URL = os.environ.get('DATABASE_URL', '').strip()
+ENABLE_AXES = env_bool('DJANGO_ENABLE_AXES', default=False)
 
 ALLOWED_HOSTS = env_list('DJANGO_ALLOWED_HOSTS', '127.0.0.1,localhost')
 CSRF_TRUSTED_ORIGINS = env_list('DJANGO_CSRF_TRUSTED_ORIGINS', 'http://127.0.0.1:8000,http://localhost:8000')
@@ -59,6 +61,12 @@ if not DEBUG and SECRET_KEY == 'django-insecure-change-me':
 if not DEBUG and not ALLOWED_HOSTS:
     raise ImproperlyConfigured('Set DJANGO_ALLOWED_HOSTS when DJANGO_DEBUG is false.')
 
+if not DEBUG and not DATABASE_URL:
+    raise ImproperlyConfigured(
+        'DATABASE_URL is required when DJANGO_DEBUG is false. '
+        'Production must use the configured managed database instead of the SQLite fallback.'
+    )
+
 
 # Application definition
 
@@ -74,8 +82,10 @@ INSTALLED_APPS = [
     "crispy_forms",
     "crispy_bootstrap5",
     'rest_framework',
-    'axes',
 ]
+
+if ENABLE_AXES:
+    INSTALLED_APPS.append('axes')
 
 if HAS_DRF_SPECTACULAR:
     INSTALLED_APPS.append('drf_spectacular')
@@ -92,8 +102,10 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'axes.middleware.AxesMiddleware',
 ]
+
+if ENABLE_AXES:
+    MIDDLEWARE.append('axes.middleware.AxesMiddleware')
 
 ROOT_URLCONF = 'smartbiz.urls'
 
@@ -120,11 +132,15 @@ WSGI_APPLICATION = 'smartbiz.wsgi.application'
 
 DATABASES = {
     'default': dj_database_url.config(
-        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
+        default=DATABASE_URL or f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
         conn_max_age=600,
         conn_health_checks=True,
     )
 }
+
+# Warn clearly if still on SQLite in production
+if not DEBUG and DATABASES['default']['ENGINE'] == 'django.db.backends.sqlite3':
+    raise ImproperlyConfigured('Production cannot use SQLite. Set DATABASE_URL.')
 
 
 # Password validation
@@ -233,20 +249,22 @@ if HAS_DRF_SPECTACULAR:
     }
 
 AUTHENTICATION_BACKENDS = [
-    'axes.backends.AxesStandaloneBackend',
     'django.contrib.auth.backends.ModelBackend',
 ]
-# Lock account after failed attempts
-AXES_FAILURE_LIMIT = 5
 
-# Lockout duration 
-AXES_COOLOFF_TIME = 2
+if ENABLE_AXES:
+    AUTHENTICATION_BACKENDS.insert(0, 'axes.backends.AxesStandaloneBackend')
+    # Lock account after failed attempts
+    AXES_FAILURE_LIMIT = 5
 
-# Reset attempts after successful login
-AXES_RESET_ON_SUCCESS = True
+    # Lockout duration
+    AXES_COOLOFF_TIME = 2
 
-# Track by IP address
-AXES_LOCKOUT_PARAMETERS = ["ip_address"]
+    # Reset attempts after successful login
+    AXES_RESET_ON_SUCCESS = True
+
+    # Track by IP address
+    AXES_LOCKOUT_PARAMETERS = ["ip_address"]
 
 JAZZMIN_SETTINGS = {
     "site_title": " Admin",
