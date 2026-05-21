@@ -4,18 +4,18 @@
 <style>
 .payment-page .hero {
     background:
-        radial-gradient(circle at top right, rgba(125, 211, 252, 0.22), transparent 34%),
-        linear-gradient(135deg, #071936 0%, #123a76 44%, #0ea5a4 120%);
+        radial-gradient(circle at top right, rgba(125, 211, 252, 0.18), transparent 34%),
+        linear-gradient(90deg, #112750 0%, #1a4f92 54%, #2ba6bb 100%);
     color: #f8fafc;
-    border-radius: 28px;
-    padding: 28px;
-    box-shadow: 0 26px 60px rgba(15, 23, 42, 0.18);
+    border-radius: 18px;
+    padding: 14px 16px;
+    box-shadow: none;
 }
 
 .payment-page .hero h1 {
-    font-size: 2rem;
-    font-weight: 800;
-    margin-bottom: 0.5rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: 0;
     letter-spacing: -0.02em;
 }
 
@@ -29,43 +29,48 @@
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.6rem 0.9rem;
+    padding: 0.25rem 0.7rem;
     border-radius: 999px;
-    background: rgba(255, 255, 255, 0.12);
-    border: 1px solid rgba(255, 255, 255, 0.14);
-    font-size: 0.85rem;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    font-size: 0.52rem;
     font-weight: 700;
-    margin-bottom: 1rem;
+    margin-bottom: 0.45rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
 }
 
 .payment-page .summary-card,
 .payment-page .panel {
     background: #ffffff;
-    border: 1px solid #e2e8f0;
-    border-radius: 24px;
-    box-shadow: 0 24px 60px rgba(15, 23, 42, 0.08);
+    border: 1px solid #d9e3f0;
+    border-radius: 16px;
+    box-shadow: none;
 }
 
 .payment-page .summary-card {
-    padding: 22px;
+    padding: 12px 14px;
     height: 100%;
 }
 
 .payment-page .summary-card .eyebrow {
-    font-size: 0.78rem;
+    font-size: 0.46rem;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.12em;
     color: #64748b;
 }
 
 .payment-page .summary-card .value {
-    font-size: 1.85rem;
-    font-weight: 700;
+    font-size: 0.95rem;
+    font-weight: 800;
     color: #0f172a;
+    margin-top: 0.15rem;
 }
 
 .payment-page .summary-card .subtle {
     color: #64748b;
+    font-size: 0.62rem;
+    margin-top: 0.15rem;
 }
 
 .payment-page .summary-card.blue-soft {
@@ -77,46 +82,51 @@
 }
 
 .payment-page .summary-card.amber-soft {
-    background: linear-gradient(180deg, #fff7ed 0%, #fde7c7 100%);
+    background: linear-gradient(180deg, #fff8ef 0%, #f9e6c7 100%);
 }
 
 .payment-page .panel {
-    padding: 24px;
+    padding: 12px;
 }
 
 .payment-page .section-title {
-    font-size: 1.2rem;
+    font-size: 0.82rem;
     font-weight: 700;
     color: #0f172a;
-    margin-bottom: 0.35rem;
+    margin-bottom: 0.2rem;
 }
 
 .payment-page .section-copy {
     color: #64748b;
-    margin-bottom: 1.25rem;
+    margin-bottom: 0.9rem;
+    font-size: 0.62rem;
 }
 
 .payment-page .form-label {
     font-weight: 600;
     color: #1e293b;
+    font-size: 0.62rem;
+    margin-bottom: 0.3rem;
 }
 
 .payment-page .form-control,
 .payment-page .form-select {
-    border-radius: 12px;
+    border-radius: 8px;
     border: 1px solid #cbd5e1;
-    min-height: 48px;
+    min-height: 36px;
+    font-size: 0.62rem;
+    padding: 0.45rem 0.7rem;
 }
 
 .payment-page .form-control:focus,
 .payment-page .form-select:focus {
     border-color: #14b8a6;
-    box-shadow: 0 0 0 0.25rem rgba(20, 184, 166, 0.12);
+    box-shadow: 0 0 0 0.18rem rgba(20, 184, 166, 0.1);
 }
 
 .payment-page .total-card {
-    border-radius: 18px;
-    padding: 18px;
+    border-radius: 10px;
+    padding: 12px;
     background: linear-gradient(135deg, #ecfeff, #f0fdf4);
     border: 1px solid #99f6e4;
 }
@@ -124,23 +134,25 @@
 .payment-page .total-label {
     color: #0f766e;
     font-weight: 600;
+    font-size: 0.65rem;
 }
 
 .payment-page .total-value {
-    font-size: 1.8rem;
-    font-weight: 700;
+    font-size: 0.95rem;
+    font-weight: 800;
     color: #0f172a;
 }
 
 .payment-page .hint {
     color: #64748b;
-    font-size: 0.94rem;
+    font-size: 0.58rem;
 }
 
 .payment-page .status-box {
-    border-radius: 16px;
-    padding: 16px 18px;
+    border-radius: 10px;
+    padding: 10px 12px;
     display: none;
+    font-size: 0.68rem;
 }
 
 .payment-page .status-box.show {
@@ -168,16 +180,16 @@
 .payment-page .badge-soft {
     display: inline-flex;
     align-items: center;
-    padding: 0.4rem 0.75rem;
+    padding: 0.18rem 0.48rem;
     border-radius: 999px;
-    font-size: 0.82rem;
+    font-size: 0.56rem;
     font-weight: 700;
     text-transform: capitalize;
 }
 
 .payment-page .badge-soft.pending {
     background: #fef3c7;
-    color: #920e0e;
+    color: #92400e;
 }
 
 .payment-page .badge-soft.success {
@@ -186,34 +198,77 @@
 }
 
 .payment-page .badge-soft.failed {
-    background: #efeded;
-    color: #f30505;
+    background: #fee2e2;
+    color: #dc2626;
 }
 
 .payment-page .table thead th {
     color: #475569;
-    font-size: 0.8rem;
+    font-size: 0.52rem;
     text-transform: uppercase;
     letter-spacing: 0.04em;
+    padding-top: 0.45rem;
+    padding-bottom: 0.45rem;
 }
 
 .payment-page .filter-bar {
     background: #f8fbff;
     border: 1px solid rgba(148, 163, 184, 0.2);
-    border-radius: 16px;
-    padding: 16px;
-    margin-bottom: 1rem;
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 0.8rem;
+}
+
+.payment-page .table {
+    margin-bottom: 0;
+}
+
+.payment-page .table tbody td {
+    font-size: 0.6rem;
+    color: #334155;
+    padding-top: 0.55rem;
+    padding-bottom: 0.55rem;
+}
+
+.payment-page .table tbody .text-muted.small {
+    font-size: 0.55rem !important;
 }
 
 .payment-page .table tbody tr:hover {
     background: #f8fbff;
+}
+
+.payment-page .btn {
+    border-radius: 6px;
+    font-size: 0.62rem;
+    font-weight: 700;
+    padding: 0.4rem 0.8rem;
+}
+
+.payment-page .btn.btn-sm {
+    padding: 0.22rem 0.52rem;
+    font-size: 0.56rem;
+}
+
+.payment-page .btn-outline-dark {
+    border-color: #94a3b8;
+    color: #0f172a;
+}
+
+.payment-page .btn-success {
+    background: #22c55e;
+    border-color: #22c55e;
+}
+
+.payment-page .table-responsive {
+    border-radius: 12px;
 }
 </style>
 
 <div class="container-fluid px-4 payment-page">
     <div class="hero mb-4">
         <div class="hero-pill"><i class="bi bi-phone-fill"></i> Payment operations</div>
-        <h1>M-Pesa Payment </h1>
+        <h1>M-Pesa Payment</h1>
     </div>
 
     <div class="row g-4 mb-4">
@@ -250,7 +305,7 @@
                     <div class="mb-3">
                         <label for="sale" class="form-label">Sale</label>
                         <select id="sale" name="sale" class="form-select" required>
-                            <option value="">Choose a sale</option>
+                            <option value="">Select a sale</option>
                             {% for sale in sales %}
                             <option
                                 value="{{ sale.id }}"

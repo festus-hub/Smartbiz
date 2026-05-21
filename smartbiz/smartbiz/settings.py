@@ -232,12 +232,12 @@ EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 MPESA_ENV = os.environ.get('MPESA_ENV', 'sandbox')
-MPESA_CONSUMER_KEY = os.environ.get('MPESA_CONSUMER_KEY', '')
-MPESA_CONSUMER_SECRET = os.environ.get('MPESA_CONSUMER_SECRET', '')
+MPESA_CONSUMER_KEY = os.environ.get('MPESA_CONSUMER_KEY', 'zyf22CG0suhcx2z8mvruUauQ5EsAqTY7DGL91CRjWgrQzBRC')
+MPESA_CONSUMER_SECRET = os.environ.get('MPESA_CONSUMER_SECRET', '7SThoERwBcOYmIEnnA5iKBGL5yJ5OspDq2hbEOZaQgkLryX6R91yGPcVt1uLAr7v')
 MPESA_SHORTCODE = os.environ.get('MPESA_SHORTCODE', '174379')
 MPESA_PASSKEY = os.environ.get('MPESA_PASSKEY', 'bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919')
 MPESA_TRANSACTION_TYPE = os.environ.get('MPESA_TRANSACTION_TYPE', 'CustomerPayBillOnline')
-MPESA_CALLBACK_URL = os.environ.get('MPESA_CALLBACK_URL', '')
+MPESA_CALLBACK_URL = os.environ.get('MPESA_CALLBACK_URL', 'https://smartbiz-bfko.onrender.com/mpesa/callback/')
 
 
 if HAS_DRF_SPECTACULAR:

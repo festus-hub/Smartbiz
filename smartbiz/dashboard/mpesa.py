@@ -102,7 +102,7 @@ def initiate_stk_push(*, phone_number, amount, account_reference, transaction_de
         "PartyA": normalized_phone,
         "PartyB": shortcode,
         "PhoneNumber": normalized_phone,
-        "CallBackURL": callback_url,
+        "CallBackURL": "https://smartbiz-bfko.onrender.com/mpesa/callback/",
         "AccountReference": str(account_reference)[:12],
         "TransactionDesc": str(transaction_desc)[:50],
     }
