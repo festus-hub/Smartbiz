@@ -88,10 +88,9 @@ pypiwin32==223
 pypng==0.20220715.0
 PyQRCode==1.2.1
 pytest==9.0.2
-python-bidi==0.6.3
+python-bidi==0.6.0
 python-dateutil==2.9.0.post0
 python-http-client==3.3.7
-pywin32==308
 PyYAML==6.0.2
 pyzbar==0.1.9
 qrcode==8.0
