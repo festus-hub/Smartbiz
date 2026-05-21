@@ -81,8 +81,8 @@ def get_access_token():
 
 
 def initiate_stk_push(*, phone_number, amount, account_reference, transaction_desc, callback_url):
-    shortcode = getattr(settings, "MPESA_SHORTCODE", "")
-    passkey = getattr(settings, "MPESA_PASSKEY", "")
+    shortcode = getattr(settings, "MPESA_SHORTCODE", "174379")
+    passkey = getattr(settings, "MPESA_PASSKEY", "bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919")
     transaction_type = getattr(settings, "MPESA_TRANSACTION_TYPE", "CustomerPayBillOnline")
 
     if not shortcode or not passkey:

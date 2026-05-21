@@ -235,7 +235,7 @@ MPESA_ENV = os.environ.get('MPESA_ENV', 'sandbox')
 MPESA_CONSUMER_KEY = os.environ.get('MPESA_CONSUMER_KEY', '')
 MPESA_CONSUMER_SECRET = os.environ.get('MPESA_CONSUMER_SECRET', '')
 MPESA_SHORTCODE = os.environ.get('MPESA_SHORTCODE', '174379')
-MPESA_PASSKEY = os.environ.get('MPESA_PASSKEY', '')
+MPESA_PASSKEY = os.environ.get('MPESA_PASSKEY', 'bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919')
 MPESA_TRANSACTION_TYPE = os.environ.get('MPESA_TRANSACTION_TYPE', 'CustomerPayBillOnline')
 MPESA_CALLBACK_URL = os.environ.get('MPESA_CALLBACK_URL', '')
 
