@@ -1,8 +1,10 @@
 import csv
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
-from django.db import transaction
+from django.core.mail import EmailMessage
+from django.db import OperationalError, transaction
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import authenticate, login, logout
@@ -14,7 +16,7 @@ from functools import wraps
 from .models import Sales, Payment, Customer, User, Product, Expense, StockMovement
 from . import models
 from django.contrib.auth.forms import PasswordResetForm
-from .forms import ProductForm, StockMovementForm
+from .forms import ContactMessageForm, ProductForm, StockMovementForm
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -39,7 +41,46 @@ except ImportError:
 # LANDING PAGE
 
 def landing_page(request):
-    return render(request, 'dashboard/landing.html')
+    form = ContactMessageForm(request.POST or None)
+
+    if request.method == 'POST':
+        if form.is_valid():
+            contact_message = None
+            try:
+                contact_message = form.save()
+            except OperationalError:
+                messages.warning(
+                    request,
+                    "Your message was received, but we could not store it in the local database right now."
+                )
+
+            contact_name = form.cleaned_data['name']
+            contact_email = form.cleaned_data['email']
+            contact_subject = form.cleaned_data['subject']
+            contact_body = form.cleaned_data['message']
+            recipient = (getattr(settings, 'CONTACT_RECIPIENT_EMAIL', '') or '').strip()
+
+            if recipient:
+                email = EmailMessage(
+                    subject=f"New SmartBiz contact message: {contact_subject}",
+                    body=(
+                        f"Name: {contact_name}\n"
+                        f"Email: {contact_email}\n"
+                        f"Subject: {contact_subject}\n\n"
+                        f"Message:\n{contact_body}"
+                    ),
+                    from_email=settings.DEFAULT_FROM_EMAIL or None,
+                    to=[recipient],
+                    reply_to=[contact_email],
+                )
+                email.send(fail_silently=True)
+
+            messages.success(request, "Your message has been sent successfully. We will get back to you soon.")
+            return redirect(f"{reverse('landing')}#contact")
+
+        messages.error(request, "Please correct the errors in the contact form and try again.")
+
+    return render(request, 'dashboard/landing.html', {'contact_form': form})
 
 
 def role_required(minimum_role):

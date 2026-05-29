@@ -1,11 +1,49 @@
 from django.test import TestCase
 from django.urls import reverse
 from unittest.mock import patch
+from django.db import OperationalError
 
-from .models import Business, Customer, Payment, Product, Sales, StockAlert, StockMovement, User
+from .models import Business, ContactMessage, Customer, Payment, Product, Sales, StockAlert, StockMovement, User
 
 
 class RoleAccessTests(TestCase):
+    def test_landing_contact_form_saves_message(self):
+        response = self.client.post(
+            reverse('landing'),
+            {
+                'name': 'Alice Sender',
+                'email': 'alice@example.com',
+                'subject': 'Need help',
+                'message': 'Please show me how to get started.',
+            },
+        )
+
+        self.assertRedirects(response, f"{reverse('landing')}#contact", fetch_redirect_response=False)
+        message = ContactMessage.objects.get()
+        self.assertEqual(message.name, 'Alice Sender')
+        self.assertEqual(message.email, 'alice@example.com')
+        self.assertEqual(message.subject, 'Need help')
+
+    @patch('dashboard.views.ContactMessageForm.save', side_effect=OperationalError('no such table'))
+    def test_landing_contact_form_handles_storage_failure(self, _mock_save):
+        response = self.client.post(
+            reverse('landing'),
+            {
+                'name': 'Alice Sender',
+                'email': 'alice@example.com',
+                'subject': 'Need help',
+                'message': 'Please show me how to get started.',
+            },
+            follow=True,
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, f"{reverse('landing')}#contact")
+        self.assertContains(
+            response,
+            "Your message was received, but we could not store it in the local database right now.",
+        )
+
     def test_registration_creates_business_owner_account(self):
         response = self.client.post(
             reverse('register'),

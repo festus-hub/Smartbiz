@@ -1,0 +1,9 @@
+{
+  "scripts": {
+    "build:css": "tailwindcss -i ./dashboard/static/css/tailwind.css -o ./dashboard/static/css/landing.css --minify",
+    "watch:css": "tailwindcss -i ./dashboard/static/css/tailwind.css -o ./dashboard/static/css/landing.css --watch"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.17"
+  }
+}

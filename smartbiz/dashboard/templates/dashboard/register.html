@@ -2,190 +2,223 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Register - SmartBiz</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - SmartBiz</title>
 
-<style>
-body {
-    margin: 0;
-    font-family: 'Segoe UI', sans-serif;
-    background: linear-gradient(135deg, rgb(105, 139, 133),rgb(128, 128, 128));
+    <script src="https://cdn.tailwindcss.com"></script>
 
-}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-/* LAYOUT */
-.container {
-    display: flex;
-    height: 100vh;
-}
-
-/* LEFT SIDE */
-.left {
-    width: 40%;
-    background: linear-gradient(135deg, #efbc87, #7C3AED);
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-}
-
-/* RIGHT SIDE */
-.right {
-    width: 60%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-/* CARD */
-.card {
-    width: 420px;
-    background: white;
-    padding: 40px;
-    border-radius: 16px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-}
-
-/* INPUTS */
-input {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 12px;
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
-    outline: none;
-}
-
-input:focus {
-    border-color: #4F46E5;
-}
-
-/* BUTTONS */
-.btn-primary {
-    width: 100%;
-    padding: 12px ;
-    background: #4F46E5;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 15px;
-    margin-top: 10px;
-}
-
-.btn-primary:hover {
-    background: #0b1411;
-}
-
-.btn-secondary {
-    width: 100%;
-    padding: 10px ;
-    background: transparent;
-    color: #4F46E5;
-    border: 2px solid #4F46E5;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 15px;
-    margin-top: 10px;
-}
-
-.btn-secondary:hover {
-    background: #170216;
-    color: rgb(128, 162, 220);
-}
-
-/* MESSAGES */
-.message {
-    padding: 10px;
-    margin-bottom: 10px;
-    border-radius: 6px;
-    font-size: 14px;
-}
-
-.error {
-    background: #fee2e2;
-    color: #b91c1c;
-}
-
-.success {
-    background: #dcfce7;
-    color: #166534;
-}
-
-</style>
-
+    <style>
+        body{
+            font-family: 'Poppins', sans-serif;
+        }
+    </style>
 </head>
 
-<body>
+<body class="bg-gray-100">
 
-<div class="container">
+    <div class="min-h-screen flex flex-col lg:flex-row">
 
-    <!-- LEFT -->
-    <div class="left">
-        <div>
-            <img src="{% static 'images/logo2.png' %}" alt="smartBiz Logo" class="logo">
-            <h1>SmartBiz</h1>
-            <p>Create your business account</p>
+        <!-- LEFT SIDE -->
+        <div class="hidden lg:flex flex-none w-64 lg:w-1/2 bg-gradient-to-br from-orange-400 via-violet-600 to-purple-900 items-center justify-center relative overflow-hidden">
+
+            <div class="absolute inset-0 bg-black/10"></div>
+
+            <div class="relative z-10 text-center text-white px-10">
+
+                <img src="{% static 'images/logo2.png' %}"
+                     alt="SmartBiz Logo"
+                     class="w-28 mx-auto mb-6 drop-shadow-xl">
+
+                <h1 class="text-6xl font-bold mb-4">
+                    SmartBiz
+                </h1>
+
+                <p class="text-lg text-purple-100 leading-relaxed max-w-md mx-auto">
+                    Create your SmartBiz account and start managing your business.
+                </p>
+
+            </div>
         </div>
-    </div>
 
-    <!-- RIGHT -->
-    <div class="right">
+        <!-- RIGHT SIDE -->
+        <div class="w-full lg:w-1/2 flex-1 items-center justify-center p-6 sm:p-10">
 
-        <div class="card">
-            
-            <h2>Create Account</h2>
+            <div class="w-full max-w-md bg-white rounded-3xl shadow-2xl p-8 sm:p-10">
 
-            <!-- DJANGO MESSAGES -->
-            {% if messages %}
-                {% for message in messages %}
-                    <div class="message {% if message.tags %}{{ message.tags }}{% endif %}">
-                        {{ message }}
+                <!-- Mobile Logo -->
+                <div class="lg:hidden text-center mb-8">
+                    <img src="{% static 'images/logo2.png' %}"
+                         alt="SmartBiz Logo"
+                         class="w-20 mx-auto mb-3">
+
+                    <h1 class="text-3xl font-bold text-gray-800">
+                        SmartBiz
+                    </h1>
+                </div>
+
+                <!-- Heading -->
+                <div class="mb-8">
+                    <h2 class="text-3xl font-bold text-gray-800">
+                        Create Account 
+                    </h2>
+
+                    <p class="text-gray-500 mt-2">
+                        Join SmartBiz and grow your business with confidence
+                    </p>
+                </div>
+
+                <!-- Messages -->
+                {% if messages %}
+                    {% for message in messages %}
+
+                        <div class="
+                            mb-4 px-4 py-3 rounded-xl text-sm font-medium
+                            {% if message.tags == 'error' %}
+                                bg-red-100 text-red-700 border border-red-200
+                            {% elif message.tags == 'success' %}
+                                bg-green-100 text-green-700 border border-green-200
+                            {% else %}
+                                bg-gray-100 text-gray-700 border border-gray-200
+                            {% endif %}
+                        ">
+                            {{ message }}
+                        </div>
+
+                    {% endfor %}
+                {% endif %}
+
+                <!-- Form -->
+                <form method="POST" class="space-y-5">
+                    {% csrf_token %}
+
+                    <!-- Full Name -->
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">
+                            Full Name
+                        </label>
+
+                        <input
+                            type="text"
+                            name="username"
+                            placeholder="Enter your full name"
+                            required
+                            class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition"
+                        >
                     </div>
-                {% endfor %}
-            {% endif %}
 
-            <form method="POST">
-                {% csrf_token %}
+                    <!-- Email -->
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">
+                            Email Address
+                        </label>
 
-                  <div class="mb-3">
-            <input type="text" name="username" class="form-control" placeholder="Full Name" required>
-        </div>
+                        <input
+                            type="email"
+                            name="email"
+                            placeholder="Enter your email"
+                            required
+                            class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition"
+                        >
+                    </div>
 
-        <div class="mb-3">
-            <input type="email" name="email" class="form-control" placeholder="Email Address" required>
-        </div>
+                    <!-- Password -->
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">
+                            Password
+                        </label>
 
-        <div class="mb-3">
-            <input type="password" name="password" class="form-control" placeholder="Password" required>
-        </div>
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Create password"
+                            required
+                            class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition"
+                        >
+                    </div>
 
-        <div class="mb-3">
-            <input type="password" name="confirm_password" class="form-control" placeholder="Confirm Password" required>
-        </div>
+                    <!-- Confirm Password -->
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">
+                            Confirm Password
+                        </label>
 
-                
+                        <input
+                            type="password"
+                            id="confirm_password"
+                            name="confirm_password"
+                            placeholder="Confirm password"
+                            required
+                            class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition"
+                        >
+                    </div>
 
-                <!-- CREATE ACCOUNT -->
-                <button type="submit" class="btn-primary">
-                    Create Account
-                </button>
-            </form>
+                    <!-- Show Password -->
+                    <div class="flex items-center gap-2 text-sm text-gray-600">
+                        <input
+                            type="checkbox"
+                            onclick="togglePassword()"
+                            class="rounded text-violet-600 focus:ring-violet-500"
+                        >
 
-            <!-- LOGIN BUTTON -->
-            <a href="{% url 'login' %}">
-                <button class="btn-secondary">
-                    Login Instead
-                </button>
-            </a>
+                        <label>
+                            Show Passwords
+                        </label>
+                    </div>
 
+                    <!-- Register Button -->
+                    <button
+                        type="submit"
+                        class="w-full bg-violet-600 hover:bg-indigo-400 text-white py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition duration-300"
+                    >
+                        Create Account
+                    </button>
+                </form>
+
+                <!-- Divider -->
+                <div class="flex items-center my-8">
+                    <div class="flex-1 h-px bg-gray-200"></div>
+
+                    <span class="px-4 text-sm text-gray-400">
+                        OR
+                    </span>
+
+                    <div class="flex-1 h-px bg-gray-200"></div>
+                </div>
+
+                <!-- Login -->
+                <a href="{% url 'login' %}">
+                    <button
+                        class="w-full border-2 border-violet-600 text-violet-600 hover:bg-indigo-600 hover:text-white py-3 rounded-xl font-semibold transition duration-300"
+                    >
+                        Login Instead
+                    </button>
+                </a>
+
+            </div>
         </div>
 
     </div>
 
-</div>
+    <script>
+        function togglePassword() {
+
+            const password = document.getElementById("password");
+            const confirmPassword = document.getElementById("confirm_password");
+
+            if (password.type === "password") {
+                password.type = "text";
+                confirmPassword.type = "text";
+            } else {
+                password.type = "password";
+                confirmPassword.type = "password";
+            }
+        }
+    </script>
 
 </body>
 </html>

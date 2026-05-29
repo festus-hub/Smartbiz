@@ -1,5 +1,5 @@
 from django import forms
-from .models import Sales, Customer, Product, StockMovement
+from .models import Sales, Customer, Product, StockMovement, ContactMessage
 
 
 class SalesForm(forms.ModelForm):
@@ -27,4 +27,15 @@ class StockMovementForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['quantity'].min_value = 1
         self.fields['note'].required = False
+
+
+class ContactMessageForm(forms.ModelForm):
+    class Meta:
+        model = ContactMessage
+        fields = ['name', 'email', 'subject', 'message']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs['class'] = 'form-control'
 

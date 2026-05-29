@@ -1340,7 +1340,15 @@ footer {
             <div class="col-lg-7">
                 <div class="contact-card">
                     <h3>Send a message</h3>
-                    <p>This form is ready for Django handling and now includes proper field names, labels, and browser validation.</p>
+                    <p>Send us your question or feedback and we will follow up as soon as possible.</p>
+
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags|default:'info' }} mb-3" role="alert">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
 
                     <form method="POST">
                         {% csrf_token %}
@@ -1348,22 +1356,34 @@ footer {
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label for="name" class="form-label">Your Name</label>
-                                <input id="name" name="name" type="text" class="form-control" placeholder="Enter your name" required>
+                                <input id="name" name="name" type="text" class="form-control" placeholder="Enter your name" value="{{ contact_form.name.value|default:'' }}" required>
+                                {% if contact_form.name.errors %}
+                                    <div class="text-danger small mt-1">{{ contact_form.name.errors|join:", " }}</div>
+                                {% endif %}
                             </div>
 
                             <div class="col-md-6">
                                 <label for="email" class="form-label">Your Email</label>
-                                <input id="email" name="email" type="email" class="form-control" placeholder="name@example.com" required>
+                                <input id="email" name="email" type="email" class="form-control" placeholder="name@example.com" value="{{ contact_form.email.value|default:'' }}" required>
+                                {% if contact_form.email.errors %}
+                                    <div class="text-danger small mt-1">{{ contact_form.email.errors|join:", " }}</div>
+                                {% endif %}
                             </div>
 
                             <div class="col-12">
                                 <label for="subject" class="form-label">Subject</label>
-                                <input id="subject" name="subject" type="text" class="form-control" placeholder="How can we help?" required>
+                                <input id="subject" name="subject" type="text" class="form-control" placeholder="How can we help?" value="{{ contact_form.subject.value|default:'' }}" required>
+                                {% if contact_form.subject.errors %}
+                                    <div class="text-danger small mt-1">{{ contact_form.subject.errors|join:", " }}</div>
+                                {% endif %}
                             </div>
 
                             <div class="col-12">
                                 <label for="message" class="form-label">Message</label>
-                                <textarea id="message" name="message" class="form-control" rows="6" placeholder="Write your message here..." required></textarea>
+                                <textarea id="message" name="message" class="form-control" rows="6" placeholder="Write your message here..." required>{{ contact_form.message.value|default:'' }}</textarea>
+                                {% if contact_form.message.errors %}
+                                    <div class="text-danger small mt-1">{{ contact_form.message.errors|join:", " }}</div>
+                                {% endif %}
                             </div>
 
                             <div class="col-12">

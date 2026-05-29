@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
 
-from dashboard.models import Product, Sales, User, StockMovement
+from dashboard.models import ContactMessage, Product, Sales, User, StockMovement
 
 # Register your models here.
 @admin.register(User)
@@ -15,3 +15,10 @@ class UserAdmin(DjangoUserAdmin):
 admin.site.register(Product)
 admin.site.register(Sales)
 admin.site.register(StockMovement)
+
+
+@admin.register(ContactMessage)
+class ContactMessageAdmin(admin.ModelAdmin):
+    list_display = ('name', 'email', 'subject', 'is_read', 'created_at')
+    list_filter = ('is_read', 'created_at')
+    search_fields = ('name', 'email', 'subject', 'message')
