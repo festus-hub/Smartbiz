@@ -265,7 +265,7 @@ def register_view(request):
 
         login(request, user, backend='django.contrib.auth.backends.ModelBackend')
         messages.success(request, "Account created successfully")
-        return redirect("dashboard")
+        return redirect("login")
 
     return render(request, 'dashboard/register.html')
 
