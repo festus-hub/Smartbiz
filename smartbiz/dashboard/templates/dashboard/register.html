@@ -6,219 +6,242 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register - SmartBiz</title>
 
-    <script src="https://cdn.tailwindcss.com"></script>
+    {% include 'dashboard/framework_assets.html' %}
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
-        body{
+        body {
+            margin: 0;
             font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            overflow-x: hidden;
+        }
+
+        .auth-shell {
+            min-height: 100vh;
+            display: flex;
+        }
+
+        .auth-hero {
+            flex: 1 1 0;
+            background: linear-gradient(135deg, rgba(249, 115, 22, 0.96), rgba(91, 33, 182, 0.96));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            padding: 2rem;
+        }
+
+        .auth-hero::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at top right, rgba(255,255,255,0.14), transparent 30%);
+        }
+
+        .auth-hero-copy {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            color: #fff;
+            max-width: 34rem;
+        }
+
+        .auth-hero-copy h1 {
+            font-size: clamp(2.6rem, 5vw, 4.6rem);
+            font-weight: 800;
+            letter-spacing: -0.04em;
+            margin: 1rem 0 0.75rem;
+        }
+
+        .auth-hero-copy p {
+            margin: 0;
+            color: rgba(255, 247, 237, 0.92);
+            font-size: 1.05rem;
+            line-height: 1.7;
+        }
+
+        .auth-panel {
+            flex: 1 1 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: clamp(1rem, 4vw, 2.5rem);
+        }
+
+        .auth-card {
+            width: min(100%, 480px);
+            background: rgba(255, 255, 255, 0.97);
+            border-radius: 28px;
+            box-shadow: 0 28px 80px rgba(15, 23, 42, 0.24);
+            padding: clamp(1.5rem, 4vw, 2.5rem);
+        }
+
+        .auth-mobile-brand {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .auth-mobile-brand img {
+            width: 84px;
+            height: 84px;
+            object-fit: cover;
+            border-radius: 20px;
+            box-shadow: 0 16px 36px rgba(15, 23, 42, 0.18);
+        }
+
+        .auth-mobile-brand h1,
+        .auth-heading {
+            font-size: clamp(1.9rem, 3.8vw, 2.4rem);
+            font-weight: 800;
+            color: #0f172a;
+            line-height: 1.1;
+            letter-spacing: -0.03em;
+        }
+
+        .auth-subtitle {
+            color: #64748b;
+            margin-top: 0.5rem;
+            line-height: 1.7;
+        }
+
+        .auth-field {
+            width: 100%;
+            padding: 0.9rem 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 14px;
+            font-size: 0.98rem;
+        }
+
+        .auth-field:focus {
+            outline: none;
+            border-color: #7c3aed;
+            box-shadow: 0 0 0 0.2rem rgba(124, 58, 237, 0.14);
+        }
+
+        .auth-action {
+            width: 100%;
+            background: linear-gradient(135deg, #7c3aed, #4f46e5);
+            color: #fff;
+            border: none;
+            padding: 0.95rem 1rem;
+            border-radius: 14px;
+            font-weight: 700;
+            box-shadow: 0 18px 32px rgba(79, 70, 229, 0.24);
+        }
+
+        .auth-action:hover {
+            color: #fff;
+        }
+
+        .auth-link {
+            color: #7c3aed;
+            font-weight: 600;
+        }
+
+        @media (max-width: 991.98px) {
+            .auth-shell {
+                display: block;
+            }
+
+            .auth-panel {
+                min-height: 100vh;
+            }
         }
     </style>
 </head>
 
-<body class="bg-gray-100">
-
-    <div class="min-h-screen flex flex-col lg:flex-row">
-
-        <!-- LEFT SIDE -->
-        <div class="hidden lg:flex flex-none w-64 lg:w-1/2 bg-gradient-to-br from-orange-400 via-violet-600 to-purple-900 items-center justify-center relative overflow-hidden">
-
-            <div class="absolute inset-0 bg-black/10"></div>
-
-            <div class="relative z-10 text-center text-white px-10">
-
-                <img src="{% static 'images/logo2.png' %}"
-                     alt="SmartBiz Logo"
-                     class="w-28 mx-auto mb-6 drop-shadow-xl">
-
-                <h1 class="text-6xl font-bold mb-4">
-                    SmartBiz
-                </h1>
-
-                <p class="text-lg text-purple-100 leading-relaxed max-w-md mx-auto">
-                    Create your SmartBiz account and start managing your business.
-                </p>
-
+<body>
+    <div class="auth-shell">
+        <section class="auth-hero d-none d-lg-flex">
+            <div class="auth-hero-copy">
+                <img src="{% static 'images/logo2.png' %}" alt="SmartBiz Logo" class="w-25 mx-auto d-block mb-3 rounded-4 shadow-lg">
+                <h1>SmartBiz</h1>
+                <p>Create your SmartBiz account and start managing your business with more confidence and clarity.</p>
             </div>
-        </div>
+        </section>
 
-        <!-- RIGHT SIDE -->
-        <div class="w-full lg:w-1/2 flex-1 items-center justify-center p-6 sm:p-10">
-
-            <div class="w-full max-w-md bg-white rounded-3xl shadow-2xl p-8 sm:p-10">
-
-                <!-- Mobile Logo -->
-                <div class="lg:hidden text-center mb-8">
-                    <img src="{% static 'images/logo2.png' %}"
-                         alt="SmartBiz Logo"
-                         class="w-20 mx-auto mb-3">
-
-                    <h1 class="text-3xl font-bold text-gray-800">
-                        SmartBiz
-                    </h1>
+        <section class="auth-panel">
+            <div class="auth-card">
+                <div class="auth-mobile-brand d-lg-none">
+                    <img src="{% static 'images/logo2.png' %}" alt="SmartBiz Logo">
+                    <h1 class="mt-3 mb-0">SmartBiz</h1>
                 </div>
 
-                <!-- Heading -->
-                <div class="mb-8">
-                    <h2 class="text-3xl font-bold text-gray-800">
-                        Create Account 
-                    </h2>
-
-                    <p class="text-gray-500 mt-2">
-                        Join SmartBiz and grow your business with confidence
-                    </p>
+                <div class="mb-4">
+                    <h2 class="auth-heading mb-2">Create account</h2>
+                    <p class="auth-subtitle mb-0">Join SmartBiz and grow your business with confidence.</p>
                 </div>
 
-                <!-- Messages -->
                 {% if messages %}
                     {% for message in messages %}
-
-                        <div class="
-                            mb-4 px-4 py-3 rounded-xl text-sm font-medium
+                        <div class="mb-4 px-4 py-3 rounded-4 text-sm fw-medium border
                             {% if message.tags == 'error' %}
-                                bg-red-100 text-red-700 border border-red-200
+                                bg-danger-subtle text-danger border-danger-subtle
                             {% elif message.tags == 'success' %}
-                                bg-green-100 text-green-700 border border-green-200
+                                bg-success-subtle text-success border-success-subtle
                             {% else %}
-                                bg-gray-100 text-gray-700 border border-gray-200
+                                bg-light text-secondary border-light
                             {% endif %}
                         ">
                             {{ message }}
                         </div>
-
                     {% endfor %}
                 {% endif %}
 
-                <!-- Form -->
                 <form method="POST" class="space-y-5">
                     {% csrf_token %}
 
-                    <!-- Full Name -->
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">
-                            Full Name
-                        </label>
-
-                        <input
-                            type="text"
-                            name="username"
-                            placeholder="Enter your full name"
-                            required
-                            class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition"
-                        >
+                    <div class="mb-3">
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Full Name</label>
+                        <input type="text" name="username" placeholder="Enter your full name" required class="auth-field">
                     </div>
 
-                    <!-- Email -->
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">
-                            Email Address
-                        </label>
-
-                        <input
-                            type="email"
-                            name="email"
-                            placeholder="Enter your email"
-                            required
-                            class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition"
-                        >
+                    <div class="mb-3">
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Email Address</label>
+                        <input type="email" name="email" placeholder="Enter your email" required class="auth-field">
                     </div>
 
-                    <!-- Password -->
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">
-                            Password
-                        </label>
-
-                        <input
-                            type="password"
-                            id="password"
-                            name="password"
-                            placeholder="Create password"
-                            required
-                            class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition"
-                        >
+                    <div class="mb-3">
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Password</label>
+                        <input type="password" id="password" name="password" placeholder="Create password" required class="auth-field">
                     </div>
 
-                    <!-- Confirm Password -->
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">
-                            Confirm Password
-                        </label>
-
-                        <input
-                            type="password"
-                            id="confirm_password"
-                            name="confirm_password"
-                            placeholder="Confirm password"
-                            required
-                            class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition"
-                        >
+                    <div class="mb-3">
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Confirm Password</label>
+                        <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm password" required class="auth-field">
                     </div>
 
-                    <!-- Show Password -->
-                    <div class="flex items-center gap-2 text-sm text-gray-600">
-                        <input
-                            type="checkbox"
-                            onclick="togglePassword()"
-                            class="rounded text-violet-600 focus:ring-violet-500"
-                        >
-
-                        <label>
-                            Show Passwords
-                        </label>
+                    <div class="d-flex align-items-center gap-2 text-sm text-secondary mb-4">
+                        <input type="checkbox" onclick="togglePassword()" class="rounded text-violet-600 focus:ring-violet-500">
+                        <label class="mb-0">Show passwords</label>
                     </div>
 
-                    <!-- Register Button -->
-                    <button
-                        type="submit"
-                        class="w-full bg-violet-600 hover:bg-indigo-400 text-white py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition duration-300"
-                    >
-                        Create Account
-                    </button>
+                    <button type="submit" class="auth-action">Create account</button>
                 </form>
 
-                <!-- Divider -->
-                <div class="flex items-center my-8">
-                    <div class="flex-1 h-px bg-gray-200"></div>
-
-                    <span class="px-4 text-sm text-gray-400">
-                        OR
-                    </span>
-
-                    <div class="flex-1 h-px bg-gray-200"></div>
+                <div class="d-flex align-items-center my-4">
+                    <div class="flex-grow-1 border-top"></div>
+                    <span class="px-3 small text-uppercase text-secondary fw-semibold">or</span>
+                    <div class="flex-grow-1 border-top"></div>
                 </div>
 
-                <!-- Login -->
-                <a href="{% url 'login' %}">
-                    <button
-                        class="w-full border-2 border-violet-600 text-violet-600 hover:bg-indigo-600 hover:text-white py-3 rounded-xl font-semibold transition duration-300"
-                    >
-                        Login Instead
-                    </button>
-                </a>
-
+                <a href="{% url 'login' %}" class="btn btn-outline-primary w-100 rounded-4 py-3 fw-semibold">Login instead</a>
             </div>
-        </div>
-
+        </section>
     </div>
 
     <script>
         function togglePassword() {
-
             const password = document.getElementById("password");
             const confirmPassword = document.getElementById("confirm_password");
-
-            if (password.type === "password") {
-                password.type = "text";
-                confirmPassword.type = "text";
-            } else {
-                password.type = "password";
-                confirmPassword.type = "password";
-            }
+            const nextType = password.type === "password" ? "text" : "password";
+            password.type = nextType;
+            confirmPassword.type = nextType;
         }
     </script>
-
 </body>
 </html>

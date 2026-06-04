@@ -1,45 +1,66 @@
-{% load crispy_forms_tags %}
+{% load static crispy_forms_tags %}
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-   <head>
-    <link rel="stylesheet" href="https://bootswatch.com/5/zephyr/bootstrap.min.css">
-   </head>
+    {% include 'dashboard/framework_assets.html' %}
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
+        :root {
+            --sb-sidebar-width: 256px;
+        }
+
+        body {
+            overflow-x: hidden;
+        }
+
+        .sb-layout {
+            background: #f8fafc;
+        }
+
         .sidebar {
-            width: 220px;
-            background: #151516;
+            width: var(--sb-sidebar-width);
+            background: #111827;
             color: rgb(41, 114, 232);
             min-height: 100vh;
-            padding: 20px;
-            
+            padding: 20px 16px;
+            position: sticky;
+            top: 0;
+            align-self: flex-start;
         }
-        
 
         .logo {
-            margin-bottom: 30px;
+            margin-bottom: 20px;
+        }
+
+        .sb-sidebar-inner {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            min-height: calc(100vh - 40px);
         }
 
         .menu {
             list-style: none;
             padding: 0;
+            margin: 0;
+            flex: 1;
         }
 
         .menu li {
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
 
         .menu a {
             display: block;
-            padding: 10px;
+            padding: 11px 12px;
             color: #cbd5f5;
             text-decoration: none;
             border-radius: 8px;
             transition: 0.3s;
+            font-weight: 600;
+            line-height: 1.25;
         }
 
         .menu a:hover {
@@ -53,36 +74,112 @@
         }
 
         .section {
-            margin-top: 20px;
-            font-size: 12px;
+            margin-top: 18px;
+            font-size: 11px;
             color: #94a3b8;
             text-transform: uppercase;
+            letter-spacing: 0.08em;
         }
 
         .topbar {
-            background: white;
-            padding: 15px;
-            border-bottom: 1px solid #eee;
+            background: rgba(255, 255, 255, 0.94);
+            backdrop-filter: blur(14px);
+            padding: 14px 20px;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.18);
+            position: sticky;
+            top: 0;
+            z-index: 1020;
         }
 
         .main {
-            padding: 20px;
+            padding: 24px 28px 32px;
+        }
+
+        .sb-mobile-title {
+            font-weight: 800;
+            color: #0f172a;
+            letter-spacing: -0.02em;
+        }
+
+        .sb-mobile-trigger {
+            border-radius: 12px;
+            padding: 10px 12px;
+        }
+
+        .sb-sidebar-logo {
+            height: 42px;
+            width: 42px;
+            border-radius: 12px;
+            object-fit: cover;
+            flex: 0 0 auto;
+        }
+
+        .sb-sidebar-brand {
+            font-size: 1rem;
+            font-weight: 800;
+            color: #fff;
+            line-height: 1.2;
+        }
+
+        .sb-sidebar-subtitle {
+            font-size: 0.78rem;
+            color: #94a3b8;
+        }
+
+        .sb-logout-form {
+            margin: 0;
+        }
+
+        .sb-mobile-sidebar {
+            width: min(86vw, 320px);
+            background: #111827;
+            color: #cbd5f5;
+        }
+
+        .sb-mobile-sidebar .offcanvas-header {
+            padding: 20px 18px 12px;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+        }
+
+        .sb-mobile-sidebar .offcanvas-body {
+            padding: 16px 14px 20px;
+        }
+
+        @media (max-width: 767.98px) {
+            .topbar {
+                padding: 12px 16px;
+            }
+
+            .main {
+                padding: 18px 14px 26px;
+            }
         }
     </style>
 </head>
 
-<body>
+<body class="bg-slate-50 text-slate-900">
 
-    <div style="display: flex;">
+    <div class="d-flex min-vh-100 sb-layout">
 
-        {% include 'dashboard/sidebar.html' %}
+        <aside class="sidebar d-none d-md-flex flex-column">
+            {% include 'dashboard/sidebar.html' %}
+        </aside>
 
-        <div style="flex: 1;">
+        <div class="flex-grow-1 d-flex flex-column min-vh-100">
 
-            <div class="topbar">
+            <div class="topbar shadow-sm d-flex align-items-center justify-content-between gap-3">
+                <div class="d-flex align-items-center gap-2">
+                    <button class="btn btn-outline-primary d-md-none sb-mobile-trigger" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileSidebar" aria-controls="mobileSidebar" aria-label="Open navigation menu">
+                        <i class="bi bi-list fs-5"></i>
+                    </button>
+                    <div class="sb-mobile-title d-md-none">SmartBiz</div>
+                </div>
+                <div class="d-none d-md-block fw-semibold text-slate-500">
+                    Business dashboard
+                </div>
             </div>
 
-            <div class="main">
+            <div class="main container-fluid">
                 {% if messages %}
                     <div class="mb-3">
                         {% for message in messages %}
@@ -100,6 +197,21 @@
 
     </div>
 
+    <div class="offcanvas offcanvas-start d-md-none sb-mobile-sidebar" tabindex="-1" id="mobileSidebar" aria-labelledby="mobileSidebarLabel">
+        <div class="offcanvas-header">
+            <div class="d-flex align-items-center gap-3" id="mobileSidebarLabel">
+                <img src="{% static 'images/logo2.png' %}" alt="SmartBiz logo" class="sb-sidebar-logo">
+                <div>
+                    <div class="sb-sidebar-brand">SmartBiz</div>
+                    <div class="sb-sidebar-subtitle">Business dashboard</div>
+                </div>
+            </div>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            {% include 'dashboard/sidebar.html' %}
+        </div>
+    </div>
 
 </body>
 </html>

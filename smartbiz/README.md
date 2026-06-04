@@ -55,6 +55,8 @@ $env:DJANGO_SESSION_COOKIE_SECURE="false"
 $env:DJANGO_CSRF_COOKIE_SECURE="false"
 $env:EMAIL_HOST_USER="your-email@example.com"
 $env:EMAIL_HOST_PASSWORD="your-email-app-password"
+$env:DEFAULT_FROM_EMAIL="your-email@example.com"
+$env:CONTACT_RECIPIENT_EMAIL="your-email@example.com"
 $env:MPESA_ENV="sandbox"
 $env:MPESA_CONSUMER_KEY="your-mpesa-consumer-key"
 $env:MPESA_CONSUMER_SECRET="your-mpesa-consumer-secret"
@@ -69,6 +71,7 @@ Notes:
 - Leave the M-Pesa values blank if you are not testing M-Pesa yet.
 - `MPESA_CALLBACK_URL` must be a public HTTPS URL in real callback testing.
 - Use an app password for Gmail SMTP, not your normal account password.
+- If the email vars are not set in local development, Django falls back to the console email backend and prints password-reset emails in the terminal.
 - For local development, keep `DJANGO_DEBUG=true` and the secure cookie / SSL redirect values set to `false`.
 
 ### 4. Apply database migrations

@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@500;600;700&display=swap" rel="stylesheet">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+{% include 'dashboard/framework_assets.html' %}
 
 <style>
 :root {
@@ -56,6 +56,7 @@ body {
   min-height: 100vh;
   color: var(--text);
   font-family: var(--font-body);
+  overflow-x: hidden;
   background:
     radial-gradient(circle at top left, rgba(37, 99, 235, 0.16), transparent 28%),
     radial-gradient(circle at top right, rgba(15, 118, 110, 0.12), transparent 24%),
@@ -285,6 +286,38 @@ textarea {
   align-items: center;
   gap: 12px;
   flex-wrap: wrap;
+}
+
+.mobile-nav-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid rgba(37, 99, 235, 0.18);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.88);
+  color: var(--primary);
+}
+
+.mobile-nav-toggle:hover {
+  background: #fff;
+}
+
+.mobile-drawer {
+  width: min(86vw, 320px);
+  background:
+    linear-gradient(180deg, rgba(7, 16, 37, 0.98) 0%, rgba(10, 33, 74, 0.97) 52%, rgba(11, 69, 158, 0.95) 100%);
+  color: #f8fbff;
+}
+
+.mobile-drawer .offcanvas-header {
+  padding: 18px 18px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.mobile-drawer .offcanvas-body {
+  padding: 14px 14px 20px;
 }
 
 .top-pill {
@@ -789,11 +822,15 @@ tbody td {
 
   .main {
     margin-left: 0;
-    padding: 16px;
+    padding: 16px 14px;
   }
 
   .topbar {
-    padding: 18px;
+    padding: 16px;
+  }
+
+  .mobile-nav-toggle {
+    display: inline-flex;
   }
 
   .hero-card,
@@ -881,9 +918,14 @@ tbody td {
   <main class="main">
     <div class="page-frame">
       <section class="topbar">
-        <div>
-          <h1>BUSINESS DASHBOARD</h1>
-          <p id="topbar-date">Loading date...</p>
+        <div class="d-flex align-items-center gap-3">
+          <button class="mobile-nav-toggle" type="button" data-bs-toggle="offcanvas" data-bs-target="#dashboardMobileSidebar" aria-controls="dashboardMobileSidebar" aria-label="Open navigation menu">
+            <i class="bi bi-list fs-4"></i>
+          </button>
+          <div>
+            <h1>BUSINESS DASHBOARD</h1>
+            <p id="topbar-date">Loading date...</p>
+          </div>
         </div>
         <div class="topbar-right">
           <div class="top-pill"><span class="live-dot"></span>Live updates </div>
@@ -1039,6 +1081,22 @@ tbody td {
       </section>
     </div>
   </main>
+</div>
+
+<div class="offcanvas offcanvas-start d-lg-none mobile-drawer" tabindex="-1" id="dashboardMobileSidebar" aria-labelledby="dashboardMobileSidebarLabel">
+  <div class="offcanvas-header">
+    <div class="d-flex align-items-center gap-3" id="dashboardMobileSidebarLabel">
+      <img src="{% static 'images/logo2.png' %}" alt="SmartBiz logo" style="width:46px;height:46px;border-radius:14px;object-fit:cover;">
+      <div>
+        <div style="font-weight:800; letter-spacing:-0.02em;">SmartBiz</div>
+        <div style="font-size:0.78rem; color:rgba(248,251,255,0.72);">Business dashboard</div>
+      </div>
+    </div>
+    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+    {% include 'dashboard/sidebar.html' %}
+  </div>
 </div>
 
 {{ monthly_revenue|json_script:"monthly-revenue-data" }}

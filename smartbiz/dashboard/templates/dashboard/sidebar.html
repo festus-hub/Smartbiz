@@ -1,26 +1,28 @@
 {% load static %}
-  <style>
+<style>
     .logout-btn {
-        width: 100%; 
-        padding: 10px 12px; 
-        border: 1px solid rgba(255,255,255,0.12); 
-        border-radius: 8px; 
-        background: #0b61f5; 
-        color: #ffffff; /* Changed to white for better visibility */
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid rgba(255,255,255,0.12);
+        border-radius: 8px;
+        background: #0b61f5;
+        color: #ffffff;
         font-weight: 700;
         cursor: pointer;
-        transition: background 0.2s ease-in-out; /* Smooth hover transition */
+        transition: background 0.2s ease-in-out, transform 0.2s ease-in-out;
     }
 
     .logout-btn:hover {
-        background: #d32f2f; /* Changes to red on hover */
+        background: #d32f2f;
+        transform: translateY(-1px);
     }
 </style>
-<div class="sidebar">
+<div class="sb-sidebar-inner">
     <div class="logo d-flex align-items-center gap-3">
-        <img src="{% static 'images/logo2.png' %}" alt="SmartBiz logo" style="height: 42px; width: 42px; border-radius: 12px; object-fit: cover;">
+        <img src="{% static 'images/logo2.png' %}" alt="SmartBiz logo" class="sb-sidebar-logo">
         <div>
-            <div style="font-size: 0.82rem; letter-spacing: 0.12em; text-transform: uppercase; color: #94a3b8;">SmartBiz</div>
+            <div class="sb-sidebar-brand">SmartBiz</div>
+            <div class="sb-sidebar-subtitle">Business dashboard</div>
         </div>
     </div>
 
@@ -78,15 +80,12 @@
 
         <li class="section">Account</li>
         <li>
-         
-
-        <form action="{% url 'logout' %}" method="POST" style="margin: 0;">
-             {% csrf_token %}
-            <button type="submit" class="logout-btn">
-              Logout
-            </button>
-        </form>
-
+            <form action="{% url 'logout' %}" method="POST" class="sb-logout-form">
+                {% csrf_token %}
+                <button type="submit" class="logout-btn">
+                    Logout
+                </button>
+            </form>
         </li>
     </ul>
 </div>
