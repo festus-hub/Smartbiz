@@ -21,10 +21,7 @@ module.exports = {
           "50%": { transform: "translateY(-10px)" }
         }
       },
-      animation: {
-        rise: "rise .7s ease-out both",
-        float: "float 5s ease-in-out infinite"
-      }
+     
     }
   },
   plugins: []

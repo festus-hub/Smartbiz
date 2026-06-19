@@ -1,91 +1,90 @@
 {% load static %}
-<style>
-    .logout-btn {
-        width: 100%;
-        padding: 10px 12px;
-        border: 1px solid rgba(255,255,255,0.12);
-        border-radius: 8px;
-        background: #0b61f5;
-        color: #ffffff;
-        font-weight: 700;
-        cursor: pointer;
-        transition: background 0.2s ease-in-out, transform 0.2s ease-in-out;
-    }
 
-    .logout-btn:hover {
-        background: #d32f2f;
-        transform: translateY(-1px);
-    }
-</style>
-<div class="sb-sidebar-inner">
-    <div class="logo d-flex align-items-center gap-3">
-        <img src="{% static 'images/logo2.png' %}" alt="SmartBiz logo" class="sb-sidebar-logo">
-        <div>
-            <div class="sb-sidebar-brand">SmartBiz</div>
-            <div class="sb-sidebar-subtitle">Business dashboard</div>
-        </div>
-    </div>
-
-    <ul class="menu">
-        <li class="section">Overview</li>
-        <li>
-            <a href="{% url 'dashboard' %}" class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
-                Dashboard
-            </a>
-        </li>
-        <li>
-            <a href="{% url 'customers' %}" class="{% if request.resolver_match.url_name == 'customers' %}active{% endif %}">
-                Customers
-            </a>
-        </li>
-        <li>
-            <a href="{% url 'product_list' %}" class="{% if request.resolver_match.url_name == 'product_list' %}active{% endif %}">
-                Products
-            </a>
-        </li>
-        <li>
-            <a href="{% url 'Stock_movement' %}" class="{% if request.resolver_match.url_name == 'Stock_movement' %}active{% endif %}">
-                Stock Movement
-            </a>
-        </li>
-
-        <li class="section">Sales</li>
-        <li>
-            <a href="{% url 'sales' %}" class="{% if request.resolver_match.url_name == 'sales' %}active{% endif %}">
-                Sales
-            </a>
-        </li>
-        <li>
-            <a href="{% url 'add_sale' %}" class="{% if request.resolver_match.url_name == 'add_sale' %}active{% endif %}">
-                Add Sale
-            </a>
-        </li>
-
-        <li class="section">Finance</li>
-        <li>
-            <a href="{% url 'payments' %}" class="{% if request.resolver_match.url_name == 'payments' %}active{% endif %}">
-                Payments
-            </a>
-        </li>
-        <li>
-            <a href="{% url 'add_expense' %}" class="{% if request.resolver_match.url_name == 'add_expense' %}active{% endif %}">
-                Add Expense
-            </a>
-        </li>
-        <li>
-            <a href="{% url 'reports' %}" class="{% if request.resolver_match.url_name == 'reports' %}active{% endif %}">
-                Reports
-            </a>
-        </li>
-
-        <li class="section">Account</li>
-        <li>
-            <form action="{% url 'logout' %}" method="POST" class="sb-logout-form">
-                {% csrf_token %}
-                <button type="submit" class="logout-btn">
-                    Logout
-                </button>
-            </form>
-        </li>
-    </ul>
+<div class="flex items-center gap-3 pb-5 mb-4 border-b border-slate-700/50">
+  <img src="{% static 'images/logo2.png' %}" alt="SmartBiz logo"
+       class="w-[46px] h-[46px] rounded-2xl object-cover">
+  <strong class="font-bold text-lg text-white tracking-tight">SmartBiz</strong>
 </div>
+
+<nav class="flex flex-col gap-1 flex-1">
+
+  <div class="px-2 mb-1 text-[10px] font-bold tracking-[.12em] uppercase text-slate-500">Overview</div>
+  <a href="{% url 'dashboard' %}"
+     class="sidebar-link flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-300 font-semibold no-underline hover:bg-white/10 hover:text-white transition-all">
+    <i class="bi bi-grid-1x2-fill w-4 text-center"></i> Dashboard
+  </a>
+  <a href="{% url 'sales' %}"
+     class="sidebar-link flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-300 font-semibold no-underline hover:bg-white/10 hover:text-white transition-all">
+    <i class="bi bi-bag-check w-4 text-center"></i> Sales
+  </a>
+  <a href="{% url 'add_sale' %}"
+     class="sidebar-link flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-300 font-semibold no-underline hover:bg-white/10 hover:text-white transition-all">
+    <i class="bi bi-plus-circle w-4 text-center"></i> Add Sale
+  </a>
+  <a href="{% url 'customers' %}"
+     class="sidebar-link flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-300 font-semibold no-underline hover:bg-white/10 hover:text-white transition-all">
+    <i class="bi bi-people-fill w-4 text-center"></i> Customers
+  </a>
+ 
+  <a href="{% url 'product_list' %}"
+     class="sidebar-link flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-300 font-semibold no-underline hover:bg-white/10 hover:text-white transition-all">
+    <i class="bi bi-box-seam w-4 text-center"></i> Products
+  </a>
+  <a href="{% url 'Stock_movement' %}"
+     class="sidebar-link flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-300 font-semibold no-underline hover:bg-white/10 hover:text-white transition-all">
+    <i class="bi bi-arrow-left-right w-4 text-center"></i> Stock Movement
+  </a>
+
+  <div class="px-2 mt-4 mb-1 text-[10px] font-bold tracking-[.12em] uppercase text-slate-500">Finance</div>
+  <a href="{% url 'payments' %}"
+     class="sidebar-link flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-300 font-semibold no-underline hover:bg-white/10 hover:text-white transition-all">
+    <i class="bi bi-credit-card-2-front w-4 text-center"></i> Payments
+  </a>
+  <a href="{% url 'add_expense' %}"
+     class="sidebar-link flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-300 font-semibold no-underline hover:bg-white/10 hover:text-white transition-all">
+    <i class="bi bi-wallet2 w-4 text-center"></i> Add Expense
+  </a>
+  <a href="{% url 'reports' %}"
+     class="sidebar-link flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-300 font-semibold no-underline hover:bg-white/10 hover:text-white transition-all">
+    <i class="bi bi-bar-chart-line-fill w-4 text-center"></i> Reports
+  </a>
+
+  <div class="px-2 mt-4 mb-1 text-[10px] font-bold tracking-[.12em] uppercase text-slate-500">Account</div>
+  <form action="{% url 'logout' %}" method="POST" style="margin:0;">
+    {% csrf_token %}
+    <button type="submit"
+            class="block w-full flex items-center gap-4 px-3 py-3 rounded-2xl border border-white/10
+                   bg-white/[.04] text-white font-bold cursor-pointer transition-all
+                   hover:bg-red-500/15 hover:text-red-700 hover:border-red-400/40">
+      <i class="bi bi-box-arrow-right w-3 text-center"></i> Logout
+    </button>
+  </form>
+
+</nav>
+
+<div class="flex items-center gap-3 mt-6 pt-4 border-t border-slate-700/50">
+  <div class="w-10 h-10 rounded-xl grid place-items-center font-bold text-[#08111f]"
+       style="background:linear-gradient(135deg,#fbbf24,#38bdf8)">
+    {{ request.user.username|slice:":2"|upper }}
+  </div>
+  <div>
+    <div class="font-bold text-white text-sm">{{ request.user.username }}</div>
+    <div class="text-[10px] tracking-widest uppercase text-slate-400 mt-0.5">{{ request.user.role_label|default:"User" }}</div>
+  </div>
+</div>
+
+<style>
+  .sidebar-link-active {
+    background: rgba(37,99,235,.25) !important;
+    color: white !important;
+    border-left: 3px solid #2563eb;
+  }
+</style>
+
+<script>
+  document.querySelectorAll(".sidebar-link").forEach(link => {
+    if (window.location.pathname === new URL(link.href).pathname) {
+      link.classList.add("sidebar-link-active");
+    }
+  });
+</script>

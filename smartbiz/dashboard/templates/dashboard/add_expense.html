@@ -1,266 +1,137 @@
 {% extends 'dashboard/base.html' %}
-{% load static %}
-
 {% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Expense - SmartBiz</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 
-<style>
-.add-expense-page {
-    padding-bottom: 32px;
-}
-
-.add-expense-page .page-heading {
-    margin: 24px 0 18px;
-}
-
-.add-expense-page .page-heading h2 {
-    margin-bottom: 6px;
-    font-weight: 700;
-    color: #1f2d3d;
-}
-
-.add-expense-page .page-heading p {
-    margin-bottom: 0;
-    color: #6b7280;
-    font-size: 15px;
-}
-
-.add-expense-page .expense-card {
-    max-width: 880px;
-    border: none;
-    border-radius: 24px;
-    overflow: hidden;
-    background: #ffffff;
-    box-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
-}
-
-.add-expense-page .expense-card-header {
-    padding: 24px 28px;
-    background: linear-gradient(135deg, #0d6efd 0%, #1d4ed8 55%, #0f766e 100%);
-    color: #ffffff;
-}
-
-.add-expense-page .expense-card-header h4 {
-    margin: 0 0 8px;
-    font-size: 24px;
-    font-weight: 700;
-}
-
-.add-expense-page .expense-card-header p {
-    margin: 0;
-    max-width: 580px;
-    color: rgba(255, 255, 255, 0.88);
-}
-
-.add-expense-page .expense-card-body {
-    padding: 28px;
-}
-
-.add-expense-page .expense-section {
-    height: 100%;
-    padding: 24px;
-    border-radius: 20px;
-    background: #f8fbff;
-    border: 1px solid #e5eefb;
-}
-
-.add-expense-page .section-title {
-    margin-bottom: 8px;
-    font-size: 18px;
-    font-weight: 700;
-    color: #1f2d3d;
-}
-
-.add-expense-page .section-text {
-    margin-bottom: 22px;
-    color: #64748b;
-    font-size: 14px;
-    line-height: 1.6;
-}
-
-.add-expense-page .form-label {
-    margin-bottom: 8px;
-    font-weight: 600;
-    color: #334155;
-}
-
-.add-expense-page input,
-.add-expense-page select,
-.add-expense-page textarea {
-    border-radius: 14px;
-    border: 1px solid #d6e2f0;
-    background: #ffffff;
-}
-
-.add-expense-page input,
-.add-expense-page select {
-    height: 50px;
-}
-
-.add-expense-page textarea {
-    min-height: 140px;
-    resize: vertical;
-    padding-top: 12px;
-}
-
-.add-expense-page input:focus,
-.add-expense-page select:focus,
-.add-expense-page textarea:focus {
-    border-color: #0d6efd;
-    box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.12);
-}
-
-.add-expense-page .quick-view-card {
-    height: 100%;
-    padding: 24px;
-    border-radius: 20px;
-    background: #0f172a;
-    color: #e2e8f0;
-}
-
-.add-expense-page .quick-view-card h5 {
-    margin-bottom: 12px;
-    font-size: 18px;
-    font-weight: 700;
-    color: #ffffff;
-}
-
-.add-expense-page .quick-view-card p {
-    margin-bottom: 18px;
-    color: #cbd5e1;
-    font-size: 14px;
-    line-height: 1.6;
-}
-
-.add-expense-page .quick-view-list {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-}
-
-.add-expense-page .quick-view-list li {
-    margin-bottom: 12px;
-    padding: 12px 14px;
-    border-radius: 14px;
-    background: rgba(255, 255, 255, 0.08);
-    color: #e2e8f0;
-    font-size: 14px;
-}
-
-.add-expense-page .quick-view-list li:last-child {
-    margin-bottom: 0;
-}
-
-.add-expense-page .quick-view-list strong {
-    display: block;
-    margin-bottom: 4px;
-    color: #ffffff;
-}
-
-.add-expense-page .action-row {
-    margin-top: 24px;
-}
-
-.add-expense-page .btn {
-    border-radius: 12px;
-    padding: 10px 18px;
-    font-weight: 600;
-}
-
-.add-expense-page .btn-primary {
-    background: linear-gradient(135deg, #0d6efd 0%, #2563eb 100%);
-    border: none;
-}
-
-.add-expense-page .btn-primary:hover {
-    background: linear-gradient(135deg, #0b5ed7 0%, #1d4ed8 100%);
-}
-
-@media (max-width: 767.98px) {
-    .add-expense-page .expense-card-header,
-    .add-expense-page .expense-card-body,
-    .add-expense-page .expense-section,
-    .add-expense-page .quick-view-card {
-        padding: 20px;
+  <script src="https://cdn.tailwindcss.com"></script> 
+  <style>
+     body { font-family:'Poppins',sans-serif; background:linear-gradient(135deg,#e7e8eb,#d7d9dd); }
+    .hero-glow::before {
+      content:""; position:absolute; inset:0;
+      background:radial-gradient(circle at top right,rgba(239, 237, 237, 0.12),transparent 30%);
     }
-}
+    .auth-input:focus { outline:none; border-color:#8b5cf6; box-shadow:0 0 0 .2rem rgba(139,92,246,.14); }
+    .sidebar-bg {
+      background: linear-gradient(180deg, rgba(7,16,37,.98) 0%, rgba(10,33,74,.97) 52%, rgba(11,69,158,.95) 100%);
+    }
 </style>
+</head>
+    <body class="font-sans text-[#162033] min-h-screen overflow-x-hidden">
+       <aside class="sidebar-bg text-[#f8fbff] fixed top-0 left-0 bottom-0 w-[270px] hidden lg:flex flex-col z-50
+              border-r border-white/10 backdrop-blur-xl shadow-[0_24px_60px_rgba(15,23,42,.08)]">
+    {% include 'dashboard/sidebar.html' %}
+  </aside>
+    
+<div class="min-h-screen flex flex-col">
+   <main class="flex-1 lg:ml-[270px] p-6 lg:p-6 ">
+    <div class="max-w-[1440px] mx-auto">
 
-<div class="container-fluid px-4 add-expense-page">
-    <div class="page-heading">
-        <h2>Add Expense</h2>
-        <p>Capture business spending in a cleaner, easier-to-review layout.</p>
+  <div class="mt-6 mb-5">
+    <h2 class="mb-1.5 font-bold text-[#1f2d3d] tracking-tight" style="font-size:clamp(1.8rem,4vw,2.8rem)">Add Expense</h2>
+    <p class="m-0 text-[#6b7280] text-[15px]">Capture business spending in a cleaner, easier-to-review layout.</p>
+  </div>
+  <div class="max-w-[880px] rounded-3xl overflow-hidden bg-white shadow-[0_18px_45px_rgba(15,23,42,.08)]">
+
+    <div class="px-7 py-6 text-black"
+         style="background:linear-gradient(135deg,#e0e4e9 0%,#e8e9ed 55%,#dfebea 100%)">
+      <h4 class="m-0 mb-2 text-2xl font-semibold">Expense Entry Card</h4>
+      <p class="m-0 max-w-xl text-black">
+        Use this form to record a new expense with the amount, category, and a short description for future tracking.
+      </p>
     </div>
 
-    <div class="card expense-card">
-        <div class="expense-card-header">
-            <h4>Expense Entry Card</h4>
-            <p>Use this form to record a new expense with the amount, category, and a short description for future tracking.</p>
+    <div class="p-7">
+      <form method="POST">
+        {% csrf_token %}
+
+        <div class="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-5 items-start">
+
+          <div class="p-6 rounded-[20px] bg-[#f8fbff] border border-[#e5eefb]">
+            <h5 class="text-lg font-bold text-[#1f2d3d] mb-2">Expense Details</h5>
+            <p class="text-[#64748b] text-sm leading-relaxed mb-5">
+              Fill in the form below so each expense stays clear, categorized, and easy to check later on.
+            </p>
+
+            <div class="mb-4">
+              <label class="block font-semibold text-[#334155] mb-2">Description</label>
+              <textarea name="description"
+                        class="w-full min-h-[140px] px-4 pt-3 rounded-2xl border border-[#d6e2f0] bg-white
+                               text-[#162033] resize-y focus:outline-none focus:border-blue-600
+                               focus:ring-[4px] focus:ring-blue-600/10 transition"
+                        placeholder="What was this expense for?" required></textarea>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <div>
+                <label class="block font-semibold text-[#334155] mb-2">Amount</label>
+                <input type="number" name="amount" step="0.01" min="0.01" placeholder="0.00" required
+                       class="w-full h-[50px] px-4 rounded-2xl border border-[#d6e2f0] bg-white text-[#162033]
+                              focus:outline-none focus:border-blue-600 focus:ring-[4px] focus:ring-blue-600/10 transition">
+              </div>
+              <div>
+                <label class="block font-semibold text-[#334155] mb-2">Category</label>
+                <select name="category" required
+                        class="w-full h-[50px] px-4 rounded-2xl border border-[#d6e2f0] bg-white text-[#162033]
+                               focus:outline-none focus:border-blue-600 focus:ring-[4px] focus:ring-blue-600/10 transition">
+                  {% for value, label in categories %}
+                  <option value="{{ value }}">{{ label }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+
+            <div class="flex flex-wrap justify-end gap-2 mt-6">
+              <a href="{% url 'dashboard' %}"
+                 class="px-5 py-2.5 rounded-xl font-semibold border border-gray-300 text-gray-600
+                        hover:bg-red-500 transition-colors no-underline">
+                Cancel
+              </a>
+              <button type="reset"
+                      class="px-5 py-2.5 rounded-xl font-semibold border border-red-300 text-red-600
+                             hover:bg-red-50 transition-colors bg-transparent cursor-pointer">
+                Reset
+              </button>
+              <button type="submit"
+                      class="px-5 py-2.5 rounded-xl font-semibold text-gray-600 border border-gray-300 cursor-pointer transition-all
+                             hover:bg-green-500">
+                Save Expense
+              </button>
+            </div>
+          </div>
+
+          <div class="w-full lg:w-64 p-6 rounded-[20px] bg-[#0f172a] text-[#e2e8f0]">
+            <h5 class="text-lg font-semibold text-white mb-3">Quick View</h5>
+            <p class="text-[#cbd5e1] text-sm leading-relaxed mb-5">
+              This custom card keeps the form simple while giving the user a clearer view of what information is needed.
+            </p>
+
+            <ul class="list-none p-0 m-0 space-y-3">
+              <li class="px-3.5 py-3 rounded-2xl text-sm text-[#e2e8f0]" style="background:rgba(255,255,255,.08)">
+                <strong class="block text-white mb-1">Clear Description</strong>
+                Explain what the money was spent on.
+              </li>
+              <li class="px-3.5 py-3 rounded-2xl text-sm text-[#e2e8f0]" style="background:rgba(255,255,255,.08)">
+                <strong class="block text-white mb-1">Correct Amount</strong>
+                Enter the exact value using decimals when needed.
+              </li>
+              <li class="px-3.5 py-3 rounded-2xl text-sm text-[#e2e8f0]" style="background:rgba(255,255,255,.08)">
+                <strong class="block text-white mb-1">Right Category</strong>
+                Choose the best matching expense group.
+              </li>
+            </ul>
+          </div>
+
         </div>
-
-        <div class="expense-card-body">
-            <form method="POST">
-                {% csrf_token %}
-
-                <div class="row">
-                    <div class="col-lg-8 mb-4 mb-lg-0">
-                        <div class="expense-section">
-                            <h5 class="section-title">Expense Details</h5>
-                            <p class="section-text">Fill in the form below so each expense stays clear, categorized, and easy to check later on.</p>
-
-                            <div class="mb-3">
-                                <label class="form-label">Description</label>
-                                <textarea name="description" class="form-control" placeholder="What was this expense for?" required></textarea>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Amount</label>
-                                    <input type="number" name="amount" class="form-control" step="0.01" min="0.01" placeholder="0.00" required>
-                                </div>
-
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Category</label>
-                                    <select name="category" class="form-select" required>
-                                        {% for value, label in categories %}
-                                        <option value="{{ value }}">{{ label }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="d-flex flex-wrap justify-content-end gap-2 action-row">
-                                <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">Cancel</a>
-                                <button type="reset" class="btn btn-outline-danger">Reset</button>
-                                <button type="submit" class="btn btn-primary">Save Expense</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-4">
-                        <div class="quick-view-card">
-                            <h5>Quick View</h5>
-                            <p>This custom card keeps the form simple while giving the user a clearer view of what information is needed.</p>
-
-                            <ul class="quick-view-list">
-                                <li>
-                                    <strong>Clear Description</strong>
-                                    Explain what the money was spent on.
-                                </li>
-                                <li>
-                                    <strong>Correct Amount</strong>
-                                    Enter the exact value using decimals when needed.
-                                </li>
-                                <li>
-                                    <strong>Right Category</strong>
-                                    Choose the best matching expense group.
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </div>
+      </form>
     </div>
+  </div>
 </div>
 
 {% endblock %}

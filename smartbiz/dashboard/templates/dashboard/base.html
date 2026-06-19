@@ -1,217 +1,216 @@
-{% load static crispy_forms_tags %}
+{% load static %}
+{% block content %}
+
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    {% include 'dashboard/framework_assets.html' %}
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        :root {
-            --sb-sidebar-width: 256px;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 
-        body {
-            overflow-x: hidden;
+  <script>
+    tailwind = {
+      config: {
+        theme: {
+          extend: {
+            fontFamily: { sans: ["Inter", "ui-sans-serif", "system-ui", "sans-serif"] }
+          }
         }
+      }
+    };
+  </script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-        .sb-layout {
-            background: #f8fafc;
-        }
+  <style>
+    body { overflow-x: hidden; }
 
-        .sidebar {
-            width: var(--sb-sidebar-width);
-            background: #111827;
-            color: rgb(41, 114, 232);
-            min-height: 100vh;
-            padding: 20px 16px;
-            position: sticky;
-            top: 0;
-            align-self: flex-start;
-        }
+    .offcanvas {
+      position: fixed; top: 0; bottom: 0; left: 0;
+      width: min(86vw, 320px);
+      transform: translateX(-100%);
+      transition: transform .24s ease;
+      z-index: 50; overflow-y: auto;
+    }
+    .offcanvas.show { transform: translateX(0); }
+    .offcanvas-backdrop {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,.45); z-index: 40;
+    }
+    .offcanvas-backdrop.show { display: block; }
 
-        .logo {
-            margin-bottom: 20px;
-        }
+    .sb-loading-overlay {
+      position: fixed; inset: 0; z-index: 999;
+      background: rgba(15,23,42,.55); backdrop-filter: blur(4px);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; transition: opacity .2s;
+    }
+    .sb-loading-overlay.is-visible { opacity: 1; }
+    .sb-loading-box {
+      display: flex; align-items: center; gap: 14px;
+      padding: 20px 28px; border-radius: 20px;
+      background: #fff; color: #162033; font-weight: 700;
+      box-shadow: 0 24px 60px rgba(15,23,42,.18);
+    }
+    .spinner-tailwind {
+      display: inline-block; width: 20px; height: 20px;
+      border: 3px solid rgba(37,99,235,.2);
+      border-top-color: #2563eb; border-radius: 50%;
+      animation: spin .7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
-        .sb-sidebar-inner {
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-            min-height: calc(100vh - 40px);
-        }
-
-        .menu {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            flex: 1;
-        }
-
-        .menu li {
-            margin-bottom: 8px;
-        }
-
-        .menu a {
-            display: block;
-            padding: 11px 12px;
-            color: #cbd5f5;
-            text-decoration: none;
-            border-radius: 8px;
-            transition: 0.3s;
-            font-weight: 600;
-            line-height: 1.25;
-        }
-
-        .menu a:hover {
-            background: #334155;
-            color: white;
-        }
-
-        .menu a.active {
-            background: #3b82f6;
-            color: white;
-        }
-
-        .section {
-            margin-top: 18px;
-            font-size: 11px;
-            color: #94a3b8;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-        }
-
-        .topbar {
-            background: rgba(255, 255, 255, 0.94);
-            backdrop-filter: blur(14px);
-            padding: 14px 20px;
-            border-bottom: 1px solid rgba(148, 163, 184, 0.18);
-            position: sticky;
-            top: 0;
-            z-index: 1020;
-        }
-
-        .main {
-            padding: 24px 28px 32px;
-        }
-
-        .sb-mobile-title {
-            font-weight: 800;
-            color: #0f172a;
-            letter-spacing: -0.02em;
-        }
-
-        .sb-mobile-trigger {
-            border-radius: 12px;
-            padding: 10px 12px;
-        }
-
-        .sb-sidebar-logo {
-            height: 42px;
-            width: 42px;
-            border-radius: 12px;
-            object-fit: cover;
-            flex: 0 0 auto;
-        }
-
-        .sb-sidebar-brand {
-            font-size: 1rem;
-            font-weight: 800;
-            color: #fff;
-            line-height: 1.2;
-        }
-
-        .sb-sidebar-subtitle {
-            font-size: 0.78rem;
-            color: #94a3b8;
-        }
-
-        .sb-logout-form {
-            margin: 0;
-        }
-
-        .sb-mobile-sidebar {
-            width: min(86vw, 320px);
-            background: #111827;
-            color: #cbd5f5;
-        }
-
-        .sb-mobile-sidebar .offcanvas-header {
-            padding: 20px 18px 12px;
-            border-bottom: 1px solid rgba(148, 163, 184, 0.12);
-        }
-
-        .sb-mobile-sidebar .offcanvas-body {
-            padding: 16px 14px 20px;
-        }
-
-        @media (max-width: 767.98px) {
-            .topbar {
-                padding: 12px 16px;
-            }
-
-            .main {
-                padding: 18px 14px 26px;
-            }
-        }
-    </style>
+    .alert { padding: .75rem 1rem; border-radius: 12px; margin-bottom: .5rem; font-weight: 600; font-size: .9rem; }
+    .alert-success { background:#dcfce7; color:#166534; border:1px solid #86efac; }
+    .alert-error,
+    .alert-danger  { background:#fee2e2; color:#b91c1c; border:1px solid #fca5a5; }
+    .alert-warning { background:#fef9c3; color:#854d0e; border:1px solid #fde047; }
+    .alert-info    { background:#eff6ff; color:#1d4ed8; border:1px solid #93c5fd; }
+  </style>
 </head>
 
-<body class="bg-slate-50 text-slate-900">
+<body class="bg-slate-50 text-slate-900 font-sans">
 
-    <div class="d-flex min-vh-100 sb-layout">
-
-        <aside class="sidebar d-none d-md-flex flex-column">
+ 
+  
+  <div class="flex min-h-screen">
+    <aside class="sidebar d-none d-md-flex flex-column">
             {% include 'dashboard/sidebar.html' %}
         </aside>
 
-        <div class="flex-grow-1 d-flex flex-column min-vh-100">
+    <div class="flex-1 flex flex-col min-h-screen">
 
-            <div class="topbar shadow-sm d-flex align-items-center justify-content-between gap-3">
-                <div class="d-flex align-items-center gap-2">
-                    <button class="btn btn-outline-primary d-md-none sb-mobile-trigger" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileSidebar" aria-controls="mobileSidebar" aria-label="Open navigation menu">
-                        <i class="bi bi-list fs-5"></i>
-                    </button>
-                    <div class="sb-mobile-title d-md-none">SmartBiz</div>
-                </div>
-                <div class="d-none d-md-block fw-semibold text-slate-500">
-                    Business dashboard
-                </div>
-            </div>
-
-            <div class="main container-fluid">
-                {% if messages %}
-                    <div class="mb-3">
-                        {% for message in messages %}
-                            <div class="alert alert-{{ message.tags|default:'info' }} mb-2" role="alert">
-                                {{ message }}
-                            </div>
-                        {% endfor %}
-                    </div>
-                {% endif %}
-                {% block content %}
-                {% endblock %}
-            </div>
-
+      <div class="sticky top-0 z-[1020] flex items-center justify-between gap-3
+                  px-5 py-3.5 bg-white/94 backdrop-blur-[14px] border-b border-slate-200/40 shadow-sm">
+        <div class="flex items-center gap-2">
+          <button class="md:hidden flex items-center justify-center px-3 py-2.5 rounded-xl
+                         border border-blue-500/40 text-blue-600 hover:bg-blue-50 transition"
+                  type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileSidebar"
+                  aria-controls="mobileSidebar" aria-label="Open navigation menu">
+            <i class="bi bi-list text-xl leading-none"></i>
+          </button>
+          <span class="md:hidden font-extrabold text-[#0f172a] tracking-tight">SmartBiz</span>
         </div>
+        <div class="hidden md:block font-semibold text-slate-500">Business dashboard.</div>
+      </div>
+
+      <div class="flex-1 px-7 py-6 max-w-[1600px] w-full mx-auto">
+        {% if messages %}
+          <div class="mb-4">
+            {% for message in messages %}
+              <div class="alert alert-{{ message.tags|default:'info' }}" role="alert">{{ message }}</div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
 
     </div>
+  </div>
 
-    <div class="offcanvas offcanvas-start d-md-none sb-mobile-sidebar" tabindex="-1" id="mobileSidebar" aria-labelledby="mobileSidebarLabel">
-        <div class="offcanvas-header">
-            <div class="d-flex align-items-center gap-3" id="mobileSidebarLabel">
-                <img src="{% static 'images/logo2.png' %}" alt="SmartBiz logo" class="sb-sidebar-logo">
-                <div>
-                    <div class="sb-sidebar-brand">SmartBiz</div>
-                    <div class="sb-sidebar-subtitle">Business dashboard</div>
-                </div>
-            </div>
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  <div class="offcanvas bg-[#111827] text-[#cbd5f5]" id="mobileSidebar"
+       tabindex="-1" hidden aria-labelledby="mobileSidebarLabel">
+    <div class="flex items-center justify-between px-4 py-5 border-b border-slate-700/50">
+      <div class="flex items-center gap-3" id="mobileSidebarLabel">
+        <img src="{% static 'images/logo2.png' %}" alt="SmartBiz logo"
+             class="w-[42px] h-[42px] rounded-xl object-cover flex-shrink-0">
+        <div>
+          <div class="font-extrabold text-white text-base leading-tight">SmartBiz</div>
+          <div class="text-[.78rem] text-slate-400">Business dashboard.</div>
         </div>
-        <div class="offcanvas-body">
-            {% include 'dashboard/sidebar.html' %}
-        </div>
+      </div>
+      <button type="button" data-bs-dismiss="offcanvas" aria-label="Close"
+              class="text-slate-400 hover:text-white text-2xl bg-transparent border-0 cursor-pointer leading-none">&times;</button>
     </div>
+    <div class="px-3.5 py-4">
+    </div>
+  </div>
 
+  <div class="offcanvas-backdrop" aria-hidden="true">
+    {% include 'dashboard/sidebar.html' %}
+  </div>
+
+  <script>
+    (function () {
+      const body = document.body;
+      const backdrop = document.querySelector(".offcanvas-backdrop");
+
+      const open = (panel) => {
+        panel.hidden = false;
+        requestAnimationFrame(() => panel.classList.add("show"));
+        backdrop.classList.add("show");
+        body.style.overflow = "hidden";
+      };
+
+      const close = (panel) => {
+        if (!panel) return;
+        panel.classList.remove("show");
+        backdrop.classList.remove("show");
+        body.style.overflow = "";
+        setTimeout(() => { if (!document.querySelector(".offcanvas.show")) panel.hidden = true; }, 240);
+      };
+
+      document.querySelectorAll('[data-bs-toggle="offcanvas"]').forEach(t => {
+        t.addEventListener("click", e => {
+          e.preventDefault();
+          const panel = document.querySelector(t.getAttribute("data-bs-target"));
+          if (panel) open(panel);
+        });
+      });
+
+      document.querySelectorAll('[data-bs-dismiss="offcanvas"]').forEach(t => {
+        t.addEventListener("click", e => { e.preventDefault(); close(t.closest(".offcanvas")); });
+      });
+
+      backdrop.addEventListener("click", () => {
+        document.querySelectorAll(".offcanvas.show").forEach(close);
+      });
+    })();
+
+    document.querySelectorAll('[data-bs-toggle="collapse"]').forEach(t => {
+      t.addEventListener("click", e => {
+        e.preventDefault();
+        const panel = document.querySelector(t.getAttribute("data-bs-target"));
+        if (!panel) return;
+        panel.classList.toggle("show");
+        t.setAttribute("aria-expanded", panel.classList.contains("show") ? "true" : "false");
+      });
+    });
+
+    document.querySelectorAll("form").forEach(form => {
+      form.addEventListener("submit", () => {
+        setTimeout(() => {
+          const method = (form.getAttribute("method") || "get").toLowerCase();
+          if (method === "get" || form.dataset.noLoading === "true" || form.target === "_blank") return;
+          const submitter = form.querySelector("button[type='submit'],input[type='submit']");
+          const overlay = Object.assign(document.createElement("div"), { className: "sb-loading-overlay" });
+          overlay.setAttribute("aria-hidden", "true");
+          overlay.innerHTML = `<div class="sb-loading-box"><span class="spinner-tailwind" aria-hidden="true"></span><span>Processing...</span></div>`;
+          if (submitter && !submitter.dataset.originalHtml) {
+            submitter.dataset.originalHtml = submitter.innerHTML || submitter.value || "";
+            submitter.disabled = true;
+            if (submitter.tagName === "BUTTON") submitter.innerHTML = `<span class="spinner-tailwind" aria-hidden="true"></span><span>Processing...</span>`;
+            else submitter.value = "Processing...";
+          }
+          form.setAttribute("aria-busy", "true");
+          document.body.appendChild(overlay);
+          requestAnimationFrame(() => overlay.classList.add("is-visible"));
+        }, 0);
+      });
+    });
+
+    document.querySelectorAll(".table-responsive table").forEach(table => {
+      const headers = Array.from(table.querySelectorAll("thead th")).map(h => h.textContent.trim());
+      table.querySelectorAll("tbody tr").forEach(row => {
+        Array.from(row.children).forEach((cell, i) => {
+          if (!cell.hasAttribute("data-label") && !cell.hasAttribute("colspan"))
+            cell.setAttribute("data-label", headers[i] || "");
+        });
+      });
+    });
+  </script>
 </body>
 </html>
+{% endblock %}

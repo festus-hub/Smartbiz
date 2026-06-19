@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.core.mail import EmailMessage
 from django.db import OperationalError, transaction
-from django.http import HttpResponse
+from django.http import HttpResponse, request
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import authenticate, login, logout
 from decimal import Decimal
@@ -277,6 +277,7 @@ def register_view(request):
 def dashboard(request):
     context = build_dashboard_metrics()
     return render(request, 'dashboard/index.html', context)
+
 
 
 @extend_schema(
@@ -557,6 +558,15 @@ def upsert_customer(customer_name, phone, email, current_customer=None):
             customer.save(update_fields=['name', 'phone'])
 
     return customer
+@role_required(User.EMPLOYEE)
+def view_customer(request, customer_id):
+    customer = get_object_or_404(Customer, id=customer_id)
+
+    context = {
+        'customer': customer,
+    }
+
+    return render(request, 'dashboard/view_customer.html', context)
 
 @role_required(User.EMPLOYEE)
 def edit_customer(request, id):
@@ -721,6 +731,7 @@ def delete_sale(request, sale_id):
             sale.delete()
         messages.success(request, "Sale deleted successfully.")
         return redirect('sales')
+    
 
     messages.error(request, "Invalid request method for deleting a sale.")
     return redirect('sales')

@@ -79,8 +79,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'dashboard',
-    "crispy_forms",
-    "crispy_bootstrap5",
     'rest_framework',
 ]
 
@@ -89,9 +87,6 @@ if ENABLE_AXES:
 
 if HAS_DRF_SPECTACULAR:
     INSTALLED_APPS.append('drf_spectacular')
-
-CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
-CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

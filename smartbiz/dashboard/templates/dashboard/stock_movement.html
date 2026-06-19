@@ -1,312 +1,225 @@
 {% extends 'dashboard/base.html' %}
 {% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stock Movement - SmartBiz</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 
+  <script src="https://cdn.tailwindcss.com"></script>
 <style>
-.stock-page {
-    --surface: #ffffff;
-    --border: rgba(148, 163, 184, 0.22);
-    --muted: #66758f;
-    --shadow: 0 24px 60px rgba(15, 23, 42, 0.08);
-}
-
-.stock-page .hero {
-    padding: 28px;
-    border-radius: 28px;
-    color: #ffffff;
-    background:
-        radial-gradient(circle at top right, rgba(251, 191, 36, 0.18), transparent 32%),
-        linear-gradient(135deg, #0f172a 0%, #0f766e 45%, #1d4ed8 120%);
-    box-shadow: 0 26px 60px rgba(15, 23, 42, 0.18);
-}
-
-.stock-page .hero h1,
-.stock-page .panel-title {
-    font-weight: 800;
-    letter-spacing: -0.02em;
-}
-
-.stock-page .hero p {
-    margin: 0.75rem 0 0;
-    max-width: 56rem;
-    color: rgba(255, 255, 255, 0.82);
-}
-
-.stock-page .hero-pill,
-.stock-page .badge-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.6rem 0.9rem;
-    border-radius: 999px;
-    font-size: 0.85rem;
-    font-weight: 700;
-}
-
-.stock-page .hero-pill {
-    background: rgba(255, 255, 255, 0.12);
-    border: 1px solid rgba(255, 255, 255, 0.14);
-}
-
-.stock-page .panel,
-.stock-page .summary-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 24px;
-    box-shadow: var(--shadow);
-}
-
-.stock-page .panel {
-    padding: 24px;
-}
-
-.stock-page .summary-card {
-    padding: 22px;
-    height: 100%;
-}
-
-.stock-page .eyebrow {
-    color: var(--muted);
-    font-size: 0.78rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    font-weight: 700;
-}
-
-.stock-page .value {
-    margin-top: 0.8rem;
-    font-size: 2rem;
-    font-weight: 800;
-}
-
-.stock-page .subtle {
-    color: var(--muted);
-}
-
-.stock-page .blue-soft { background: linear-gradient(180deg, #eef5ff 0%, #dbeafe 100%); }
-.stock-page .amber-soft { background: linear-gradient(180deg, #fff7ed 0%, #fde7c7 100%); }
-.stock-page .teal-soft { background: linear-gradient(180deg, #ecfeff 0%, #c9f2ef 100%); }
-
-.stock-page .panel form p label {
-    display: block;
-    margin-bottom: 0.45rem;
-    font-weight: 700;
-    color: #1e293b;
-}
-
-.stock-page .panel form p {
-    margin-bottom: 1rem;
-}
-
-.stock-page .panel form input,
-.stock-page .panel form select,
-.stock-page .panel form textarea {
-    width: 100%;
-    min-height: 48px;
-    border-radius: 14px;
-    border: 1px solid #cbd5e1;
-    padding: 0.75rem 0.95rem;
-}
-
-.stock-page .table thead th {
-    padding: 1rem;
-    color: var(--muted);
-    font-size: 0.78rem;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-}
-
-.stock-page .table tbody td {
-    padding: 1rem;
-    vertical-align: middle;
-    border-color: rgba(148, 163, 184, 0.14);
-}
-
-.stock-page .tag {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    padding: 0.5rem 0.8rem;
-    border-radius: 999px;
-    font-weight: 700;
-}
-
-.stock-page .tag-in {
-    color: #166534;
-    background: #dcfce7;
-}
-
-.stock-page .tag-out {
-    color: #b91c1c;
-    background: #fee2e2;
-}
-
-.stock-page .alert-item {
-    padding: 14px 16px;
-    border-radius: 18px;
-    border: 1px solid rgba(148, 163, 184, 0.16);
-    background: #fff7ed;
-}
-
-.stock-page .alert-item + .alert-item {
-    margin-top: 0.75rem;
-}
+  .stock-form p { margin-bottom:1rem; }
+  .stock-form p label { display:block; font-weight:700; color:#1e293b; margin-bottom:.45rem; }
+  .stock-form p input,
+  .stock-form p select,
+  .stock-form p textarea {
+    width:100%; min-height:48px; border-radius:14px;
+    border:1px solid #cbd5e1; padding:.75rem .95rem;
+    font:inherit; background:#fff; color:#162033;
+  }
+  .stock-form p input:focus,
+  .stock-form p select:focus,
+  .stock-form p textarea:focus {
+    outline:none; border-color:#0f766e;
+    box-shadow:0 0 0 3px rgba(15,118,110,.12);
+  }
+  .stock-form ul.errorlist { color:#b91c1c; padding-left:1rem; margin:.4rem 0 0; font-size:.875rem; }
+  .sidebar-bg {
+    background: linear-gradient(180deg, rgba(7,16,37,.98) 0%, rgba(10,33,74,.97) 52%, rgba(11,69,158,.95) 100%);
+  }
 </style>
+</head>
+<body class="font-sans text-[#162033] min-h-screen overflow-x-hidden">
+   <aside class="sidebar-bg text-[#f8fbff] fixed top-0 left-0 bottom-0 w-[270px] hidden lg:flex flex-col z-50
+              border-r border-white/10 backdrop-blur-xl shadow-[0_24px_60px_rgba(15,23,42,.08)]">
+    {% include 'dashboard/sidebar.html' %}
+  </aside>
 
-<div class="container-fluid px-4 stock-page">
-    <section class="hero mb-4">
-        <div class="d-flex flex-wrap justify-content-between gap-3 align-items-start">
-            <div>
-                <div class="hero-pill"><i class="bi bi-boxes"></i> Inventory control</div>
-                <h1 class="mt-3 mb-0">Confirm stock in and stock out.</h1>
-                <p>Use this page to post real inventory movements, keep product quantities accurate, and surface low-stock or out-of-stock alerts before sales are blocked.</p>
-            </div>
-        </div>
-    </section>
+<div class="min-h-screen flex flex-col">
+   <main class="flex-1 lg:ml-[270px] p-6 lg:p-6 ">
+    <div class="max-w-[1440px] mx-auto">
+  <section class="p-7 rounded-[28px] text-white mb-6 shadow-[0_26px_60px_rgba(15,23,42,.18)]"
+           style="background:radial-gradient(circle at top right,rgba(251,191,36,.18),transparent 32%),linear-gradient(135deg,#0f172a 0%,#0f766e 45%,#1d4ed8 120%)">
+    <div class="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-full text-sm font-bold
+                bg-white/10 border border-white/15">
+      <i class="bi bi-boxes"></i> Inventory control
+    </div>
+    <h1 class="mt-3 mb-0 font-semibold tracking-tight" style="font-size:clamp(1.8rem,4vw,2.8rem)">
+      Confirm stock in and stock out.
+    </h1>
+  </section>
 
-    <section class="row g-4 mb-4">
-        <div class="col-md-4">
-            <div class="summary-card blue-soft">
-                <div class="eyebrow">Recorded Movements</div>
-                <div class="value">{{ movements|length }}</div>
-                <div class="subtle mt-2">Full stock movement history stored in the database.</div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="summary-card amber-soft">
-                <div class="eyebrow">Low Stock Products</div>
-                <div class="value">{{ low_stock_products|length }}</div>
-                <div class="subtle mt-2">Products at or below their alert threshold.</div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="summary-card teal-soft">
-                <div class="eyebrow">Unread Alerts</div>
-                <div class="value">{{ unread_alerts|length }}</div>
-                <div class="subtle mt-2">Latest stock alerts waiting for attention.</div>
-            </div>
-        </div>
-    </section>
+  <section class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
 
-    <section class="row g-4">
-        <div class="col-lg-5">
-            <div class="panel">
-                <h2 class="panel-title h4 mb-2">Confirm a stock movement</h2>
-                <p class="text-muted mb-4">Choose the product, whether stock is coming in or going out, the quantity, and an optional note for why the adjustment happened.</p>
-                <form method="POST">
-                    {% csrf_token %}
-                    {{ form.as_p }}
-                    <div class="d-flex justify-content-end">
-                        <button type="submit" class="btn btn-primary rounded-4 px-4 py-2 fw-bold">Save movement</button>
-                    </div>
-                </form>
-            </div>
+    <div class="h-full p-[22px] rounded-3xl border border-slate-200/60 shadow-[0_24px_60px_rgba(15,23,42,.08)]"
+         style="background:linear-gradient(180deg,#eef5ff 0%,#dbeafe 100%)">
+      <div class="text-[#66758f] text-[.78rem] tracking-[.08em] uppercase font-bold">Recorded Movements</div>
+      <div class="mt-3 text-[2rem] font-semibold leading-tight">{{ movements|length }}</div>
+      <div class="mt-2 text-[#66758f] text-sm">Full stock movement history stored in the database.</div>
+    </div>
 
-            <div class="panel mt-4">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <div>
-                        <h2 class="panel-title h5 mb-1">Alerts</h2>
-                        <p class="text-muted mb-0">Low stock, out of stock, and restock notifications.</p>
-                    </div>
-                    <span class="badge-pill text-bg-warning">{{ unread_alerts|length }} active</span>
-                </div>
-                {% for alert in unread_alerts %}
-                    <div class="alert-item">
-                        <strong>{{ alert.product.name }}</strong>
-                        <div class="text-muted small mt-1">{{ alert.message }}</div>
-                        <div class="small mt-2">{{ alert.created_at|date:"M d, Y H:i" }}</div>
-                    </div>
-                {% empty %}
-                    <div class="text-muted">No unread stock alerts right now.</div>
-                {% endfor %}
-            </div>
+    <div class="h-full p-[22px] rounded-3xl border border-slate-200/60 shadow-[0_24px_60px_rgba(15,23,42,.08)]"
+         style="background:linear-gradient(180deg,#fff7ed 0%,#fde7c7 100%)">
+      <div class="text-[#66758f] text-[.78rem] tracking-[.08em] uppercase font-bold">Low Stock Products</div>
+      <div class="mt-3 text-[2rem] font-semibold leading-tight">{{ low_stock_products|length }}</div>
+      <div class="mt-2 text-[#66758f] text-sm">Products at or below their alert threshold.</div>
+    </div>
+
+    <div class="h-full p-[22px] rounded-3xl border border-slate-200/60 shadow-[0_24px_60px_rgba(15,23,42,.08)]"
+         style="background:linear-gradient(180deg,#ecfeff 0%,#c9f2ef 100%)">
+      <div class="text-[#66758f] text-[.78rem] tracking-[.08em] uppercase font-bold">Unread Alerts</div>
+      <div class="mt-3 text-[2rem] font-semibold leading-tight">{{ unread_alerts|length }}</div>
+      <div class="mt-2 text-[#66758f] text-sm">Latest stock alerts waiting for attention.</div>
+    </div>
+
+  </section>
+
+  <div class="grid grid-cols-1 lg:grid-cols-[1fr_2fr] gap-4">
+
+    <div class="flex flex-col gap-4">
+
+      <div class="bg-white border border-slate-200/50 rounded-3xl shadow-[0_24px_60px_rgba(15,23,42,.08)] p-6">
+        <h2 class="font-semibold tracking-tight text-[#162033] mb-1" style="font-size:clamp(1.4rem,2.5vw,1.8rem)">
+          Confirm a stock movement
+        </h2>
+        <p class="text-[#66758f] mb-5 text-sm leading-relaxed">
+          Choose the product, whether stock is coming in or going out, the quantity, and an optional note for why the adjustment happened.
+        </p>
+        <form method="POST" class="stock-form">
+          {% csrf_token %}
+          {{ form.as_p }}
+          <div class="flex justify-center mt-2">
+            <button type="submit"
+                    class="px-5 py-2 rounded-full font-semibold text-gray-600 border border-blue-300
+                           hover:bg-green-500 hover:text-white transition-all cursor-pointer bg-transparent">
+              Save movement
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <div class="bg-white border border-slate-200/50 rounded-3xl shadow-[0_24px_60px_rgba(15,23,42,.08)] p-6">
+        <div class="flex justify-between items-start mb-4">
+          <div>
+            <h2 class="font-semibold tracking-tight text-[#162033] mb-1" style="font-size:clamp(1.2rem,2vw,1.4rem)">
+              Alerts
+            </h2>
+            <p class="text-[#66758f] text-sm m-0">Low stock, out of stock, and restock notifications.</p>
+          </div>
+          <span class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-semibold bg-amber-100 text-amber-800">
+            {{ unread_alerts|length }} active
+          </span>
         </div>
 
-        <div class="col-lg-7">
-            <div class="panel mb-4">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <div>
-                        <h2 class="panel-title h4 mb-1">Products needing attention</h2>
-                        <p class="text-muted mb-0">These products are low or out of stock based on their threshold.</p>
-                    </div>
-                </div>
-                <div class="table-responsive">
-                    <table class="table align-middle mb-0">
-                        <thead>
-                            <tr>
-                                <th>Product</th>
-                                <th>Current Stock</th>
-                                <th>Threshold</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for product in low_stock_products %}
-                                <tr>
-                                    <td>{{ product.name }}</td>
-                                    <td>{{ product.stock_quantity }}</td>
-                                    <td>{{ product.low_stock_threshold }}</td>
-                                    <td>
-                                        {% if product.stock_quantity <= 0 %}
-                                            <span class="tag tag-out">Out of stock</span>
-                                        {% else %}
-                                            <span class="tag tag-in">Low stock</span>
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                            {% empty %}
-                                <tr>
-                                    <td colspan="4" class="text-center text-muted py-4">All tracked products are above their stock alert threshold.</td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+        {% for alert in unread_alerts %}
+          <div class="px-4 py-3.5 rounded-[18px] border border-slate-200/40 bg-[#fff7ed] {% if not forloop.last %}mb-3{% endif %}">
+            <strong class="text-[#162033]">{{ alert.product.name }}</strong>
+            <div class="text-[#66758f] text-sm mt-1">{{ alert.message }}</div>
+            <div class="text-[#66758f] text-xs mt-1.5">{{ alert.created_at|date:"M d, Y H:i" }}</div>
+          </div>
+        {% empty %}
+          <div class="text-[#66758f] text-sm">No unread stock alerts right now.</div>
+        {% endfor %}
+      </div>
 
-            <div class="panel">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <div>
-                        <h2 class="panel-title h4 mb-1">Movement history</h2>
-                        <p class="text-muted mb-0">Every stock adjustment stored on the server, newest first.</p>
-                    </div>
-                </div>
-                <div class="table-responsive">
-                    <table class="table align-middle mb-0">
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Product</th>
-                                <th>Type</th>
-                                <th>Quantity</th>
-                                <th>Note</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for movement in movements %}
-                                <tr>
-                                    <td>{{ movement.date|date:"M d, Y H:i" }}</td>
-                                    <td>{{ movement.product.name }}</td>
-                                    <td>
-                                        {% if movement.movement_type == 'in' %}
-                                            <span class="tag tag-in">Stock In</span>
-                                        {% else %}
-                                            <span class="tag tag-out">Stock Out</span>
-                                        {% endif %}
-                                    </td>
-                                    <td>{{ movement.quantity }}</td>
-                                    <td>{{ movement.note|default:"-" }}</td>
-                                </tr>
-                            {% empty %}
-                                <tr>
-                                    <td colspan="5" class="text-center text-muted py-4">No stock movements recorded yet.</td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+    </div>
+
+    <div class="flex flex-col gap-4">
+
+      <div class="bg-white border border-slate-200/50 rounded-3xl shadow-[0_24px_60px_rgba(15,23,42,.08)] p-6">
+        <h2 class="font-semibold tracking-tight text-[#162033] mb-1" style="font-size:clamp(1.4rem,2.5vw,1.8rem)">
+          Products needing attention
+        </h2>
+        <p class="text-[#66758f] text-sm mb-5">These products are low or out of stock based on their threshold.</p>
+
+        <div class="overflow-x-auto">
+          <table class="w-full border-collapse">
+            <thead>
+              <tr>
+                <th class="px-4 pb-3.5 text-left text-[#66758f] text-[.78rem] font-semibold tracking-[.08em] uppercase">Product</th>
+                <th class="px-4 pb-3.5 text-left text-[#66758f] text-[.78rem] font-semibold tracking-[.08em] uppercase">Current Stock</th>
+                <th class="px-4 pb-3.5 text-left text-[#66758f] text-[.78rem] font-semibold tracking-[.08em] uppercase">Threshold</th>
+                <th class="px-4 pb-3.5 text-left text-[#66758f] text-[.78rem] font-semibold tracking-[.08em] uppercase">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for product in low_stock_products %}
+              <tr class="hover:bg-[#f8fbff] transition-colors">
+                <td class="px-4 py-4 border-t border-black-200/30 text-[#162033]">{{ product.name }}</td>
+                <td class="px-4 py-4 border-t border-black-200/30 text-[#162033]">{{ product.stock_quantity }}</td>
+                <td class="px-4 py-4 border-t border-black-200/30 text-[#162033]">{{ product.low_stock_threshold }}</td>
+                <td class="px-4 py-4 border-t border-black-200/30">
+                  {% if product.stock_quantity <= 0 %}
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-semibold bg-red-100 text-red-700">Out of stock</span>
+                  {% else %}
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-semibold bg-green-100 text-green-700">Low stock</span>
+                  {% endif %}
+                </td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="4" class="py-10 text-center text-[#66758f] text-sm">
+                  All tracked products are above their stock alert threshold.
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
         </div>
-    </section>
+      </div>
+
+      <div class="bg-white border border-slate-200/50 rounded-3xl shadow-[0_24px_60px_rgba(15,23,42,.08)] p-6">
+        <h2 class="font-semibold tracking-tight text-[#162033] mb-1" style="font-size:clamp(1.4rem,2.5vw,1.8rem)">
+          Movement history
+        </h2>
+        <p class="text-[#66758f] text-sm mb-5">Every stock adjustment stored on the server, newest first.</p>
+
+        <div class="overflow-x-auto">
+          <table class="w-full border-collapse">
+            <thead>
+              <tr>
+                <th class="px-4 pb-3.5 text-left text-[#66758f] text-[.78rem] font-semibold tracking-[.08em] uppercase">Date</th>
+                <th class="px-4 pb-3.5 text-left text-[#66758f] text-[.78rem] font-semibold tracking-[.08em] uppercase">Product</th>
+                <th class="px-4 pb-3.5 text-left text-[#66758f] text-[.78rem] font-semibold tracking-[.08em] uppercase">Type</th>
+                <th class="px-4 pb-3.5 text-left text-[#66758f] text-[.78rem] font-semibold tracking-[.08em] uppercase">Quantity</th>
+                <th class="px-4 pb-3.5 text-left text-[#66758f] text-[.78rem] font-semibold tracking-[.08em] uppercase">Note</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for movement in movements %}
+              <tr class="hover:bg-[#f8fbff] transition-colors">
+                <td class="px-4 py-4 border-t border-black-200 text-[#66758f] text-sm">{{ movement.date|date:"M d, Y H:i" }}</td>
+                <td class="px-4 py-4 border-t border-black-200 text-[#162033]">{{ movement.product.name }}</td>
+                <td class="px-4 py-4 border-t border-black-200 text-[#162033]">
+                  {% if movement.movement_type == 'in' %}
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-semibold bg-green-100 text-green-700">Stock In</span>
+                  {% else %}
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-semibold bg-red-100 text-red-700">Stock Out</span>
+                  {% endif %}
+                </td>
+                <td class="px-4 py-4 border-t border-black-200 text-[#162033]">{{ movement.quantity }}</td>
+                <td class="px-4 py-4 border-t border-black-200 text-[#66758f]">{{ movement.note|default:"-" }}</td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="5" class="py-10 text-center text-[#66758f] text-sm">
+                  <i class="bi bi-inbox block text-3xl mb-2 text-slate-400"></i>
+                  No stock movements recorded yet.
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
 </div>
 
 {% endblock %}

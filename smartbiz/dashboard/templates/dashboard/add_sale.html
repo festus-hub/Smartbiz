@@ -1,266 +1,207 @@
 {% extends 'dashboard/base.html' %}
 {% load static %}
 {% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Sale - SmartBiz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .sale-form p { margin-bottom: 1rem; }
+    .sale-form p label { display:block; font-weight:700; color:#1e293b; margin-bottom:.5rem; }
+    .sale-form p input,
+    .sale-form p select,
+    .sale-form p textarea {
+      width:100%; min-height:50px; border-radius:14px;
+      border:1px solid #cbd5e1; padding:.75rem .95rem;
+      font:inherit; background:#fff; color:#162033;
+    }
+    .sale-form p textarea { min-height:120px; }
+    .sale-form p input:focus,
+    .sale-form p select:focus,
+    .sale-form p textarea:focus {
+      outline:none; border-color:#1d4ed8;
+      box-shadow:0 0 0 4px rgba(29,78,216,.12);
+    }
+    .sale-form ul.errorlist { margin:.4rem 0 0; padding-left:1rem; color:#b91c1c; font-size:.875rem; }
+      .sidebar-bg {
+    background: linear-gradient(180deg, rgba(7,16,37,.98) 0%, rgba(10,33,74,.97) 52%, rgba(11,69,158,.95) 100%);
+  }
+  </style>
+</head>
+<body class="font-sans text-[#162033] min-h-screen overflow-x-hidden">
+   <aside class="sidebar-bg text-[#f8fbff] fixed top-0 left-0 bottom-0 w-[270px] hidden lg:flex flex-col z-50
+              border-r border-white/10 backdrop-blur-xl shadow-[0_24px_60px_rgba(15,23,42,.08)]">
+    {% include 'dashboard/sidebar.html' %}
+  </aside>
 
-<style>
-.add-sale-page {
-    --surface: #ffffff;
-    --border: rgba(148, 163, 184, 0.22);
-    --muted: #66758f;
-    --shadow: 0 24px 60px rgba(15, 23, 42, 0.08);
-}
-
-.add-sale-page .hero {
-    padding: 28px;
-    border-radius: 28px;
-    color: #ffffff;
-    background:
-        radial-gradient(circle at top right, rgba(125, 211, 252, 0.24), transparent 34%),
-        linear-gradient(135deg, #071936 0%, #5c81b9 44%, #691077 120%);
-    box-shadow: 0 26px 60px rgba(15, 23, 42, 0.18);
-}
-
-.add-sale-page .hero h1,
-.add-sale-page .section-title {
-    font-weight: 800;
-    letter-spacing: -0.02em;
-}
-
-.add-sale-page .hero p {
-    margin: 0.75rem 0 0;
-    max-width: 56rem;
-    color: rgba(255, 255, 255, 0.82);
-}
-
-.add-sale-page .hero-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.6rem 0.9rem;
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.12);
-    border: 1px solid rgba(255, 255, 255, 0.14);
-    font-size: 0.85rem;
-    font-weight: 700;
-}
-
-.add-sale-page .panel,
-.add-sale-page .summary-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 24px;
-    box-shadow: var(--shadow);
-}
-
-.add-sale-page .panel {
-    padding: 24px;
-}
-
-.add-sale-page .summary-card {
-    padding: 22px;
-    height: 100%;
-    background: linear-gradient(180deg, #eef5ff 0%, #dbeafe 100%);
-}
-
-.add-sale-page .summary-card h3 {
-    font-size: 0.78rem;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--muted);
-    font-weight: 700;
-}
-
-.add-sale-page .summary-card .value {
-    font-size: 2rem;
-    font-weight: 800;
-    line-height: 1.1;
-}
-
-.add-sale-page .summary-card .subtle {
-    color: var(--muted);
-    margin-top: 0.45rem;
-}
-
-.add-sale-page .section-copy {
-    color: var(--muted);
-    margin-bottom: 1.25rem;
-}
-
-.add-sale-page .form-label {
-    font-weight: 700;
-    color: #1e293b;
-}
-
-.add-sale-page .form-control,
-.add-sale-page .form-select {
-    min-height: 50px;
-    border-radius: 14px;
-    border: 1px solid #cbd5e1;
-}
-
-.add-sale-page .form-control:focus,
-.add-sale-page .form-select:focus {
-    border-color: #2563eb;
-    box-shadow: 0 0 0 0.25rem rgba(37, 99, 235, 0.12);
-}
-
-.add-sale-page .section-block {
-    padding: 20px;
-    border-radius: 20px;
-    background: #f8fbff;
-    border: 1px solid rgba(148, 163, 184, 0.16);
-}
-
-.add-sale-page .total-box {
-    padding: 20px;
-    border-radius: 20px;
-    background: linear-gradient(135deg, #ecfeff, #f0fdf4);
-    border: 1px solid #99f6e4;
-}
-
-.add-sale-page .total-label {
-    color: #0f766e;
-    font-weight: 700;
-}
-
-.add-sale-page .total-value {
-    font-size: 2rem;
-    font-weight: 800;
-}
-
-.add-sale-page .hint {
-    color: var(--muted);
-    font-size: 0.92rem;
-}
-</style>
-
-<div class="container-fluid px-4 add-sale-page">
-    <section class="hero mb-4">
-        <div class="d-flex flex-wrap justify-content-between gap-3 align-items-start">
-            <div>
-                <div class="hero-pill"><i class="bi bi-bag-plus-fill"></i> New transaction</div>
-                <h1 class="mt-3 mb-0">Create sale.</h1>
-            </div>
-            <a href="{% url 'sales' %}" class="btn btn-light rounded-4 px-3 py-2 fw-bold d-inline-flex align-items-center gap-2">
-                <i class="bi bi-arrow-left"></i> Back to sales
-            </a>
+<div class="min-h-screen flex flex-col">
+   <main class="flex-1 lg:ml-[270px] p-6 lg:p-6 ">
+    <div class="max-w-[1440px] mx-auto">
+  <section class="p-7 rounded-[28px] text-white mb-6 shadow-[0_26px_60px_rgba(15,23,42,.18)]"
+           style="background:radial-gradient(circle at top right,rgba(125,211,252,.24),transparent 34%),linear-gradient(135deg,#181818 0%,#e6e494 44%,#6b7710 120%)">
+    <div class="flex flex-wrap justify-between items-start gap-3">
+      <div>
+        <div class="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-full text-sm font-bold
+                    bg-white/10 border border-white/15">
+          <i class="bi bi-bag-plus-fill"></i> New transaction
         </div>
-    </section>
-
-    <div class="row g-4">
-        <div class="col-lg-8">
-            <div class="panel">
-                <h2 class="section-title h4 mb-2">Add new sale</h2>
-                <p class="section-copy">Enter the customer details once, select the product, then confirm the quantity and unit price before saving.</p>
-
-                <form method="POST">
-                    {% csrf_token %}
-
-                    <div class="section-block mb-4">
-                        <h3 class="h5 mb-3">Customer information</h3>
-                        <div class="mb-3">
-                            <label class="form-label">Customer name</label>
-                            <input type="text" name="customer_name" class="form-control" required>
-                        </div>
-
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label class="form-label">Phone</label>
-                                <input type="text" name="phone_number" class="form-control" required>
-                            </div>
-
-                            <div class="col-md-6">
-                                <label class="form-label">Email</label>
-                                <input type="email" name="email" class="form-control" required>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="section-block mb-4">
-                        <h3 class="h5 mb-3">Order details</h3>
-                        <div class="mb-3">
-                            <label class="form-label">Select product</label>
-                            <select id="product" class="form-select" required>
-                                <option value="">Choose product</option>
-                                {% for product in products %}
-                                <option value="{{ product.id }}" data-price="{{ product.price }}">
-                                    {{ product.name }} - KES {{ product.price }}
-                                </option>
-                                {% endfor %}
-                            </select>
-                        </div>
-
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label class="form-label">Quantity</label>
-                                <input type="number" id="quantity" class="form-control" value="1" min="1">
-                            </div>
-
-                            <div class="col-md-6">
-                                <label class="form-label">Unit price</label>
-                                <input type="number" id="price" class="form-control" step="0.01">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="total-box mb-4">
-                        <div class="total-label">Order total</div>
-                        <div class="total-value">KES <span id="total">0.00</span></div>
-                        <div class="hint">The total updates automatically from quantity and unit price.</div>
-                    </div>
-
-                    <input type="hidden" name="product" id="hidden_product">
-                    <input type="hidden" name="quantity" id="hidden_quantity">
-                    <input type="hidden" name="price" id="hidden_price">
-
-                    <div class="d-flex justify-content-end gap-2 flex-wrap">
-                        <a href="{% url 'sales' %}" class="btn btn-outline-secondary rounded-4 px-3 py-2">Cancel</a>
-                        <button type="reset" class="btn btn-outline-danger rounded-4 px-3 py-2">Reset</button>
-                        <button type="submit" class="btn btn-primary rounded-4 px-4 py-2 fw-bold">Save sale</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        <div class="col-lg-4">
-            <div class="summary-card">
-                <h3>Quick guide</h3>
-                <div class="value">3 steps</div>
-                <div class="subtle">Add customer details, choose a product, then confirm the total before saving.</div>
-            </div>
-        </div>
+        <h1 class=" mb-0 font-semibold tracking-tight" style="font-size:clamp(1.8rem,4vw,2.8rem)">
+          Create sale.
+        </h1>
+      </div>
+      <a href="{% url 'sales' %}"
+         class="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl font-bold no-underline
+                bg-white text-gray-800 hover:bg-gray-100 transition-colors flex-shrink-0">
+        <i class="bi bi-arrow-left"></i> Back to sales
+      </a>
     </div>
+  </section>
+
+  <div class="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-4 items-start">
+
+    <div class="bg-white border border-slate-200/50 rounded-3xl shadow-[0_24px_60px_rgba(15,23,42,.08)] p-6">
+
+      <h2 class="text-xl font-semibold tracking-tight text-[#162033] mb-1">Add new sale</h2>
+      <p class="text-[#66758f] mb-6">Enter the customer details once, select the product, then confirm the quantity and unit price before saving.</p>
+
+      <form method="POST">
+        {% csrf_token %}
+
+        <div class="p-5 rounded-[20px] bg-[#f8fbff] border border-slate-200/40 mb-4">
+          <h3 class="text-base font-semibold text-[#162033] mb-4">Customer information</h3>
+
+          <div class="mb-4">
+            <label class="block font-semibold text-[#1e293b] mb-1.5">Customer name</label>
+            <input type="text" name="customer_name" required
+                   class="w-full min-h-[50px] px-4 rounded-2xl border border-[#cbd5e1] text-[#162033] bg-white
+                          focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-600/10 transition">
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block font-semibold text-[#1e293b] mb-1.5">Phone</label>
+              <input type="text" name="phone_number" required
+                     class="w-full min-h-[50px] px-4 rounded-2xl border border-[#cbd5e1] text-[#162033] bg-white
+                            focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-600/10 transition">
+            </div>
+            <div>
+              <label class="block font-semibold text-[#1e293b] mb-1.5">Email</label>
+              <input type="email" name="email" required
+                     class="w-full min-h-[50px] px-4 rounded-2xl border border-[#cbd5e1] text-[#162033] bg-white
+                            focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-600/10 transition">
+            </div>
+          </div>
+        </div>
+
+        <div class="p-5 rounded-[20px] bg-[#f8fbff] border border-slate-200/40 mb-4">
+          <h3 class="text-base font-semibold text-[#162033] mb-4">Order details</h3>
+
+          <div class="mb-4">
+            <label class="block font-semibold text-[#1e293b] mb-1.5">Select product</label>
+            <select id="product" required
+                    class="w-full min-h-[50px] px-4 rounded-2xl border border-[#cbd5e1] text-[#162033] bg-white
+                           focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-600/10 transition">
+              <option value="">Choose product</option>
+              {% for product in products %}
+              <option value="{{ product.id }}" data-price="{{ product.price }}">
+                {{ product.name }} - KES {{ product.price }}
+              </option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block font-semibold text-[#1e293b] mb-1.5">Quantity</label>
+              <input type="number" id="quantity" value="1" min="1"
+                     class="w-full min-h-[50px] px-4 rounded-2xl border border-[#cbd5e1] text-[#162033] bg-white
+                            focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-600/10 transition">
+            </div>
+            <div>
+              <label class="block font-semibold text-[#1e293b] mb-1.5">Unit price</label>
+              <input type="number" id="price" step="0.01"
+                     class="w-full min-h-[50px] px-4 rounded-2xl border border-[#cbd5e1] text-[#162033] bg-white
+                            focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-600/10 transition">
+            </div>
+          </div>
+        </div>
+
+        <div class="p-5 rounded-[20px] border border-[#99f6e4] mb-5"
+             style="background:linear-gradient(135deg,#ecfeff,#f0fdf4)">
+          <div class="text-[#0f766e] font-semibold mb-1">Order total</div>
+          <div class="text-[2rem] font-semibold text-[#162033]">KES <span id="total">0.00</span></div>
+          <div class="text-[#66758f] text-sm mt-1">The total updates automatically from quantity and unit price.</div>
+        </div>
+
+        <input type="hidden" name="product"  id="hidden_product">
+        <input type="hidden" name="quantity" id="hidden_quantity">
+        <input type="hidden" name="price"    id="hidden_price">
+
+        <div class="flex justify-end gap-3 flex-wrap">
+          <a href="{% url 'sales' %}"
+             class="px-5 py-2.5 rounded-2xl font-semibold border border-gray-300 text-gray-600
+                    hover:bg-red-500 transition-colors no-underline">
+            Cancel
+          </a>
+          <button type="reset"
+                  class="px-5 py-2.5 rounded-2xl font-semibold border border-gray-300 text-gray-600
+                         hover:bg-blue-500 transition-colors bg-transparent cursor-pointer">
+            Reset
+          </button>
+          <button type="submit"
+                  class="px-5 py-2.5 rounded-2xl font-semibold text-gray-600 border border-gray-300 
+                         hover:bg-green-500 transition-colors  cursor-pointer">
+            Save sale
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <div class="w-full lg:w-72 p-[22px] rounded-3xl border border-slate-200/50 shadow-[0_24px_60px_rgba(15,23,42,.08)]"
+         style="background:linear-gradient(180deg,#eef5ff 0%,#dbeafe 100%)">
+      <h3 class="m-0 text-[.78rem] uppercase tracking-[.08em] text-[#66758f] font-semibold">Quick guide</h3>
+      <div class="mt-3 text-[2rem] font-semibold leading-tight text-[#162033]">3 steps</div>
+      <div class="mt-2 text-[#66758f] text-sm leading-relaxed">
+        Add customer details, choose a product, then confirm the total before saving.
+      </div>
+    </div>
+
+  </div>
 </div>
 
 <script>
-const product = document.getElementById('product');
-const price = document.getElementById('price');
-const quantity = document.getElementById('quantity');
-const total = document.getElementById('total');
-const hiddenProduct = document.getElementById('hidden_product');
+const productEl  = document.getElementById('product');
+const priceEl    = document.getElementById('price');
+const quantityEl = document.getElementById('quantity');
+const totalEl    = document.getElementById('total');
+const hiddenProduct  = document.getElementById('hidden_product');
 const hiddenQuantity = document.getElementById('hidden_quantity');
-const hiddenPrice = document.getElementById('hidden_price');
+const hiddenPrice    = document.getElementById('hidden_price');
 
-product.addEventListener('change', function() {
-    const selected = product.options[product.selectedIndex];
-    const productPrice = selected.getAttribute('data-price');
-    price.value = productPrice;
-    hiddenProduct.value = product.value;
-    calculateTotal();
+productEl.addEventListener('change', function () {
+  const selected = productEl.options[productEl.selectedIndex];
+  priceEl.value = selected.getAttribute('data-price') || '';
+  hiddenProduct.value = productEl.value;
+  calculateTotal();
 });
 
 function calculateTotal() {
-    const q = parseFloat(quantity.value) || 0;
-    const p = parseFloat(price.value) || 0;
-    const t = q * p;
-
-    total.innerText = t.toFixed(2);
-    hiddenQuantity.value = q;
-    hiddenPrice.value = p;
+  const q = parseFloat(quantityEl.value) || 0;
+  const p = parseFloat(priceEl.value)    || 0;
+  totalEl.innerText    = (q * p).toFixed(2);
+  hiddenQuantity.value = q;
+  hiddenPrice.value    = p;
 }
 
-quantity.addEventListener('input', calculateTotal);
-price.addEventListener('input', calculateTotal);
+quantityEl.addEventListener('input', calculateTotal);
+priceEl.addEventListener('input', calculateTotal);
 </script>
 
 {% endblock %}

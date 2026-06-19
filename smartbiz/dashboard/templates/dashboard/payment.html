@@ -1,566 +1,355 @@
 {% extends 'dashboard/base.html' %}
-
 {% block content %}
-<style>
-.payment-page .hero {
-    background:
-        radial-gradient(circle at top right, rgba(125, 211, 252, 0.18), transparent 34%),
-        linear-gradient(90deg, #112750 0%, #1a4f92 54%, #2ba6bb 100%);
-    color: #f8fafc;
-    border-radius: 18px;
-    padding: 14px 16px;
-    box-shadow: none;
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment - SmartBiz</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 
-.payment-page .hero h1 {
-    font-size: 1.05rem;
-    font-weight: 700;
-    margin-bottom: 0;
-    letter-spacing: -0.02em;
-}
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family:'Poppins',sans-serif; background:linear-gradient(135deg,#e7e8eb,#d7d9dd); }
+    .hero-glow::before {
+      content:""; position:absolute; inset:0;
+      background:radial-gradient(circle at top right,rgba(239, 237, 237, 0.12),transparent 30%);
+    }
+    .auth-input:focus { outline:none; border-color:#8b5cf6; box-shadow:0 0 0 .2rem rgba(139,92,246,.14); }
+    .sidebar-bg {
+      background: linear-gradient(180deg, rgba(7,16,37,.98) 0%, rgba(10,33,74,.97) 52%, rgba(11,69,158,.95) 100%);
+    }
+  </style>
+</head>
+<body class="font-sans text-[#162033] min-h-screen overflow-x-hidden">
+   <aside class="sidebar-bg text-[#f8fbff] fixed top-0 left-0 bottom-0 w-[270px] hidden lg:flex flex-col z-50
+              border-r border-white/10 backdrop-blur-xl shadow-[0_24px_60px_rgba(15,23,42,.08)]">
+    {% include 'dashboard/sidebar.html' %}
+  </aside>
+<div class="min-h-screen flex flex-col">
+   <main class="flex-1 lg:ml-[270px] p-6 lg:p-6 ">
+    <div class="max-w-[1440px] mx-auto">
+  <div class="mb-5 px-4 py-3.5 rounded-[18px] text-[#f8fafc]"
+       style="background:radial-gradient(circle at top right,rgba(125,211,252,.18),transparent 34%),linear-gradient(90deg,#112750 0%,#1a4f92 54%,#2ba6bb 100%)">
+    <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-[.52rem] font-bold tracking-[.06em] uppercase mb-1.5
+                bg-white/10 border border-white/20">
+      <i class="bi bi-phone-fill"></i> Payment operations
+    </div>
+    <h1 class="m-0 font-bold tracking-tight" style="font-size:clamp(1.8rem,4vw,2.8rem)">M-Pesa Payment</h1>
+  </div>
 
-.payment-page .hero p {
-    max-width: 640px;
-    color: rgba(248, 250, 252, 0.82);
-    margin-bottom: 0;
-}
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5">
 
-.payment-page .hero-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.25rem 0.7rem;
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    font-size: 0.52rem;
-    font-weight: 700;
-    margin-bottom: 0.45rem;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-}
-
-.payment-page .summary-card,
-.payment-page .panel {
-    background: #ffffff;
-    border: 1px solid #d9e3f0;
-    border-radius: 16px;
-    box-shadow: none;
-}
-
-.payment-page .summary-card {
-    padding: 12px 14px;
-    height: 100%;
-}
-
-.payment-page .summary-card .eyebrow {
-    font-size: 0.46rem;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: #64748b;
-}
-
-.payment-page .summary-card .value {
-    font-size: 0.95rem;
-    font-weight: 800;
-    color: #0f172a;
-    margin-top: 0.15rem;
-}
-
-.payment-page .summary-card .subtle {
-    color: #64748b;
-    font-size: 0.62rem;
-    margin-top: 0.15rem;
-}
-
-.payment-page .summary-card.blue-soft {
-    background: linear-gradient(180deg, #eef5ff 0%, #dbeafe 100%);
-}
-
-.payment-page .summary-card.teal-soft {
-    background: linear-gradient(180deg, #ecfeff 0%, #c9f2ef 100%);
-}
-
-.payment-page .summary-card.amber-soft {
-    background: linear-gradient(180deg, #fff8ef 0%, #f9e6c7 100%);
-}
-
-.payment-page .panel {
-    padding: 12px;
-}
-
-.payment-page .section-title {
-    font-size: 0.82rem;
-    font-weight: 700;
-    color: #0f172a;
-    margin-bottom: 0.2rem;
-}
-
-.payment-page .section-copy {
-    color: #64748b;
-    margin-bottom: 0.9rem;
-    font-size: 0.62rem;
-}
-
-.payment-page .form-label {
-    font-weight: 600;
-    color: #1e293b;
-    font-size: 0.62rem;
-    margin-bottom: 0.3rem;
-}
-
-.payment-page .form-control,
-.payment-page .form-select {
-    border-radius: 8px;
-    border: 1px solid #cbd5e1;
-    min-height: 36px;
-    font-size: 0.62rem;
-    padding: 0.45rem 0.7rem;
-}
-
-.payment-page .form-control:focus,
-.payment-page .form-select:focus {
-    border-color: #14b8a6;
-    box-shadow: 0 0 0 0.18rem rgba(20, 184, 166, 0.1);
-}
-
-.payment-page .total-card {
-    border-radius: 10px;
-    padding: 12px;
-    background: linear-gradient(135deg, #ecfeff, #f0fdf4);
-    border: 1px solid #99f6e4;
-}
-
-.payment-page .total-label {
-    color: #0f766e;
-    font-weight: 600;
-    font-size: 0.65rem;
-}
-
-.payment-page .total-value {
-    font-size: 0.95rem;
-    font-weight: 800;
-    color: #0f172a;
-}
-
-.payment-page .hint {
-    color: #64748b;
-    font-size: 0.58rem;
-}
-
-.payment-page .status-box {
-    border-radius: 10px;
-    padding: 10px 12px;
-    display: none;
-    font-size: 0.68rem;
-}
-
-.payment-page .status-box.show {
-    display: block;
-}
-
-.payment-page .status-box.success {
-    background: #ecfdf5;
-    color: #166534;
-    border: 1px solid #86efac;
-}
-
-.payment-page .status-box.error {
-    background: #fef2f2;
-    color: #f30a0a;
-    border: 1px solid #fca5a5;
-}
-
-.payment-page .status-box.info {
-    background: #eff6ff;
-    color: #1d4ed8;
-    border: 1px solid #93c5fd;
-}
-
-.payment-page .badge-soft {
-    display: inline-flex;
-    align-items: center;
-    padding: 0.18rem 0.48rem;
-    border-radius: 999px;
-    font-size: 0.56rem;
-    font-weight: 700;
-    text-transform: capitalize;
-}
-
-.payment-page .badge-soft.pending {
-    background: #fef3c7;
-    color: #92400e;
-}
-
-.payment-page .badge-soft.success {
-    background: #dcfce7;
-    color: #166534;
-}
-
-.payment-page .badge-soft.failed {
-    background: #fee2e2;
-    color: #dc2626;
-}
-
-.payment-page .table thead th {
-    color: #475569;
-    font-size: 0.52rem;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    padding-top: 0.45rem;
-    padding-bottom: 0.45rem;
-}
-
-.payment-page .filter-bar {
-    background: #f8fbff;
-    border: 1px solid rgba(148, 163, 184, 0.2);
-    border-radius: 10px;
-    padding: 10px;
-    margin-bottom: 0.8rem;
-}
-
-.payment-page .table {
-    margin-bottom: 0;
-}
-
-.payment-page .table tbody td {
-    font-size: 0.6rem;
-    color: #334155;
-    padding-top: 0.55rem;
-    padding-bottom: 0.55rem;
-}
-
-.payment-page .table tbody .text-muted.small {
-    font-size: 0.55rem !important;
-}
-
-.payment-page .table tbody tr:hover {
-    background: #f8fbff;
-}
-
-.payment-page .btn {
-    border-radius: 6px;
-    font-size: 0.62rem;
-    font-weight: 700;
-    padding: 0.4rem 0.8rem;
-}
-
-.payment-page .btn.btn-sm {
-    padding: 0.22rem 0.52rem;
-    font-size: 0.56rem;
-}
-
-.payment-page .btn-outline-dark {
-    border-color: #94a3b8;
-    color: #0f172a;
-}
-
-.payment-page .btn-success {
-    background: #22c55e;
-    border-color: #22c55e;
-}
-
-.payment-page .table-responsive {
-    border-radius: 12px;
-}
-</style>
-
-<div class="container-fluid px-4 payment-page">
-    <div class="hero mb-4">
-        <div class="hero-pill"><i class="bi bi-phone-fill"></i> Payment operations</div>
-        <h1>M-Pesa Payment</h1>
+    <div class="h-full px-3.5 py-3 rounded-2xl border border-slate-200/60"
+         style="background:linear-gradient(180deg,#eef5ff 0%,#dbeafe 100%)">
+      <div class="text-[#64748b] text-[.46rem] tracking-[.12em] uppercase font-bold">Collected Revenue</div>
+      <div class="mt-0.5 text-[.95rem] font-semibold text-[#0f172a]">KES {{ amount }}</div>
+      <div class="mt-0.5 text-[#64748b] text-[.62rem]">All recorded payments across the system.</div>
     </div>
 
-    <div class="row g-4 mb-4">
-        <div class="col-md-4">
-            <div class="summary-card blue-soft">
-                <div class="eyebrow">Collected Revenue</div>
-                <div class="value">KES {{ amount }}</div>
-                <div class="subtle">All recorded payments across the system.</div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="summary-card teal-soft">
-                <div class="eyebrow">Payments Logged</div>
-                <div class="value">{{ payments|length }}</div>
-                <div class="subtle">Includes pending, successful, and failed attempts.</div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="summary-card amber-soft">
-                <div class="eyebrow">Sales Ready</div>
-                <div class="value">{{ sales|length }}</div>
-                <div class="subtle">Select a sale below to launch a new collection request.</div>
-            </div>
-        </div>
+    <div class="h-full px-3.5 py-3 rounded-2xl border border-slate-200/60"
+         style="background:linear-gradient(180deg,#ecfeff 0%,#c9f2ef 100%)">
+      <div class="text-[#64748b] text-[.46rem] tracking-[.12em] uppercase font-bold">Payments Logged</div>
+      <div class="mt-0.5 text-[.95rem] font-semibold text-[#0f172a]">{{ payments|length }}</div>
+      <div class="mt-0.5 text-[#64748b] text-[.62rem]">Includes pending, successful, and failed attempts.</div>
     </div>
 
-    <div class="row g-4">
-        <div class="col-lg-5">
-            <div class="panel">
-                <div class="section-title">Initiate Payment</div>
-
-                <form id="payment-form">
-                    {% csrf_token %}
-                    <div class="mb-3">
-                        <label for="sale" class="form-label">Sale</label>
-                        <select id="sale" name="sale" class="form-select" required>
-                            <option value="">Select a sale</option>
-                            {% for sale in sales %}
-                            <option
-                                value="{{ sale.id }}"
-                                data-amount="{{ sale.total_amount }}"
-                                data-phone="{{ sale.customer.phone }}"
-                                data-customer="{{ sale.customer.name }}"
-                                data-product="{{ sale.product.name }}"
-                            >
-                                Sale #{{ sale.id }} - {{ sale.customer.name }} - {{ sale.product.name }} - KES {{ sale.total_amount }}
-                            </option>
-                            {% endfor %}
-                        </select>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="business" class="form-label">Business</label>
-                        <select id="business" name="business" class="form-select">
-                            <option value="">Use my assigned business automatically</option>
-                            {% for business in businesses %}
-                            <option value="{{ business.id }}">{{ business.name }}{% if business.owner %} - {{ business.owner.username }}{% endif %}</option>
-                            {% endfor %}
-                        </select>
-                        <div class="hint mt-2">Leave blank if the logged-in user already owns a business in the system.</div>
-                    </div>
-
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <label for="payment_method" class="form-label">Payment Method</label>
-                            <select id="payment_method" name="payment_method" class="form-select" required>
-                                {% for value, label in payment_methods %}
-                                <option value="{{ value }}" {% if value == 'mpesa' %}selected{% endif %}>{{ label }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="amount" class="form-label">Amount</label>
-                            <input type="number" id="amount" name="amount" class="form-control" min="1" step="0.01" placeholder="0.00" required>
-                        </div>
-                    </div>
-
-                    <div class="mt-3">
-                        <label for="phone_number" class="form-label">Customer Phone</label>
-                        <input type="text" id="phone_number" name="phone_number" class="form-control" placeholder="07XXXXXXXX or 2547XXXXXXXX">
-                        <div class="hint mt-2">Required for M-Pesa. The system will normalize Kenyan numbers before sending STK push.</div>
-                    </div>
-
-                    <div class="total-card my-4">
-                        <div class="total-label">Ready to charge</div>
-                        <div class="total-value" id="charge-preview">KES 0.00</div>
-                        <div class="hint" id="sale-preview">Pick a sale to auto-fill amount and phone number.</div>
-                    </div>
-
-                    <div id="payment-status" class="status-box"></div>
-
-                    <div class="d-flex gap-2 mt-4">
-                        <button type="submit" id="payment-submit" class="btn btn-success px-4">Send STK Push</button>
-                        <button type="reset" class="btn btn-outline-secondary">Reset</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        <div class="col-lg-7">
-            <div class="panel">
-                <div class="section-title">Recent Payments</div>
-                <div class="section-copy">Watch statuses change from pending to success or failed after the callback lands, then open a clean receipt page and save it as PDF.</div>
-
-                <form method="get" class="filter-bar">
-                    <div class="row g-3 align-items-end">
-                        <div class="col-md-4">
-                            <label for="q" class="form-label">Search</label>
-                            <input type="text" id="q" name="q" value="{{ search_query }}" class="form-control" placeholder="Receipt, phone, customer">
-                        </div>
-                        <div class="col-md-3">
-                            <label for="status" class="form-label">Status</label>
-                            <select id="status" name="status" class="form-select">
-                                <option value="">All statuses</option>
-                                {% for value, label in payment_statuses %}
-                                <option value="{{ value }}" {% if selected_status == value %}selected{% endif %}>{{ label }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="col-md-3">
-                            <label for="method_filter" class="form-label">Method</label>
-                            <select id="method_filter" name="method" class="form-select">
-                                <option value="">All methods</option>
-                                {% for value, label in payment_methods %}
-                                <option value="{{ value }}" {% if selected_method == value %}selected{% endif %}>{{ label }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="col-md-2 d-grid">
-                            <button type="submit" class="btn btn-outline-dark">Filter</button>
-                        </div>
-                    </div>
-                </form>
-
-                <div class="table-responsive">
-                    <table class="table align-middle">
-                        <thead>
-                            <tr>
-                                <th>Sale</th>
-                                <th>Method</th>
-                                <th>Amount</th>
-                                <th>Status</th>
-                                <th>Receipt</th>
-                                <th>Phone</th>
-                                <th>Time</th>
-                                <th>PDF</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for payment in payments %}
-                            <tr>
-                                <td>#{{ payment.sale_id }}{% if payment.business %}<div class="text-muted small">{{ payment.business.name }}</div>{% endif %}</td>
-                                <td>{{ payment.get_payment_method_display }}</td>
-                                <td>KES {{ payment.amount }}</td>
-                                <td><span class="badge-soft {{ payment.status }}">{{ payment.status }}</span></td>
-                                <td>{{ payment.transaction_id|default:payment.checkout_request_id|default:"Pending" }}</td>
-                                <td>{{ payment.phone_number|default:"-" }}</td>
-                                <td>{{ payment.payment_date|date:"M d, Y H:i" }}</td>
-                                <td>
-                                    <a href="{% url 'payment_receipt' payment.id %}" class="btn btn-sm btn-outline-success" target="_blank" rel="noopener">
-                                        Receipt PDF
-                                    </a>
-                                </td>
-                            </tr>
-                            {% empty %}
-                            <tr>
-                                <td colspan="8" class="text-center py-4 text-muted">No payments matched your current filters.</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
+    <div class="h-full px-3.5 py-3 rounded-2xl border border-slate-200/60"
+         style="background:linear-gradient(180deg,#fff8ef 0%,#f9e6c7 100%)">
+      <div class="text-[#64748b] text-[.46rem] tracking-[.12em] uppercase font-bold">Sales Ready</div>
+      <div class="mt-0.5 text-[.95rem] font-semibold text-[#0f172a]">{{ sales|length }}</div>
+      <div class="mt-0.5 text-[#64748b] text-[.62rem]">Select a sale below to launch a new collection request.</div>
     </div>
+
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-[2fr_3fr] gap-4">
+
+    <div class="bg-white border border-[#d9e3f0] rounded-2xl p-3">
+      <div class="text-[.82rem] font-bold text-[#0f172a] mb-3">Initiate Payment</div>
+
+      <form id="payment-form" class="space-y-3">
+        {% csrf_token %}
+
+        <div>
+          <label for="sale" class="block font-semibold text-[#1e293b] text-[.62rem] mb-1">Sale</label>
+          <select id="sale" name="sale" required
+                  class="w-full min-h-[36px] px-2.5 py-1.5 rounded-lg border border-[#cbd5e1] text-[.62rem] text-[#0f172a]
+                         focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/10 transition">
+            <option value="">Select a sale</option>
+            {% for sale in sales %}
+            <option value="{{ sale.id }}"
+                    data-amount="{{ sale.total_amount }}"
+                    data-phone="{{ sale.customer.phone }}"
+                    data-customer="{{ sale.customer.name }}"
+                    data-product="{{ sale.product.name }}">
+              Sale #{{ sale.id }} - {{ sale.customer.name }} - {{ sale.product.name }} - KES {{ sale.total_amount }}
+            </option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div>
+          <label for="business" class="block font-semibold text-[#1e293b] text-[.62rem] mb-1">Business</label>
+          <select id="business" name="business"
+                  class="w-full min-h-[36px] px-2.5 py-1.5 rounded-lg border border-[#cbd5e1] text-[.62rem] text-[#0f172a]
+                         focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/10 transition">
+            <option value="">Use my assigned business automatically</option>
+            {% for business in businesses %}
+            <option value="{{ business.id }}">{{ business.name }}{% if business.owner %} - {{ business.owner.username }}{% endif %}</option>
+            {% endfor %}
+          </select>
+          <div class="mt-1.5 text-[#64748b] text-[.58rem]">Leave blank if the logged-in user already owns a business in the system.</div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label for="payment_method" class="block font-semibold text-[#1e293b] text-[.62rem] mb-1">Payment Method</label>
+            <select id="payment_method" name="payment_method" required
+                    class="w-full min-h-[36px] px-2.5 py-1.5 rounded-lg border border-[#cbd5e1] text-[.62rem] text-[#0f172a]
+                           focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/10 transition">
+              {% for value, label in payment_methods %}
+              <option value="{{ value }}" {% if value == 'mpesa' %}selected{% endif %}>{{ label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div>
+            <label for="amount" class="block font-semibold text-[#1e293b] text-[.62rem] mb-1">Amount</label>
+            <input type="number" id="amount" name="amount" min="1" step="0.01" placeholder="0.00" required
+                   class="w-full min-h-[36px] px-2.5 py-1.5 rounded-lg border border-[#cbd5e1] text-[.62rem] text-[#0f172a]
+                          focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/10 transition">
+          </div>
+        </div>
+
+        <div>
+          <label for="phone_number" class="block font-semibold text-[#1e293b] text-[.62rem] mb-1">Customer Phone</label>
+          <input type="text" id="phone_number" name="phone_number" placeholder="07XXXXXXXX or 2547XXXXXXXX"
+                 class="w-full min-h-[36px] px-2.5 py-1.5 rounded-lg border border-[#cbd5e1] text-[.62rem] text-[#0f172a]
+                        focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/10 transition">
+          <div class="mt-1.5 text-[#64748b] text-[.58rem]">Required for M-Pesa. The system will normalize Kenyan numbers before sending STK push.</div>
+        </div>
+
+        <div class="my-4 rounded-[10px] p-3 border border-[#99f6e4]"
+             style="background:linear-gradient(135deg,#ecfeff,#f0fdf4)">
+          <div class="text-[#0f766e] font-semibold text-[.65rem]">Ready to charge</div>
+          <div id="charge-preview" class="text-[.95rem] font-semibold text-[#0f172a]">KES 0.00</div>
+          <div id="sale-preview" class="text-[#64748b] text-[.58rem] mt-0.5">Pick a sale to auto-fill amount and phone number.</div>
+        </div>
+
+        <div id="payment-status"
+             class="hidden rounded-[10px] px-3 py-2.5 text-[.68rem] font-semibold border"></div>
+
+        <div class="flex gap-2 mt-4">
+          <button type="submit" id="payment-submit"
+                  class="px-4 py-1.5 rounded-md text-[.62rem] font-semibold text-white bg-green-500 hover:bg-green-600
+                         border border-green-500 transition cursor-pointer">
+            Send STK Push
+          </button>
+          <button type="reset"
+                  class="px-4 py-1.5 rounded-md text-[.62rem] font-semibold text-gray-600 border border-gray-300
+                         hover:bg-gray-50 transition cursor-pointer bg-transparent">
+            Reset
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <div class="bg-white border border-[#d9e3f0] rounded-2xl p-3">
+      <div class="text-[.82rem] font-semibold text-[#0f172a]">Recent Payments</div>
+      <div class="text-[#64748b] text-[.62rem] mb-3 mt-0.5">
+        Watch statuses change from pending to success or failed after the callback lands, then open a clean receipt page and save it as PDF.
+      </div>
+
+      <form method="get"
+            class="bg-[#f8fbff] border border-slate-200/40 rounded-[10px] p-2.5 mb-3">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 items-end">
+          <div>
+            <label for="q" class="block font-semibold text-[#1e293b] text-[.62rem] mb-1">Search</label>
+            <input type="text" id="q" name="q" value="{{ search_query }}"
+                   class="w-full min-h-[36px] px-2.5 py-1.5 rounded-lg border border-[#cbd5e1] text-[.62rem] text-[#0f172a]
+                          focus:outline-none focus:border-teal-500 transition"
+                   placeholder="Receipt, phone, customer">
+          </div>
+          <div>
+            <label for="status" class="block font-semibold text-[#1e293b] text-[.62rem] mb-1">Status</label>
+            <select id="status" name="status"
+                    class="w-full min-h-[36px] px-2.5 py-1.5 rounded-lg border border-[#cbd5e1] text-[.62rem] text-[#0f172a]
+                           focus:outline-none focus:border-teal-500 transition">
+              <option value="">All statuses</option>
+              {% for value, label in payment_statuses %}
+              <option value="{{ value }}" {% if selected_status == value %}selected{% endif %}>{{ label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div>
+            <label for="method_filter" class="block font-semibold text-[#1e293b] text-[.62rem] mb-1">Method</label>
+            <select id="method_filter" name="method"
+                    class="w-full min-h-[36px] px-2.5 py-1.5 rounded-lg border border-[#cbd5e1] text-[.62rem] text-[#0f172a]
+                           focus:outline-none focus:border-teal-500 transition">
+              <option value="">All methods</option>
+              {% for value, label in payment_methods %}
+              <option value="{{ value }}" {% if selected_method == value %}selected{% endif %}>{{ label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div>
+            <button type="submit"
+                    class="w-full min-h-[36px] px-3 py-1.5 rounded-lg text-[.62rem] font-semibold border border-[#94a3b8]
+                           text-[#0f172a] hover:bg-gray-50 transition cursor-pointer bg-transparent">
+              Filter
+            </button>
+          </div>
+        </div>
+      </form>
+
+      <div class="overflow-x-auto rounded-xl">
+        <table class="w-full border-collapse">
+          <thead>
+            <tr>
+              <th class="px-3 pt-2 pb-2 text-left text-[#475569] text-[.52rem] font-bold tracking-[.04em] uppercase">Sale</th>
+              <th class="px-3 pt-2 pb-2 text-left text-[#475569] text-[.52rem] font-bold tracking-[.04em] uppercase">Method</th>
+              <th class="px-3 pt-2 pb-2 text-left text-[#475569] text-[.52rem] font-bold tracking-[.04em] uppercase">Amount</th>
+              <th class="px-3 pt-2 pb-2 text-left text-[#475569] text-[.52rem] font-bold tracking-[.04em] uppercase">Status</th>
+              <th class="px-3 pt-2 pb-2 text-left text-[#475569] text-[.52rem] font-bold tracking-[.04em] uppercase">Receipt</th>
+              <th class="px-3 pt-2 pb-2 text-left text-[#475569] text-[.52rem] font-bold tracking-[.04em] uppercase">Phone</th>
+              <th class="px-3 pt-2 pb-2 text-left text-[#475569] text-[.52rem] font-bold tracking-[.04em] uppercase">Time</th>
+              <th class="px-3 pt-2 pb-2 text-left text-[#475569] text-[.52rem] font-bold tracking-[.04em] uppercase">PDF</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for payment in payments %}
+            <tr class="hover:bg-[#f8fbff] transition-colors">
+              <td class="px-3 py-2.5 border-t border-black/30 text-[.6rem] text-[#334155]">
+                #{{ payment.sale_id }}
+                {% if payment.business %}
+                <div class="text-[#64748b] text-[.55rem]">{{ payment.business.name }}</div>
+                {% endif %}
+              </td>
+              <td class="px-3 py-2.5 border-t border-black/30 text-[.6rem] text-[#334155]">{{ payment.payment_method }}</td>
+              <td class="px-3 py-2.5 border-t border-black/30 text-[.6rem] text-[#334155]">KES {{ payment.amount }}</td>
+              <td class="px-3 py-2.5 border-t border-black/30">
+                {% if payment.status == 'pending' %}
+                  <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[.56rem] font-semibold capitalize bg-amber-100 text-amber-800">{{ payment.status }}</span>
+                {% elif payment.status == 'success' %}
+                  <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[.56rem] font-semibold capitalize bg-green-100 text-green-800">{{ payment.status }}</span>
+                {% else %}
+                  <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[.56rem] font-semibold capitalize bg-red-100 text-red-700">{{ payment.status }}</span>
+                {% endif %}
+              </td>
+              <td class="px-3 py-2.5 border-t border-black/30 text-[.6rem] text-[#334155]">{{ payment.transaction_id|default:payment.checkout_request_id|default:"Pending" }}</td>
+              <td class="px-3 py-2.5 border-t border-black/30 text-[.6rem] text-[#334155]">{{ payment.phone_number|default:"-" }}</td>
+              <td class="px-3 py-2.5 border-t border-black/30 text-[.6rem] text-[#334155]">{{ payment.payment_date|date:"M d, Y H:i" }}</td>
+              <td class="px-3 py-2.5 border-t border-black/30">
+                <a href="{% url 'payment_receipt' payment.id %}" target="_blank" rel="noopener"
+                   class="inline-flex items-center px-2 py-1 rounded-md text-[.56rem] font-semibold no-underline
+                          border border-green-500 text-green-700 hover:bg-green-50 transition-colors">
+                  Receipt PDF
+                </a>
+              </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="8" class="py-8 text-center text-[#64748b] text-[.6rem]">No payments matched your current filters.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
 </div>
 
 <script>
 function getCookie(name) {
-    const cookieValue = document.cookie
-        .split('; ')
-        .find((row) => row.startsWith(name + '='));
-    return cookieValue ? decodeURIComponent(cookieValue.split('=')[1]) : null;
+  const row = document.cookie.split('; ').find(r => r.startsWith(name + '='));
+  return row ? decodeURIComponent(row.split('=')[1]) : null;
 }
 
-const form = document.getElementById('payment-form');
-const saleSelect = document.getElementById('sale');
-const businessSelect = document.getElementById('business');
+const form         = document.getElementById('payment-form');
+const saleSelect   = document.getElementById('sale');
+const businessSel  = document.getElementById('business');
 const methodSelect = document.getElementById('payment_method');
-const amountInput = document.getElementById('amount');
-const phoneInput = document.getElementById('phone_number');
+const amountInput  = document.getElementById('amount');
+const phoneInput   = document.getElementById('phone_number');
 const chargePreview = document.getElementById('charge-preview');
-const salePreview = document.getElementById('sale-preview');
-const statusBox = document.getElementById('payment-status');
-const submitButton = document.getElementById('payment-submit');
+const salePreview   = document.getElementById('sale-preview');
+const statusBox     = document.getElementById('payment-status');
+const submitBtn     = document.getElementById('payment-submit');
 
+const statusStyles = {
+  success: 'bg-green-50 text-green-800 border-green-300',
+  error:   'bg-red-50 text-red-700 border-red-300',
+  info:    'bg-blue-50 text-blue-800 border-blue-300',
+};
 function showStatus(kind, message) {
-    statusBox.className = 'status-box show ' + kind;
-    statusBox.textContent = message;
+  statusBox.className = `rounded-[10px] px-3 py-2.5 text-[.68rem] font-semibold border ${statusStyles[kind] || ''}`;
+  statusBox.textContent = message;
 }
 
 function updatePreview() {
-    const selected = saleSelect.options[saleSelect.selectedIndex];
-    const amount = parseFloat(amountInput.value || '0');
-    const customerName = selected ? selected.dataset.customer : '';
-    const productName = selected ? selected.dataset.product : '';
-
-    chargePreview.textContent = 'KES ' + amount.toFixed(2);
-
-    if (selected && selected.value) {
-        salePreview.textContent = customerName + ' purchasing ' + productName + '.';
-    } else {
-        salePreview.textContent = 'Pick a sale to auto-fill amount and phone number.';
-    }
-
-    if (methodSelect.value === 'mpesa') {
-        submitButton.textContent = 'Send STK Push';
-    } else {
-        submitButton.textContent = 'Record Payment';
-    }
+  const sel    = saleSelect.options[saleSelect.selectedIndex];
+  const amount = parseFloat(amountInput.value || '0');
+  chargePreview.textContent = 'KES ' + amount.toFixed(2);
+  salePreview.textContent = sel && sel.value
+    ? (sel.dataset.customer + ' purchasing ' + sel.dataset.product + '.')
+    : 'Pick a sale to auto-fill amount and phone number.';
+  submitBtn.textContent = methodSelect.value === 'mpesa' ? 'Send STK Push' : 'Record Payment';
 }
 
 saleSelect.addEventListener('change', () => {
-    const selected = saleSelect.options[saleSelect.selectedIndex];
-    if (!selected || !selected.value) {
-        amountInput.value = '';
-        phoneInput.value = '';
-        updatePreview();
-        return;
-    }
-
-    amountInput.value = selected.dataset.amount || '';
-    if (!phoneInput.value) {
-        phoneInput.value = selected.dataset.phone || '';
-    }
-    updatePreview();
+  const sel = saleSelect.options[saleSelect.selectedIndex];
+  if (!sel || !sel.value) { amountInput.value = ''; phoneInput.value = ''; updatePreview(); return; }
+  amountInput.value = sel.dataset.amount || '';
+  if (!phoneInput.value) phoneInput.value = sel.dataset.phone || '';
+  updatePreview();
 });
 
 amountInput.addEventListener('input', updatePreview);
 methodSelect.addEventListener('change', updatePreview);
 updatePreview();
 
-form.addEventListener('submit', async (event) => {
-    event.preventDefault();
-    showStatus('info', 'Submitting payment request...');
-    submitButton.disabled = true;
+form.addEventListener('submit', async e => {
+  e.preventDefault();
+  showStatus('info', 'Submitting payment request…');
+  submitBtn.disabled = true;
 
-    const payload = {
-        sale: saleSelect.value,
-        amount: amountInput.value,
-        payment_method: methodSelect.value,
-        phone_number: phoneInput.value
-    };
+  const payload = {
+    sale: saleSelect.value,
+    amount: amountInput.value,
+    payment_method: methodSelect.value,
+    phone_number: phoneInput.value,
+  };
+  if (businessSel.value) payload.business = businessSel.value;
 
-    if (businessSelect.value) {
-        payload.business = businessSelect.value;
+  try {
+    const res  = await fetch('/api/payments/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') },
+      credentials: 'same-origin',
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json();
+
+    if (!res.ok) { showStatus('error', 'Payment request failed: ' + (data.detail || JSON.stringify(data))); return; }
+
+    if (payload.payment_method === 'mpesa') {
+      const cid = data.payment?.checkout_request_id ?? 'pending';
+      showStatus('success', `STK push sent. Ask the customer to approve on their phone. Checkout request: ${cid}.`);
+    } else {
+      showStatus('success', 'Payment recorded successfully.');
     }
 
-    try {
-        const response = await fetch('/api/payments/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCookie('csrftoken')
-            },
-            credentials: 'same-origin',
-            body: JSON.stringify(payload)
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            const detail = data.detail || JSON.stringify(data);
-            showStatus('error', 'Payment request failed: ' + detail);
-            return;
-        }
-
-        if (payload.payment_method === 'mpesa') {
-            const checkoutId = data.payment && data.payment.checkout_request_id ? data.payment.checkout_request_id : 'pending';
-            showStatus('success', 'STK push sent. Ask the customer to approve on their phone. Checkout request: ' + checkoutId + '.');
-        } else {
-            showStatus('success', 'Payment recorded successfully.');
-        }
-
-        form.reset();
-        updatePreview();
-        window.setTimeout(() => window.location.reload(), 1400);
-    } catch (error) {
-        showStatus('error', 'Could not reach the payment API. ' + error.message);
-    } finally {
-        submitButton.disabled = false;
-    }
+    form.reset(); updatePreview();
+    setTimeout(() => window.location.reload(), 1400);
+  } catch (err) {
+    showStatus('error', 'Could not reach the payment API. ' + err.message);
+  } finally {
+    submitBtn.disabled = false;
+  }
 });
 </script>
+
 {% endblock %}

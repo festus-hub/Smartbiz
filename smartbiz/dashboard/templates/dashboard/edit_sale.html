@@ -1,260 +1,195 @@
 {% extends 'dashboard/base.html' %}
 {% load static %}
 {% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - SmartBiz</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 
-<style>
-.edit-sale-page {
-    --surface: #ffffff;
-    --border: rgba(148, 163, 184, 0.22);
-    --muted: #66758f;
-    --shadow: 0 24px 60px rgba(15, 23, 42, 0.08);
-}
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family:'Poppins',sans-serif; background:linear-gradient(135deg,#e7e8eb,#d7d9dd); }
+    .hero-glow::before {
+      content:""; position:absolute; inset:0;
+      background:radial-gradient(circle at top right,rgba(239, 237, 237, 0.12),transparent 30%);
+    }
+    .auth-input:focus { outline:none; border-color:#8b5cf6; box-shadow:0 0 0 .2rem rgba(139,92,246,.14); }
+    .sidebar-bg { background:linear-gradient(180deg,#1e293b 0%,#0f172a 100%); }
+  </style>
+</head>
+<body class="font-sans text-[#162033] min-h-screen overflow-x-hidden">
+   <aside class="sidebar-bg text-[#f8fbff] fixed top-0 left-0 bottom-0 w-[270px] hidden lg:flex flex-col z-50
+              border-r border-white/10 backdrop-blur-xl shadow-[0_24px_60px_rgba(15,23,42,.08)]">
+    {% include 'dashboard/sidebar.html' %}
+  </aside>
 
-.edit-sale-page .hero {
-    padding: 28px;
-    border-radius: 28px;
-    color: #ffffff;
-    background:
-        radial-gradient(circle at top right, rgba(125, 211, 252, 0.24), transparent 34%),
-        linear-gradient(135deg, #1e1b4b 0%, #1d4ed8 44%, #0ea5a4 120%);
-    box-shadow: 0 26px 60px rgba(15, 23, 42, 0.18);
-}
+ <div class="min-h-screen flex flex-col">
+   <main class="flex-1 lg:ml-[270px] p-6 lg:p-6 ">
+    <div class="max-w-[1440px] mx-auto">
 
-.edit-sale-page .hero h1,
-.edit-sale-page .section-title {
-    font-weight: 800;
-    letter-spacing: -0.02em;
-}
-
-.edit-sale-page .hero p {
-    margin: 0.75rem 0 0;
-    max-width: 56rem;
-    color: rgba(255, 255, 255, 0.82);
-}
-
-.edit-sale-page .hero-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.6rem 0.9rem;
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.12);
-    border: 1px solid rgba(255, 255, 255, 0.14);
-    font-size: 0.85rem;
-    font-weight: 700;
-}
-
-.edit-sale-page .panel,
-.edit-sale-page .summary-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 24px;
-    box-shadow: var(--shadow);
-}
-
-.edit-sale-page .panel {
-    padding: 24px;
-}
-
-.edit-sale-page .summary-card {
-    padding: 22px;
-    background: linear-gradient(180deg, #eef5ff 0%, #dbeafe 100%);
-}
-
-.edit-sale-page .summary-card h3 {
-    font-size: 0.78rem;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--muted);
-    font-weight: 700;
-}
-
-.edit-sale-page .summary-card .value {
-    font-size: 2rem;
-    font-weight: 800;
-}
-
-.edit-sale-page .summary-card .subtle,
-.edit-sale-page .section-copy {
-    color: var(--muted);
-}
-
-.edit-sale-page .form-label {
-    font-weight: 700;
-    color: #1e293b;
-}
-
-.edit-sale-page .form-control,
-.edit-sale-page .form-select {
-    min-height: 50px;
-    border-radius: 14px;
-    border: 1px solid #cbd5e1;
-}
-
-.edit-sale-page .form-control:focus,
-.edit-sale-page .form-select:focus {
-    border-color: #2563eb;
-    box-shadow: 0 0 0 0.25rem rgba(37, 99, 235, 0.12);
-}
-
-.edit-sale-page .section-block {
-    padding: 20px;
-    border-radius: 20px;
-    background: #f8fbff;
-    border: 1px solid rgba(148, 163, 184, 0.16);
-}
-
-.edit-sale-page .total-box {
-    padding: 20px;
-    border-radius: 20px;
-    background: linear-gradient(135deg, #ecfeff, #f0fdf4);
-    border: 1px solid #99f6e4;
-}
-
-.edit-sale-page .total-label {
-    color: #0f766e;
-    font-weight: 700;
-}
-
-.edit-sale-page .total-value {
-    font-size: 2rem;
-    font-weight: 800;
-}
-</style>
-
-<div class="container-fluid px-4 edit-sale-page">
-    <section class="hero mb-4">
-        <div class="d-flex flex-wrap justify-content-between gap-3 align-items-start">
-            <div>
-                <div class="hero-pill"><i class="bi bi-pencil-square"></i> Sale editor</div>
-                <h1 class="mt-3 mb-0">Update sale #{{ sale.id }} with the same polished workflow.</h1>
-                <p>Adjust the linked customer details, switch products, and recalculate totals before saving the updated sale record.</p>
-            </div>
-            <a href="{% url 'sales' %}" class="btn btn-light rounded-4 px-3 py-2 fw-bold d-inline-flex align-items-center gap-2">
-                <i class="bi bi-arrow-left"></i> Back to sales
-            </a>
+  <section class="p-7 rounded-[28px] text-white mb-6 shadow-[0_26px_60px_rgba(15,23,42,.18)]"
+           style="background:radial-gradient(circle at top right,rgba(125,211,252,.24),transparent 34%),linear-gradient(135deg,#1e1b4b 0%,#1d4ed8 44%,#0ea5a4 120%)">
+    <div class="flex flex-wrap justify-between items-start gap-3">
+      <div>
+        <div class="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-full text-sm font-bold
+                    bg-white/10 border border-white/15">
+          <i class="bi bi-pencil-square"></i> Sale editor
         </div>
-    </section>
-
-    <div class="row g-4">
-        <div class="col-lg-8">
-            <div class="panel">
-                <h2 class="section-title h4 mb-2">Edit sale</h2>
-                <p class="section-copy mb-4">Update the customer details and order values below, then save the revised transaction.</p>
-
-                <form method="POST">
-                    {% csrf_token %}
-
-                    <div class="section-block mb-4">
-                        <h3 class="h5 mb-3">Customer information</h3>
-                        <div class="mb-3">
-                            <label class="form-label">Customer name</label>
-                            <input type="text" name="customer_name" class="form-control" value="{{ sale.customer.name }}" required>
-                        </div>
-
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label class="form-label">Phone</label>
-                                <input type="text" name="phone_number" class="form-control" value="{{ sale.customer.phone }}" required>
-                            </div>
-
-                            <div class="col-md-6">
-                                <label class="form-label">Email</label>
-                                <input type="email" name="email" class="form-control" value="{{ sale.customer.email }}" required>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="section-block mb-4">
-                        <h3 class="h5 mb-3">Order details</h3>
-                        <div class="mb-3">
-                            <label class="form-label">Select product</label>
-                            <select id="product" class="form-select" required>
-                                <option value="">Choose product</option>
-                                {% for product in products %}
-                                <option value="{{ product.id }}" data-price="{{ product.price }}" {% if product.id == sale.product.id %}selected{% endif %}>
-                                    {{ product.name }} - KES {{ product.price }}
-                                </option>
-                                {% endfor %}
-                            </select>
-                        </div>
-
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label class="form-label">Quantity</label>
-                                <input type="number" id="quantity" class="form-control" value="{{ sale.quantity }}" min="1">
-                            </div>
-
-                            <div class="col-md-6">
-                                <label class="form-label">Unit price</label>
-                                <input type="number" id="price" class="form-control" step="0.01" value="{{ sale.price }}">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="total-box mb-4">
-                        <div class="total-label">Updated total</div>
-                        <div class="total-value">KES <span id="total">0.00</span></div>
-                    </div>
-
-                    <input type="hidden" name="product" id="hidden_product" value="{{ sale.product.id }}">
-                    <input type="hidden" name="quantity" id="hidden_quantity" value="{{ sale.quantity }}">
-                    <input type="hidden" name="price" id="hidden_price" value="{{ sale.price }}">
-
-                    <div class="d-flex justify-content-end gap-2 flex-wrap">
-                        <a href="{% url 'sales' %}" class="btn btn-outline-secondary rounded-4 px-3 py-2">Cancel</a>
-                        <button type="submit" class="btn btn-primary rounded-4 px-4 py-2 fw-bold">Update sale</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        <div class="col-lg-4">
-            <div class="summary-card">
-                <h3>Current record</h3>
-                <div class="value">#{{ sale.id }}</div>
-                <div class="subtle mt-2">Use this editor to keep the sale and linked customer data accurate.</div>
-            </div>
-        </div>
+        <h1 class="mt-3 mb-0 font-extrabold tracking-tight" style="font-size:clamp(1.8rem,4vw,2.8rem)">
+          Update sale #{{ sale.id }} with the same polished workflow.
+        </h1>
+        <p class="mt-3 mb-0 max-w-2xl text-white/80">
+          Adjust the linked customer details, switch products, and recalculate totals before saving the updated sale record.
+        </p>
+      </div>
+      <a href="{% url 'sales' %}"
+         class="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl font-bold no-underline
+                bg-white text-gray-800 hover:bg-gray-100 transition-colors flex-shrink-0">
+        <i class="bi bi-arrow-left"></i> Back to sales
+      </a>
     </div>
+  </section>
+
+  <div class="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-4 items-start">
+
+    <div class="bg-white border border-slate-200/50 rounded-3xl shadow-[0_24px_60px_rgba(15,23,42,.08)] p-6">
+
+      <h2 class="text-xl font-extrabold tracking-tight text-[#162033] mb-1">Edit sale</h2>
+      <p class="text-[#66758f] mb-6">Update the customer details and order values below, then save the revised transaction.</p>
+
+      <form method="POST">
+        {% csrf_token %}
+
+        <div class="p-5 rounded-[20px] bg-[#f8fbff] border border-slate-200/40 mb-4">
+          <h3 class="text-base font-bold text-[#162033] mb-4">Customer information</h3>
+
+          <div class="mb-4">
+            <label class="block font-bold text-[#1e293b] mb-1.5">Customer name</label>
+            <input type="text" name="customer_name" value="{{ sale.customer.name }}" required
+                   class="w-full min-h-[50px] px-4 rounded-2xl border border-[#cbd5e1] text-[#162033] bg-white
+                          focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-600/10 transition">
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block font-bold text-[#1e293b] mb-1.5">Phone</label>
+              <input type="text" name="phone_number" value="{{ sale.customer.phone }}" required
+                     class="w-full min-h-[50px] px-4 rounded-2xl border border-[#cbd5e1] text-[#162033] bg-white
+                            focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-600/10 transition">
+            </div>
+            <div>
+              <label class="block font-bold text-[#1e293b] mb-1.5">Email</label>
+              <input type="email" name="email" value="{{ sale.customer.email }}" required
+                     class="w-full min-h-[50px] px-4 rounded-2xl border border-[#cbd5e1] text-[#162033] bg-white
+                            focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-600/10 transition">
+            </div>
+          </div>
+        </div>
+
+        <div class="p-5 rounded-[20px] bg-[#f8fbff] border border-slate-200/40 mb-4">
+          <h3 class="text-base font-bold text-[#162033] mb-4">Order details</h3>
+
+          <div class="mb-4">
+            <label class="block font-bold text-[#1e293b] mb-1.5">Select product</label>
+            <select id="product" required
+                    class="w-full min-h-[50px] px-4 rounded-2xl border border-[#cbd5e1] text-[#162033] bg-white
+                           focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-600/10 transition">
+              <option value="">Choose product</option>
+              {% for product in products %}
+              <option value="{{ product.id }}" data-price="{{ product.price }}"
+                      {% if product.id == sale.product.id %}selected{% endif %}>
+                {{ product.name }} - KES {{ product.price }}
+              </option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block font-bold text-[#1e293b] mb-1.5">Quantity</label>
+              <input type="number" id="quantity" value="{{ sale.quantity }}" min="1"
+                     class="w-full min-h-[50px] px-4 rounded-2xl border border-[#cbd5e1] text-[#162033] bg-white
+                            focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-600/10 transition">
+            </div>
+            <div>
+              <label class="block font-bold text-[#1e293b] mb-1.5">Unit price</label>
+              <input type="number" id="price" step="0.01" value="{{ sale.price }}"
+                     class="w-full min-h-[50px] px-4 rounded-2xl border border-[#cbd5e1] text-[#162033] bg-white
+                            focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-600/10 transition">
+            </div>
+          </div>
+        </div>
+
+        <div class="p-5 rounded-[20px] border border-[#99f6e4] mb-5"
+             style="background:linear-gradient(135deg,#ecfeff,#f0fdf4)">
+          <div class="text-[#0f766e] font-bold mb-1">Updated total</div>
+          <div class="text-[2rem] font-extrabold text-[#162033]">KES <span id="total">0.00</span></div>
+        </div>
+
+        <input type="hidden" name="product"  id="hidden_product"  value="{{ sale.product.id }}">
+        <input type="hidden" name="quantity" id="hidden_quantity" value="{{ sale.quantity }}">
+        <input type="hidden" name="price"    id="hidden_price"    value="{{ sale.price }}">
+
+        <div class="flex justify-end gap-3 flex-wrap">
+          <a href="{% url 'sales' %}"
+             class="px-5 py-2.5 rounded-2xl font-semibold border border-gray-300 text-gray-600
+                    hover:bg-gray-50 transition-colors no-underline">
+            Cancel
+          </a>
+          <button type="submit"
+                  class="px-6 py-2.5 rounded-2xl font-bold text-white bg-blue-600
+                         hover:bg-blue-700 transition-colors border-none cursor-pointer">
+            Update sale
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <div class="w-full lg:w-72 p-[22px] rounded-3xl border border-slate-200/50 shadow-[0_24px_60px_rgba(15,23,42,.08)]"
+         style="background:linear-gradient(180deg,#eef5ff 0%,#dbeafe 100%)">
+      <h3 class="m-0 text-[.78rem] uppercase tracking-[.08em] text-[#66758f] font-bold">Current record</h3>
+      <div class="mt-3 text-[2rem] font-extrabold leading-tight text-[#162033]">#{{ sale.id }}</div>
+      <div class="mt-2 text-[#66758f] text-sm leading-relaxed">
+        Use this editor to keep the sale and linked customer data accurate.
+      </div>
+    </div>
+
+  </div>
 </div>
 
 <script>
-const product = document.getElementById('product');
-const price = document.getElementById('price');
-const quantity = document.getElementById('quantity');
-const total = document.getElementById('total');
-
-const hiddenProduct = document.getElementById('hidden_product');
+const productEl  = document.getElementById('product');
+const priceEl    = document.getElementById('price');
+const quantityEl = document.getElementById('quantity');
+const totalEl    = document.getElementById('total');
+const hiddenProduct  = document.getElementById('hidden_product');
 const hiddenQuantity = document.getElementById('hidden_quantity');
-const hiddenPrice = document.getElementById('hidden_price');
+const hiddenPrice    = document.getElementById('hidden_price');
 
-product.addEventListener('change', function() {
-    const selected = product.options[product.selectedIndex];
-    const productPrice = selected.getAttribute('data-price');
-
-    if (productPrice) {
-        price.value = productPrice;
-    }
-    hiddenProduct.value = product.value;
-
-    calculateTotal();
+productEl.addEventListener('change', function () {
+  const selected = productEl.options[productEl.selectedIndex];
+  const productPrice = selected.getAttribute('data-price');
+  if (productPrice) priceEl.value = productPrice;
+  hiddenProduct.value = productEl.value;
+  calculateTotal();
 });
 
 function calculateTotal() {
-    const q = parseFloat(quantity.value) || 0;
-    const p = parseFloat(price.value) || 0;
-    const t = q * p;
-
-    total.innerText = t.toFixed(2);
-
-    hiddenQuantity.value = q;
-    hiddenPrice.value = p;
-    hiddenProduct.value = product.value;
+  const q = parseFloat(quantityEl.value) || 0;
+  const p = parseFloat(priceEl.value)    || 0;
+  totalEl.innerText    = (q * p).toFixed(2);
+  hiddenQuantity.value = q;
+  hiddenPrice.value    = p;
+  hiddenProduct.value  = productEl.value;
 }
 
-quantity.addEventListener('input', calculateTotal);
-price.addEventListener('input', calculateTotal);
+quantityEl.addEventListener('input', calculateTotal);
+priceEl.addEventListener('input', calculateTotal);
 calculateTotal();
 </script>
 
