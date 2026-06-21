@@ -228,4 +228,11 @@ document.addEventListener('visibilitychange', () => {
   clearInterval(salesTimer);
   if (!document.hidden) { refreshSalesPage(); salesTimer = setInterval(refreshSalesPage, 5000); }
 });
+document.addEventListener("click", function(e) {
+  if (e.target.closest(".delete-btn")) {{
+      const id = e.target.closest(".delete-btn").dataset.id;
+      window.location.href = `/sales/delete/${id}/`;
+    }
+  }
+});
 </script>

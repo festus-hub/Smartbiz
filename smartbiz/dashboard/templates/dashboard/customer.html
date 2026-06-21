@@ -173,8 +173,8 @@
                 </a>
                 <button type="button"
                         class="delete-btn px-3 py-1.5 rounded-xl text-sm font-semibold border border-red-300
-                               text-red-600 hover:bg-red-50 transition-colors cursor-pointer bg-transparent"
-                        data-id="{{ customer.id }}">
+                               text-red-600 hover:bg-red-50 transition-colors cursor-pointer bg-transparent">
+                        <a href="{% url 'delete_customer' customer.id %}">
                   Delete
                 </button>
               </div>
@@ -199,8 +199,7 @@
 
 <script>
 document.addEventListener("click", function(e) {
-  if (e.target.closest(".delete-btn")) {
-    if (confirm("Delete this customer?")) {
+  if (e.target.closest(".delete-btn")) {{
       const id = e.target.closest(".delete-btn").dataset.id;
       window.location.href = `/customers/delete/${id}/`;
     }
