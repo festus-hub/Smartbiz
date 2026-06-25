@@ -43,7 +43,7 @@
    <main class="flex-1 lg:ml-[270px] p-6 lg:p-6 ">
     <div class="max-w-[1440px] mx-auto">
   <section class="p-7 rounded-[28px] text-white mb-6 shadow-[0_26px_60px_rgba(15,23,42,.18)]"
-           style="background:radial-gradient(circle at top right,rgba(251,191,36,.18),transparent 32%),linear-gradient(135deg,#0f172a 0%,#0f766e 45%,#1d4ed8 120%)">
+           style="background:radial-gradient(circle at top right,rgba(38, 38, 38, 0.18),transparent 32%),linear-gradient(grey)">
     <div class="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-full text-sm font-bold
                 bg-white/10 border border-white/15">
       <i class="bi bi-boxes"></i> Inventory control
@@ -94,7 +94,7 @@
           {{ form.as_p }}
           <div class="flex justify-center mt-2">
             <button type="submit"
-                    class="px-5 py-2 rounded-full font-semibold text-gray-600 border border-blue-300
+                    class="px-5 py-2 rounded-lg font-semibold text-gray-600 border border-blue-300
                            hover:bg-green-500 hover:text-white transition-all cursor-pointer bg-transparent">
               Save movement
             </button>
@@ -105,18 +105,18 @@
       <div class="bg-white border border-slate-200/50 rounded-3xl shadow-[0_24px_60px_rgba(15,23,42,.08)] p-6">
         <div class="flex justify-between items-start mb-4">
           <div>
-            <h2 class="font-semibold tracking-tight text-[#162033] mb-1" style="font-size:clamp(1.2rem,2vw,1.4rem)">
+            <h2 class="font-semibold tracking-tight text-[red] mb-1" style="font-size:clamp(1.2rem,2vw,1.4rem)">
               Alerts
             </h2>
             <p class="text-[#66758f] text-sm m-0">Low stock, out of stock, and restock notifications.</p>
           </div>
-          <span class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-semibold bg-amber-100 text-amber-800">
+          <span class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-semibold bg-red-100 text-amber-800">
             {{ unread_alerts|length }} active
           </span>
         </div>
 
         {% for alert in unread_alerts %}
-          <div class="px-4 py-3.5 rounded-[18px] border border-slate-200/40 bg-[#fff7ed] {% if not forloop.last %}mb-3{% endif %}">
+          <div class="px-4 py-3.5 rounded-[18px] border border-slate-200/40 bg-red-100 {% if not forloop.last %}mb-3{% endif %}">
             <strong class="text-[#162033]">{{ alert.product.name }}</strong>
             <div class="text-[#66758f] text-sm mt-1">{{ alert.message }}</div>
             <div class="text-[#66758f] text-xs mt-1.5">{{ alert.created_at|date:"M d, Y H:i" }}</div>
@@ -137,7 +137,7 @@
         <p class="text-[#66758f] text-sm mb-5">These products are low or out of stock based on their threshold.</p>
 
         <div class="overflow-x-auto">
-          <table class="w-full border-collapse">
+          <table class="w-full border-collapse  border border-slate-200/50">
             <thead>
               <tr>
                 <th class="px-4 pb-3.5 text-left text-[#66758f] text-[.78rem] font-semibold tracking-[.08em] uppercase">Product</th>
@@ -179,7 +179,7 @@
         <p class="text-[#66758f] text-sm mb-5">Every stock adjustment stored on the server, newest first.</p>
 
         <div class="overflow-x-auto">
-          <table class="w-full border-collapse">
+          <table class="w-full border-collapse ">
             <thead>
               <tr>
                 <th class="px-4 pb-3.5 text-left text-[#66758f] text-[.78rem] font-semibold tracking-[.08em] uppercase">Date</th>

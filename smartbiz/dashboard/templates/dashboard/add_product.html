@@ -48,14 +48,14 @@
 <div class="px-4 py-2">
 
   <section class="p-7 rounded-[28px] text-white mb-6 shadow-[0_26px_60px_rgba(15,23,42,.18)]"
-           style="background:radial-gradient(circle at top right,rgba(251,191,36,.2),transparent 34%),linear-gradient(135deg,#1e1b4b 0%,#1d4ed8 48%,#0ea5a4 120%)">
+           style="background:radial-gradient(circle at top right,rgba(251,191,36,.2),transparent 34%),linear-gradient(grey)">
     <div class="flex flex-wrap justify-between items-start gap-3">
       <div>
-        <div class="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-full text-sm font-bold
+        <div class="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-full text-sm font-semibold
                     bg-white/10 border border-white/15">
           <i class="bi bi-box-seam-fill"></i> Inventory setup
         </div>
-        <h1 class="mt-3 mb-0 font-extrabold tracking-tight" style="font-size:clamp(1.8rem,4vw,2.8rem)">
+        <h1 class="mt-3 mb-0 font-semibold tracking-tight" style="font-size:clamp(1.8rem,4vw,2.8rem)">
           Add a product or service in the same design system.
         </h1>
         <p class="mt-3 mb-0 max-w-2xl text-white/80">
@@ -63,7 +63,7 @@
         </p>
       </div>
       <a href="{% url 'product_list' %}"
-         class="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl font-bold no-underline
+         class="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl font-semibold no-underline
                 bg-white text-gray-800 hover:bg-gray-100 transition-colors flex-shrink-0">
         <i class="bi bi-arrow-left"></i> Back to products
       </a>
@@ -84,12 +84,12 @@
         <div class="flex justify-end gap-3 flex-wrap mt-6">
           <a href="{% url 'product_list' %}"
              class="px-5 py-2.5 rounded-2xl font-semibold border border-gray-300 text-gray-600
-                    hover:bg-gray-50 transition-colors no-underline">
+                    hover:bg-red-500 transition-colors no-underline bi bi-x-lg inline-flex items-center gap-1">
             Cancel
           </a>
           <button type="submit"
                   class="px-6 py-2.5 rounded-2xl font-semibold text-white bg-blue-600
-                         hover:bg-blue-700 transition-colors border-none cursor-pointer">
+                         hover:bg-green-700 transition-colors border-none cursor-pointer bi bi-check-lg inline-flex items-center gap-1">
             Save product
           </button>
         </div>
@@ -99,7 +99,7 @@
     <div class="w-full lg:w-72 p-[22px] rounded-3xl border border-slate-200/50 shadow-[0_24px_60px_rgba(15,23,42,.08)]"
          style="background:linear-gradient(180deg,#fff7ed 0%,#fde7c7 100%)">
       <h3 class="m-0 text-[.78rem] uppercase tracking-[.08em] text-[#66758f] font-semibold">Catalog setup</h3>
-      <div class="mt-3 text-[2rem] font-extrabold leading-tight text-[#162033]">1 item</div>
+      <div class="mt-3 text-[2rem] font-semibold leading-tight text-[#162033]">1 item</div>
       <div class="mt-2 text-[#66758f] text-sm leading-relaxed">
         Use this page to build the product catalog that powers sales entry and reporting.
       </div>

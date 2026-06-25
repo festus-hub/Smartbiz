@@ -32,7 +32,7 @@
    <main class="flex-1 lg:ml-[270px] p-6 lg:p-6 ">
     <div class="max-w-[1440px] mx-auto">
   <div class="mb-5 px-4 py-3.5 rounded-[18px] text-[#f8fafc]"
-       style="background:radial-gradient(circle at top right,rgba(125,211,252,.18),transparent 34%),linear-gradient(90deg,#112750 0%,#1a4f92 54%,#2ba6bb 100%)">
+       style="background:radial-gradient(circle at top right,rgba(125,211,252,.18),transparent 34%),linear-gradient(grey)">
     <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-[.52rem] font-bold tracking-[.06em] uppercase mb-1.5
                 bg-white/10 border border-white/20">
       <i class="bi bi-phone-fill"></i> Payment operations
@@ -238,7 +238,7 @@
                   <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[.56rem] font-semibold capitalize bg-red-100 text-red-700">{{ payment.status }}</span>
                 {% endif %}
               </td>
-              <td class="px-3 py-2.5 border-t border-black/30 text-[.6rem] text-[#334155]">{{ payment.transaction_id|default:payment.checkout_request_id|default:"Pending" }}</td>
+              <td class="px-3 py-2.5 border-t border-black/30 text-[.6rem] text-[#334155]">{{ payment.transaction_id|default:payment.checkout_request_id|default:"Success" }}</td>
               <td class="px-3 py-2.5 border-t border-black/30 text-[.6rem] text-[#334155]">{{ payment.phone_number|default:"-" }}</td>
               <td class="px-3 py-2.5 border-t border-black/30 text-[.6rem] text-[#334155]">{{ payment.payment_date|date:"M d, Y H:i" }}</td>
               <td class="px-3 py-2.5 border-t border-black/30">

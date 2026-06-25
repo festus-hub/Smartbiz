@@ -54,7 +54,7 @@
   <input type="hidden" id="csrf-token" value="{{ csrf_token }}">
 
   <section class="p-7 rounded-[28px] text-white mb-6 shadow-[0_26px_60px_rgba(15,23,42,.18)]"
-           style="background:radial-gradient(circle at top right,rgba(209, 227, 105, 0.24),transparent 34%),linear-gradient(135deg,#b6b650 0%,#e5dfa9 48%,#0ea5a4 120%)">
+           style="background:radial-gradient(circle at top right,rgba(209, 227, 105, 0.24),transparent 34%),linear-gradient(grey)">
     <div class="flex flex-wrap justify-between items-start gap-3">
       <div>
         <div class="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-full text-sm font-bold
@@ -153,8 +153,9 @@
                     <button type="submit"
                             class="px-3 py-1.5 rounded-xl text-sm font-semibold border border-red-300
                                    text-red-600 hover:bg-red-50 transition-colors bg-transparent cursor-pointer"
-                            onclick="return confirm('Are you sure you want to delete this sale?')">Delete</button>
-                  </form>
+                            onclick="return confirm('Delete this sale?')" data-id="{{ sale.id }}"
+                            
+                                  >Delete</button>
                 </div>
               </td>
             </tr>
