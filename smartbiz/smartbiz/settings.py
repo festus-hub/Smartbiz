@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 import os
+import tempfile
 from importlib.util import find_spec
 from pathlib import Path
 from django.core.exceptions import ImproperlyConfigured
@@ -62,6 +63,7 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY') or os.environ.get('SECRET_KEY',
 DEBUG = env_bool('DJANGO_DEBUG', default=True)
 DATABASE_URL = os.environ.get('DATABASE_URL', '').strip()
 ENABLE_AXES = env_bool('DJANGO_ENABLE_AXES', default=False)
+IS_VERCEL = env_bool('VERCEL', default=False)
 
 ALLOWED_HOSTS = env_list('DJANGO_ALLOWED_HOSTS', '127.0.0.1,localhost')
 CSRF_TRUSTED_ORIGINS = env_list('DJANGO_CSRF_TRUSTED_ORIGINS', 'http://127.0.0.1:8000,http://localhost:8000')
@@ -145,7 +147,7 @@ WSGI_APPLICATION = 'smartbiz.wsgi.application'
 
 DATABASES = {
     'default': dj_database_url.config(
-        default=DATABASE_URL or f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
+        default=DATABASE_URL or f"sqlite:///{Path(tempfile.gettempdir()) / 'smartbiz.sqlite3' if IS_VERCEL else BASE_DIR / 'db.sqlite3'}",
         conn_max_age=600,
         conn_health_checks=True,
     )
