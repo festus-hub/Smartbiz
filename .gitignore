@@ -6,3 +6,6 @@ __pycache__/
 .env.*
 !.env.example
 smartbiz/staticfiles/
+.vercel/
+
+.vercel
