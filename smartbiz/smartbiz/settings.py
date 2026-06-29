@@ -33,6 +33,25 @@ def env_list(name, default=''):
     return [item.strip() for item in value.split(',') if item.strip()]
 
 
+def normalize_hostname(value):
+    hostname = value.strip()
+    for prefix in ('https://', 'http://'):
+        if hostname.startswith(prefix):
+            hostname = hostname[len(prefix):]
+    return hostname.rstrip('/')
+
+
+def append_deployment_host(value):
+    hostname = normalize_hostname(value)
+    if not hostname:
+        return
+    if hostname not in ALLOWED_HOSTS:
+        ALLOWED_HOSTS.append(hostname)
+    origin = f'https://{hostname}'
+    if origin not in CSRF_TRUSTED_ORIGINS:
+        CSRF_TRUSTED_ORIGINS.append(origin)
+
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
@@ -46,14 +65,13 @@ ENABLE_AXES = env_bool('DJANGO_ENABLE_AXES', default=False)
 
 ALLOWED_HOSTS = env_list('DJANGO_ALLOWED_HOSTS', '127.0.0.1,localhost')
 CSRF_TRUSTED_ORIGINS = env_list('DJANGO_CSRF_TRUSTED_ORIGINS', 'http://127.0.0.1:8000,http://localhost:8000')
-RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME', '').strip()
-RENDER_EXTERNAL_URL = os.environ.get('RENDER_EXTERNAL_URL', '').strip()
 
-if RENDER_EXTERNAL_HOSTNAME and RENDER_EXTERNAL_HOSTNAME not in ALLOWED_HOSTS:
-    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
-
-if RENDER_EXTERNAL_URL and RENDER_EXTERNAL_URL not in CSRF_TRUSTED_ORIGINS:
-    CSRF_TRUSTED_ORIGINS.append(RENDER_EXTERNAL_URL)
+for vercel_hostname in (
+    os.environ.get('VERCEL_PROJECT_PRODUCTION_URL', ''),
+    os.environ.get('VERCEL_BRANCH_URL', ''),
+    os.environ.get('VERCEL_URL', ''),
+):
+    append_deployment_host(vercel_hostname)
 
 if not DEBUG and SECRET_KEY == 'django-insecure-change-me':
     raise ImproperlyConfigured('Set DJANGO_SECRET_KEY to a secure value when DJANGO_DEBUG is false.')
@@ -237,7 +255,19 @@ MPESA_CONSUMER_SECRET = os.environ.get('MPESA_CONSUMER_SECRET', '7SThoERwBcOYmIE
 MPESA_SHORTCODE = os.environ.get('MPESA_SHORTCODE', '174379')
 MPESA_PASSKEY = os.environ.get('MPESA_PASSKEY', 'bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919')
 MPESA_TRANSACTION_TYPE = os.environ.get('MPESA_TRANSACTION_TYPE', 'CustomerPayBillOnline')
-MPESA_CALLBACK_URL = os.environ.get('MPESA_CALLBACK_URL', 'https://smartbiz-bfko.onrender.com/mpesa/callback/')
+DEFAULT_MPESA_CALLBACK_URL = ''
+
+for vercel_hostname in (
+    os.environ.get('VERCEL_PROJECT_PRODUCTION_URL', ''),
+    os.environ.get('VERCEL_BRANCH_URL', ''),
+    os.environ.get('VERCEL_URL', ''),
+):
+    normalized_hostname = normalize_hostname(vercel_hostname)
+    if normalized_hostname:
+        DEFAULT_MPESA_CALLBACK_URL = f'https://{normalized_hostname}/api/payments/mpesa/callback/'
+        break
+
+MPESA_CALLBACK_URL = os.environ.get('MPESA_CALLBACK_URL', DEFAULT_MPESA_CALLBACK_URL).strip()
 
 
 if HAS_DRF_SPECTACULAR:
